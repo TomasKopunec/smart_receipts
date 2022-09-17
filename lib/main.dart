@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smart_receipts/global_ui_components/tabs_scaffold.dart';
+import 'package:smart_receipts/screens/playgroundScreen.dart';
 
 void main() {
   runApp(Main());
@@ -15,13 +17,12 @@ class Main extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text("Smart receipts"),
-          ),
-          body: const Center(
-            child: Text("Welcome"),
-          )),
+      home: TabsScaffold(),
+      routes: getRoutes(),
     );
+  }
+
+  Map<String, Widget Function(BuildContext)> getRoutes() {
+    return {PlaygroundScreen.route: (ctx) => PlaygroundScreen()};
   }
 }
