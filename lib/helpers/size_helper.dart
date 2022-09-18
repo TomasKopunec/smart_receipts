@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
 
-enum FontSize { SMALLER, SMALL, REGULAR, LARGE, LARGER }
+enum FontSize {
+  smallest,
+  smaller,
+  small,
+  regularSmall,
+  regular,
+  regularLarge,
+  large,
+  larger,
+  largest
+}
 
 class SizeHelper {
+  static double getScreenWidth(BuildContext context) {
+    return MediaQuery.of(context).size.width;
+  }
+
   static double getScreenHeight(BuildContext context) {
     double statusBarHeight = MediaQuery.of(context).padding.top;
     double screenSizeHeight = MediaQuery.of(context).size.height;
@@ -23,16 +37,24 @@ class SizeHelper {
     }
 
     switch (size) {
-      case FontSize.SMALLER:
-        return regularSize * 0.5;
-      case FontSize.SMALL:
+      case FontSize.smallest:
+        return regularSize * 0.45;
+      case FontSize.smaller:
+        return regularSize * 0.6;
+      case FontSize.small:
         return regularSize * 0.75;
-      case FontSize.REGULAR:
+      case FontSize.regularSmall:
+        return regularSize * 0.9;
+      case FontSize.regular:
         return regularSize;
-      case FontSize.LARGE:
+      case FontSize.regularLarge:
+        return regularSize * 1.1;
+      case FontSize.large:
         return regularSize * 1.25;
-      case FontSize.LARGER:
-        return regularSize * 1.5;
+      case FontSize.larger:
+        return regularSize * 1.4;
+      case FontSize.largest:
+        return regularSize * 1.65;
     }
   }
 }

@@ -159,8 +159,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
     final _decoration = BoxDecoration(
       color: Colors.white,
-      // color: Colors.white,
-      // border: Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)),
       border: Border.all(width: 0.005, color: Colors.black.withOpacity(0)),
       borderRadius: _radius,
       boxShadow: [
@@ -182,6 +180,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
           splashColor: widget.prefferedColor,
           onTap: () => widget.onTabRow?.call(data),
           child: Ink(
+            padding: const EdgeInsets.only(bottom: 6, left: 8, right: 8),
             decoration: widget.selecteds!.contains(data)
                 ? _selectedDecoration
                 : _rowDecoration,
@@ -441,7 +440,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                   children: [
                     if (widget.showSelect && widget.selecteds != null)
                       mobileHeader(),
-                    if (widget.isLoading) const LinearProgressIndicator(),
+                    if (widget.isLoading) loadingIndicator,
                     ...mobileList(),
                   ],
                 ),
@@ -452,7 +451,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                     children: [
                       if (widget.showSelect && widget.selecteds != null)
                         mobileHeader(),
-                      if (widget.isLoading) const LinearProgressIndicator(),
+                      if (widget.isLoading) loadingIndicator,
 
                       /// mobileList
                       ...mobileList(),
@@ -492,7 +491,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
               /// desktopHeader
               if (widget.headers.isNotEmpty) desktopHeader(),
 
-              if (widget.isLoading) const LinearProgressIndicator(),
+              if (widget.isLoading) loadingIndicator,
 
               if (widget.autoHeight) Column(children: desktopList()),
 
@@ -509,6 +508,13 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                 )
             ],
           );
+  }
+
+  LinearProgressIndicator get loadingIndicator {
+    return LinearProgressIndicator(
+      backgroundColor: widget.prefferedColor.withOpacity(0.5),
+      color: widget.prefferedColor,
+    );
   }
 }
 

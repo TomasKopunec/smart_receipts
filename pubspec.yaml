@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  animated_search_bar: "2.3.0"
   # convex_bottom_bar: ^3.0.0
 
   # responsive_table: ^0.2.0+2
