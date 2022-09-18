@@ -10,8 +10,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  convex_bottom_bar: ^3.0.0
-  cupertino_icons: ^1.0.2
+  # convex_bottom_bar: ^3.0.0
+
+  # responsive_table: ^0.2.0+2
+
+  responsive_table:
+    path: responsive_table-0.2.0/
+
+
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

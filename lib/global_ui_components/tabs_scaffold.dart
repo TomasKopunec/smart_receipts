@@ -1,4 +1,3 @@
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/screens/abstract_screen.dart';
@@ -37,13 +36,19 @@ class _TabsScaffoldState extends State<TabsScaffold> {
     });
   }
 
+  double getSelectedHeight(BuildContext context) {
+    final double screenHeight = SizeHelper.getScreenHeight(context);
+    return MediaQuery.of(context).orientation == Orientation.portrait
+        ? screenHeight * 0.0375
+        : screenHeight * 0.075;
+  }
+
+  double getUnselectedHeight(BuildContext context) {
+    return getSelectedHeight(context) * 0.85;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = SizeHelper.getScreenHeight(context);
-
-    final double selectedHeight = screenHeight * 0.0375;
-    final double unselectedHeight = selectedHeight * 0.85;
-
     return Scaffold(
       appBar: null,
       body: _screens[_selectedPageIndex],
@@ -54,10 +59,11 @@ class _TabsScaffoldState extends State<TabsScaffold> {
         items: _screens.map((screen) => screen.getAppBarItem()).toList(),
         type: BottomNavigationBarType.shifting,
         selectedItemColor: Colors.white,
-        selectedIconTheme: IconThemeData(opacity: 1, size: selectedHeight),
+        selectedIconTheme:
+            IconThemeData(opacity: 1, size: getSelectedHeight(context)),
         unselectedItemColor: Colors.white,
         unselectedIconTheme:
-            IconThemeData(opacity: 0.6, size: unselectedHeight),
+            IconThemeData(opacity: 0.6, size: getUnselectedHeight(context)),
       ),
     );
   }

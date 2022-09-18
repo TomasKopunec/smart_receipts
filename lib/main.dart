@@ -3,6 +3,7 @@ import 'package:smart_receipts/global_ui_components/tabs_scaffold.dart';
 import 'package:smart_receipts/screens/playgroundScreen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(Main());
 }
 
@@ -14,8 +15,10 @@ class Main extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: TabsScaffold(),
       routes: getRoutes(),
