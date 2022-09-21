@@ -45,12 +45,12 @@ class _ReceiptTableState extends State<ReceiptTable> {
     for (var data in source) {
       temps.add({
         'store_name': 'Store $i',
-        'amount': '${(i * 10.0).toString()}\$',
-        'date':
-            DateFormat.yMd().format(DateTime.now().subtract(Duration(days: i))),
+        'amount': '${((i * 10.00) - 0.01).toString()}\$',
+        'date': DateFormat.yMMMMd()
+            .format(DateTime.now().subtract(Duration(days: i))),
         'location': 'London, UK',
         'category': 'Fashion',
-        'expiration': DateFormat.yMd().format(DateTime.now()
+        'expiration': DateFormat.yMMMMd('en_US').format(DateTime.now()
             .subtract(Duration(days: i))
             .add(Duration(days: 365))),
         'sku': '$i\000$i',
@@ -209,7 +209,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
       showSelect: _showSelect,
       autoHeight: true,
       dropContainer: (data) {
-        if (int.tryParse(data['id'].toString())!.isEven) {
+        if (int.tryParse(data['uid'].toString())!.isEven) {
           return const Text("is Even");
         }
         return _DropDownContainer(data: data);

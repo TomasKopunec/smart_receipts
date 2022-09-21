@@ -159,13 +159,12 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
     final _decoration = BoxDecoration(
       color: Colors.white,
-      border: Border.all(width: 0.005, color: Colors.black.withOpacity(0)),
       borderRadius: _radius,
       boxShadow: [
         BoxShadow(
             color: widget.prefferedColor.withOpacity(0.3),
-            blurRadius: 5,
-            offset: const Offset(0, 4)),
+            blurRadius: 3,
+            offset: const Offset(0, 2)),
       ],
     );
 
@@ -173,35 +172,39 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
     final _selectedDecoration = widget.selectedDecoration ?? _decoration;
     return widget.source!.map((data) {
       return Container(
-        margin: const EdgeInsets.only(bottom: 16, left: 6, right: 6),
-        padding: EdgeInsets.zero,
-        child: InkWell(
-          borderRadius: _radius,
-          splashColor: widget.prefferedColor,
-          onTap: () => widget.onTabRow?.call(data),
-          child: Ink(
-            padding: const EdgeInsets.only(bottom: 6, left: 8, right: 8),
-            decoration: widget.selecteds!.contains(data)
-                ? _selectedDecoration
-                : _rowDecoration,
-            child: Column(
+        clipBehavior: Clip.antiAlias,
+        margin: const EdgeInsets.only(bottom: 8, left: 6, right: 6),
+        decoration: widget.selecteds!.contains(data)
+            ? _selectedDecoration
+            : _rowDecoration,
+        child: ExpansionTile(
+          backgroundColor: widget.prefferedColor.withOpacity(0.075),
+          childrenPadding:
+              const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          key: ValueKey(data['uid']),
+          onExpansionChanged: (value) {
+            widget.onTabRow?.call(data);
+          },
+          tilePadding: const EdgeInsets.only(left: 10, right: 20),
+          controlAffinity: ListTileControlAffinity.leading,
+          title: Row(
+            children: [
+              Text('${data['store_name']}'),
+              const SizedBox(
+                width: 8,
+              ),
+              const Icon(Icons.location_on),
+              Text('${data['location']}'),
+            ],
+          ),
+          subtitle: Text('${data['date']}'),
+          trailing: Text('${data['amount']}'),
+          textColor: widget.prefferedColor,
+          iconColor: widget.prefferedColor,
+          children: [
+            Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Spacer(),
-                    if (widget.showSelect && widget.selecteds != null)
-                      Checkbox(
-                          activeColor: widget.prefferedColor,
-                          value: widget.selecteds!.contains(data),
-                          onChanged: (value) {
-                            if (widget.onSelect != null) {
-                              widget.onSelect!(value, data);
-                            }
-                          }),
-                  ],
-                ),
                 if (widget.commonMobileView && widget.dropContainer != null)
                   widget.dropContainer!(data),
                 if (!widget.commonMobileView)
@@ -209,48 +212,88 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                       .where((header) => header.show == true)
                       .toList()
                       .map(
-                        (header) => Container(
-                          padding: const EdgeInsets.all(10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              header.headerBuilder != null
-                                  ? header.headerBuilder!(header.value)
-                                  : Text(
-                                      header.text,
-                                      overflow: TextOverflow.clip,
-                                      style: widget.selecteds!.contains(data)
-                                          ? widget.selectedTextStyle
-                                          : widget.rowTextStyle,
-                                    ),
-                              const Spacer(),
-                              header.sourceBuilder != null
-                                  ? header.sourceBuilder!(
-                                      data[header.value], data)
-                                  : header.editable
-                                      ? TextEditableWidget(
-                                          data: data,
-                                          header: header,
-                                          textAlign: TextAlign.end,
-                                          onChanged: widget.onChangedRow,
-                                          onSubmitted: widget.onSubmittedRow,
-                                          hideUnderline: widget.hideUnderline,
-                                        )
+                        (header) => Column(
+                          children: [
+                            const Divider(thickness: 0.75),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  header.headerBuilder != null
+                                      ? header.headerBuilder!(header.value)
                                       : Text(
-                                          "${data[header.value]}",
+                                          header.text,
+                                          overflow: TextOverflow.clip,
                                           style:
                                               widget.selecteds!.contains(data)
                                                   ? widget.selectedTextStyle
                                                   : widget.rowTextStyle,
-                                        )
-                            ],
-                          ),
+                                        ),
+                                  const Spacer(),
+                                  header.sourceBuilder != null
+                                      ? header.sourceBuilder!(
+                                          data[header.value], data)
+                                      : header.editable
+                                          ? TextEditableWidget(
+                                              data: data,
+                                              header: header,
+                                              textAlign: TextAlign.end,
+                                              onChanged: widget.onChangedRow,
+                                              onSubmitted:
+                                                  widget.onSubmittedRow,
+                                              hideUnderline:
+                                                  widget.hideUnderline,
+                                            )
+                                          : Text(
+                                              "${data[header.value]}",
+                                              style: widget.selecteds!
+                                                      .contains(data)
+                                                  ? widget.selectedTextStyle
+                                                  : widget.rowTextStyle,
+                                            )
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       )
-                      .toList()
+                      .toList(),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // const Spacer(),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.delete),
+                        color: widget.prefferedColor,
+                      ),
+                      ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: widget.prefferedColor,
+                          ),
+                          onPressed: () {},
+                          icon: const Icon(Icons.receipt),
+                          label: const Text("Show Receipt")),
+                      if (widget.showSelect && widget.selecteds != null)
+                        Checkbox(
+                            activeColor: widget.prefferedColor,
+                            value: widget.selecteds!.contains(data),
+                            onChanged: (value) {
+                              if (widget.onSelect != null) {
+                                widget.onSelect!(value, data);
+                              }
+                            }),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
+          ],
         ),
       );
     }).toList();

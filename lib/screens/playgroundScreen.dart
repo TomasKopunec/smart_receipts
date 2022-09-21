@@ -6,11 +6,42 @@ class PlaygroundScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ReturnableScreen(
+    return ReturnableScreen(
         title: 'Returnable Screen',
-        appbarColor: Color.fromRGBO(103, 125, 220, 1),
+        appbarColor: const Color.fromRGBO(103, 125, 220, 1),
         body: Center(
-          child: Text('This is playground screen'),
+          child: getReceiptView(),
         ));
+  }
+
+  Widget getReceiptView() {
+    return Card(
+      elevation: 4,
+      child: ExpansionTile(
+        // trailing: Text("Trailing"),
+        leading: Text("Leading"),
+        title: Text("Title"),
+        subtitle: Text("Subtitle"),
+        children: [
+          ListTile(title: Text("Title 1")),
+          ListTile(title: Text("Title 2")),
+          ListTile(title: Text("Title 3")),
+        ],
+      ),
+    );
+
+    /*return Card(
+      child: Padding(
+        padding: EdgeInsets.only(top: 36.0, left: 6.0, right: 6.0, bottom: 6.0),
+        child: ExpansionTile(
+          title: Text('Birth of Universe'),
+          children: [
+            Text('Big Bang'),
+            Text('Birth of the Sun'),
+            Text('Earth is Born'),
+          ],
+        ),
+      ),
+    ); */
   }
 }
