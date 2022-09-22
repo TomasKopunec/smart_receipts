@@ -2,7 +2,7 @@
 # See https://dart.dev/tools/pub/glossary#lockfile
 packages:
   adaptivex:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: adaptivex
       url: "https://pub.dartlang.org"
@@ -116,6 +116,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   path:
     dependency: transitive
     description:
@@ -130,13 +137,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.1"
-  responsive_table:
+  provider:
     dependency: "direct main"
     description:
-      path: "responsive_table-0.2.0"
-      relative: true
-    source: path
-    version: "0.2.0+2"
+      name: provider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.0.3"
   sky_engine:
     dependency: transitive
     description: flutter

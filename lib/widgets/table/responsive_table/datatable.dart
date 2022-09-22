@@ -1,5 +1,6 @@
 import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_receipts/models/receipt.dart';
 import 'datatable_header.dart';
 
 class ResponsiveDatatable extends StatefulWidget {
@@ -115,7 +116,9 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
               widget.source != null &&
               widget.source!.isNotEmpty,
           onChanged: (value) {
-            if (widget.onSelectAll != null) widget.onSelectAll!(value);
+            if (widget.onSelectAll != null) {
+              widget.onSelectAll!(value);
+            }
           },
         ),
         PopupMenuButton(
@@ -170,15 +173,19 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
     final _rowDecoration = widget.rowDecoration ?? _decoration;
     final _selectedDecoration = widget.selectedDecoration ?? _decoration;
-    return widget.source!.map((data) {
-      return Container(
+
+    final List<Widget> list = [];
+
+    for (var i = 0; i < widget.source!.length; i++) {
+      final Map<String, dynamic> data = widget.source!.elementAt(i);
+      list.add(Container(
         clipBehavior: Clip.antiAlias,
         margin: const EdgeInsets.only(bottom: 8, left: 6, right: 6),
         decoration: widget.selecteds!.contains(data)
             ? _selectedDecoration
             : _rowDecoration,
         child: ExpansionTile(
-          backgroundColor: widget.prefferedColor.withOpacity(0.09),
+          backgroundColor: widget.prefferedColor.withOpacity(0.1),
           childrenPadding:
               const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           key: ValueKey(data['uid']),
@@ -189,16 +196,16 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
           controlAffinity: ListTileControlAffinity.leading,
           title: Row(
             children: [
-              Text('${data['store_name']}'),
+              Text(data[ReceiptAttribute.store_name.name]),
               const SizedBox(
-                width: 8,
+                width: 2,
               ),
               const Icon(Icons.location_on),
-              Text('${data['location']}'),
+              Text(data[ReceiptAttribute.store_location.name]),
             ],
           ),
-          subtitle: Text('${data['date']}'),
-          trailing: Text('${data['amount']}'),
+          subtitle: Text(data[ReceiptAttribute.purchase_date.name]),
+          trailing: Text(data[ReceiptAttribute.amount.name].toString()),
           textColor: widget.prefferedColor,
           iconColor: widget.prefferedColor,
           children: [
@@ -295,8 +302,9 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
             ),
           ],
         ),
-      );
-    }).toList();
+      ));
+    }
+    return list;
   }
 
   static Alignment headerAlignSwitch(TextAlign? textAlign) {
