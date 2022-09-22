@@ -21,9 +21,10 @@ class Main extends StatelessWidget {
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-            primarySwatch: Colors.blue,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            dividerColor: Colors.transparent),
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        // dividerColor: Colors.amber),
         home: TabsScaffold(), // PlaygroundScreen(),
         routes: getRoutes(),
       ),

@@ -1,5 +1,6 @@
 import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'datatable_header.dart';
 
@@ -29,36 +30,6 @@ class ResponsiveDatatable extends StatefulWidget {
   final Function(Map<String, dynamic> value, DatatableHeader header)?
       onSubmittedRow;
   final List<ScreenSize> reponseScreenSizes;
-
-  /// `headerDecoration`
-  ///
-  /// allow to decorate the header row
-  final BoxDecoration? headerDecoration;
-
-  /// `rowDecoration`
-  ///
-  /// allow to decorate the data row
-  final BoxDecoration? rowDecoration;
-
-  /// `selectedDecoration`
-  ///
-  /// allow to decorate the selected data row
-  final BoxDecoration? selectedDecoration;
-
-  /// `selectedTextStyle`
-  ///
-  /// allow to styling the header row
-  final TextStyle? headerTextStyle;
-
-  /// `selectedTextStyle`
-  ///
-  /// allow to styling the data row
-  final TextStyle? rowTextStyle;
-
-  /// `selectedTextStyle`
-  ///
-  /// allow to styling the selected data row
-  final TextStyle? selectedTextStyle;
 
   /// Color to be used
   final Color prefferedColor;
@@ -92,12 +63,6 @@ class ResponsiveDatatable extends StatefulWidget {
         ScreenSize.sm,
         ScreenSize.md
       ],
-      this.headerDecoration,
-      this.rowDecoration,
-      this.selectedDecoration,
-      this.headerTextStyle,
-      this.rowTextStyle,
-      this.selectedTextStyle,
       required this.prefferedColor})
       : super(key: key);
 
@@ -122,37 +87,91 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
           },
         ),
         PopupMenuButton(
-            child: Container(
-              padding: const EdgeInsets.all(15),
-              child: const Text("SORT BY"),
-            ),
-            tooltip: "SORT BY",
-            initialValue: widget.sortColumn,
-            itemBuilder: (_) => widget.headers
+          padding: EdgeInsets.zero,
+          // offset: Offset(-10, 0),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          tooltip: "SORT BY",
+          initialValue: widget.sortColumn,
+          itemBuilder: (_) {
+            List<PopupMenuEntry> widgets = [];
+
+            for (final header in widget.headers) {
+              if (header.show == true && header.sortable == true) {
+                widgets.add(PopupMenuItem(
+                  padding: const EdgeInsets.only(
+                      left: 8, top: 4, bottom: 4, right: 8),
+                  height: 0,
+                  value: header.value,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (widget.sortColumn != null &&
+                          widget.sortColumn == header.value)
+                        widget.sortAscending!
+                            ? Icon(Icons.arrow_downward,
+                                color: widget.prefferedColor)
+                            : Icon(Icons.arrow_upward,
+                                color: widget.prefferedColor),
+                      const SizedBox(width: 10),
+                      Text(
+                        header.text,
+                        textAlign: header.textAlign,
+                      ),
+                    ],
+                  ),
+                ));
+                widgets.add(PopupMenuDivider());
+              }
+            }
+
+            return widgets;
+
+            /*
+            return widget.headers
                 .where(
                     (header) => header.show == true && header.sortable == true)
                 .toList()
-                .map((header) => PopupMenuItem(
-                      child: Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Text(
-                            header.text,
-                            textAlign: header.textAlign,
-                          ),
-                          if (widget.sortColumn != null &&
-                              widget.sortColumn == header.value)
-                            widget.sortAscending!
-                                ? const Icon(Icons.arrow_downward, size: 15)
-                                : const Icon(Icons.arrow_upward, size: 15)
-                        ],
+                .map(
+              (header) {
+                return PopupMenuItem(
+                  value: header.value,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (widget.sortColumn != null &&
+                          widget.sortColumn == header.value)
+                        widget.sortAscending!
+                            ? Icon(Icons.arrow_downward,
+                                color: widget.prefferedColor)
+                            : Icon(Icons.arrow_upward,
+                                color: widget.prefferedColor),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          header.text,
+                          textAlign: header.textAlign,
+                        ),
                       ),
-                      value: header.value,
-                    ))
-                .toList(),
-            onSelected: (dynamic value) {
-              if (widget.onSort != null) widget.onSort!(value);
-            })
+                    ],
+                  ),
+                );
+              },
+            ).toList();*/
+          },
+          onSelected: (dynamic value) {
+            if (widget.onSort != null) widget.onSort!(value);
+          },
+          child: Container(
+            padding: const EdgeInsets.only(right: 20),
+            child: InkWell(
+                child: Text(
+              "SORT BY",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: widget.prefferedColor),
+            )),
+          ),
+        ),
       ],
     );
   }
@@ -171,9 +190,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
       ],
     );
 
-    final _rowDecoration = widget.rowDecoration ?? _decoration;
-    final _selectedDecoration = widget.selectedDecoration ?? _decoration;
-
     final List<Widget> list = [];
 
     for (var i = 0; i < widget.source!.length; i++) {
@@ -181,9 +197,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
       list.add(Container(
         clipBehavior: Clip.antiAlias,
         margin: const EdgeInsets.only(bottom: 8, left: 6, right: 6),
-        decoration: widget.selecteds!.contains(data)
-            ? _selectedDecoration
-            : _rowDecoration,
+        decoration: _decoration,
         child: ExpansionTile(
           backgroundColor: widget.prefferedColor.withOpacity(0.1),
           childrenPadding:
@@ -200,12 +214,13 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
               const SizedBox(
                 width: 2,
               ),
-              const Icon(Icons.location_on),
+              Icon(Icons.location_on),
               Text(data[ReceiptAttribute.store_location.name]),
             ],
           ),
-          subtitle: Text(data[ReceiptAttribute.purchase_date.name]),
-          trailing: Text(data[ReceiptAttribute.amount.name].toString()),
+          subtitle: Text(DateFormat.yMMMMd().format(
+              DateTime.parse(data[ReceiptAttribute.purchase_date.name]))),
+          trailing: Text('${data[ReceiptAttribute.amount.name].toString()}\$'),
           textColor: widget.prefferedColor,
           iconColor: widget.prefferedColor,
           children: [
@@ -218,55 +233,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                   ...widget.headers
                       .where((header) => header.show == true)
                       .toList()
-                      .map(
-                        (header) => Column(
-                          children: [
-                            const Divider(thickness: 0.75),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 6, vertical: 2),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  header.headerBuilder != null
-                                      ? header.headerBuilder!(header.value)
-                                      : Text(
-                                          header.text,
-                                          overflow: TextOverflow.clip,
-                                          style:
-                                              widget.selecteds!.contains(data)
-                                                  ? widget.selectedTextStyle
-                                                  : widget.rowTextStyle,
-                                        ),
-                                  const Spacer(),
-                                  header.sourceBuilder != null
-                                      ? header.sourceBuilder!(
-                                          data[header.value], data)
-                                      : header.editable
-                                          ? TextEditableWidget(
-                                              data: data,
-                                              header: header,
-                                              textAlign: TextAlign.end,
-                                              onChanged: widget.onChangedRow,
-                                              onSubmitted:
-                                                  widget.onSubmittedRow,
-                                              hideUnderline:
-                                                  widget.hideUnderline,
-                                            )
-                                          : Text(
-                                              "${data[header.value]}",
-                                              style: widget.selecteds!
-                                                      .contains(data)
-                                                  ? widget.selectedTextStyle
-                                                  : widget.rowTextStyle,
-                                            )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
+                      .map((header) => getEntry(header, data))
                       .toList(),
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
@@ -307,6 +274,51 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
     return list;
   }
 
+  Widget getEntry(DatatableHeader header, Map<String, dynamic> data) {
+    final bool isDate =
+        header.value.toString().toLowerCase().contains('date') ||
+            header.value.toString().toLowerCase().contains('expiration');
+    final bool isAmount =
+        header.value.toString().toLowerCase().contains("amount");
+
+    String stringOutput = '${data[header.value]}';
+    if (isDate) {
+      stringOutput = DateFormat.yMMMMd().format(DateTime.parse(stringOutput));
+    }
+    if (isAmount) {
+      stringOutput = '$stringOutput\$';
+    }
+
+    return Column(
+      children: [
+        const Divider(thickness: 0.75),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                header.text,
+                overflow: TextOverflow.clip,
+              ),
+              const Spacer(),
+              header.editable
+                  ? TextEditableWidget(
+                      data: data,
+                      header: header,
+                      textAlign: TextAlign.end,
+                      onChanged: widget.onChangedRow,
+                      onSubmitted: widget.onSubmittedRow,
+                      hideUnderline: widget.hideUnderline,
+                    )
+                  : Text(stringOutput)
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   static Alignment headerAlignSwitch(TextAlign? textAlign) {
     switch (textAlign) {
       case TextAlign.center:
@@ -321,10 +333,8 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   }
 
   Widget desktopHeader() {
-    final _headerDecoration = widget.headerDecoration ??
-        BoxDecoration(
-            border:
-                Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)));
+    final _headerDecoration = BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)));
     return Container(
       /// TODO:
       decoration: _headerDecoration,
@@ -350,29 +360,25 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                           widget.onSort!(header.value);
                         }
                       },
-                      child: header.headerBuilder != null
-                          ? header.headerBuilder!(header.value)
-                          : Container(
-                              padding: const EdgeInsets.all(11),
-                              alignment: headerAlignSwitch(header.textAlign),
-                              child: Wrap(
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: [
-                                  Text(
-                                    header.text,
-                                    textAlign: header.textAlign,
-                                    style: widget.headerTextStyle,
-                                  ),
-                                  if (widget.sortColumn != null &&
-                                      widget.sortColumn == header.value)
-                                    widget.sortAscending!
-                                        ? const Icon(Icons.arrow_downward,
-                                            size: 15)
-                                        : const Icon(Icons.arrow_upward,
-                                            size: 15)
-                                ],
-                              ),
+                      child: Container(
+                        padding: const EdgeInsets.all(11),
+                        alignment: headerAlignSwitch(header.textAlign),
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              header.text,
+                              textAlign: header.textAlign,
+                              // style: ,
                             ),
+                            if (widget.sortColumn != null &&
+                                widget.sortColumn == header.value)
+                              widget.sortAscending!
+                                  ? const Icon(Icons.arrow_downward, size: 15)
+                                  : const Icon(Icons.arrow_upward, size: 15)
+                          ],
+                        ),
+                      ),
                     )),
               )
               .toList()
@@ -384,8 +390,8 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   List<Widget> desktopList() {
     final _decoration = BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)));
-    final _rowDecoration = widget.rowDecoration ?? _decoration;
-    final _selectedDecoration = widget.selectedDecoration ?? _decoration;
+    //  final _rowDecoration = widget.rowDecoration ?? _decoration;
+    //  final _selectedDecoration = widget.selectedDecoration ?? _decoration;
     List<Widget> widgets = [];
     for (var index = 0; index < widget.source!.length; index++) {
       final data = widget.source![index];
@@ -402,9 +408,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
               padding: EdgeInsets.all(widget.showSelect ? 0 : 11),
 
               /// TODO:
-              decoration: widget.selecteds!.contains(data)
-                  ? _selectedDecoration
-                  : _rowDecoration,
+              decoration: _decoration,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -425,24 +429,20 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                       .map(
                         (header) => Expanded(
                           flex: header.flex,
-                          child: header.sourceBuilder != null
-                              ? header.sourceBuilder!(data[header.value], data)
-                              : header.editable
-                                  ? TextEditableWidget(
-                                      data: data,
-                                      header: header,
-                                      textAlign: header.textAlign,
-                                      onChanged: widget.onChangedRow,
-                                      onSubmitted: widget.onSubmittedRow,
-                                      hideUnderline: widget.hideUnderline,
-                                    )
-                                  : Text(
-                                      "${data[header.value]}",
-                                      textAlign: header.textAlign,
-                                      style: widget.selecteds!.contains(data)
-                                          ? widget.selectedTextStyle
-                                          : widget.rowTextStyle,
-                                    ),
+                          child: header.editable
+                              ? TextEditableWidget(
+                                  data: data,
+                                  header: header,
+                                  textAlign: header.textAlign,
+                                  onChanged: widget.onChangedRow,
+                                  onSubmitted: widget.onSubmittedRow,
+                                  hideUnderline: widget.hideUnderline,
+                                )
+                              : Text(
+                                  "${data[header.value]}",
+                                  textAlign: header.textAlign,
+                                  // style:
+                                ),
                         ),
                       )
                       .toList()
@@ -569,38 +569,17 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   }
 }
 
-/// `TextEditableWidget`
-///
-/// use to display when user allow any header columns to be editable
 class TextEditableWidget extends StatelessWidget {
-  /// `data`
-  ///
-  /// current data as Map
   final Map<String, dynamic> data;
 
-  /// `header`
-  ///
-  /// current editable text header
   final DatatableHeader header;
 
-  /// `textAlign`
-  ///
-  /// by default textAlign will be center
   final TextAlign textAlign;
 
-  /// `hideUnderline`
-  ///
-  /// allow use to decorate hideUnderline false or true
   final bool hideUnderline;
 
-  /// `onChanged`
-  ///
-  /// trigger the call back update when user make any text change
   final Function(Map<String, dynamic> vaue, DatatableHeader header)? onChanged;
 
-  /// `onSubmitted`
-  ///
-  /// trigger the call back when user press done or enter
   final Function(Map<String, dynamic> vaue, DatatableHeader header)?
       onSubmitted;
 
@@ -617,7 +596,7 @@ class TextEditableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 150),
+      // constraints: const BoxConstraints(maxWidth: 150),
       padding: const EdgeInsets.all(0),
       margin: const EdgeInsets.all(0),
       child: TextField(

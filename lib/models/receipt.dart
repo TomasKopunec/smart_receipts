@@ -54,8 +54,8 @@ class Receipt {
         storeLocation =
             JsonAttribute(ReceiptAttribute.store_location.name, storeLocation),
         category = JsonAttribute(ReceiptAttribute.category.name, category),
-        expiration = JsonAttribute(
-            ReceiptAttribute.expiration.name, expiration.toIso8601String()),
+        expiration =
+            JsonAttribute(ReceiptAttribute.expiration.name, expiration),
         sku = JsonAttribute(ReceiptAttribute.sku.name, sku),
         uid = JsonAttribute(ReceiptAttribute.uid.name, uid),
         status = JsonAttribute(ReceiptAttribute.status.name, status);

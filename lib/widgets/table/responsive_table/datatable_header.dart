@@ -8,9 +8,6 @@ class DatatableHeader {
   bool show;
   final TextAlign textAlign;
   final int flex;
-  final Widget Function(dynamic value)? headerBuilder;
-  final Widget Function(dynamic value, Map<String?, dynamic> row)?
-      sourceBuilder;
 
   DatatableHeader({
     required this.text,
@@ -20,8 +17,6 @@ class DatatableHeader {
     this.show = true,
     this.editable = false,
     this.flex = 1,
-    this.headerBuilder,
-    this.sourceBuilder,
   });
 
   factory DatatableHeader.fromMap(Map<String, dynamic> map) => DatatableHeader(
@@ -31,8 +26,6 @@ class DatatableHeader {
         show: map['show'],
         textAlign: map['textAlign'],
         flex: map['flex'],
-        headerBuilder: map['headerBuilder'],
-        sourceBuilder: map['sourceBuilder'],
       );
   Map<String, dynamic> toMap() => {
         "text": this.text,
@@ -41,7 +34,5 @@ class DatatableHeader {
         "show": this.show,
         "textAlign": this.textAlign,
         "flex": this.flex,
-        "headerBuilder": this.headerBuilder,
-        "sourceBuilder": this.sourceBuilder,
       };
 }

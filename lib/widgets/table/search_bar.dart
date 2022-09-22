@@ -85,17 +85,18 @@ class _SearchBarState extends State<SearchBar>
                     bottomLeft: Radius.circular(borderRadius))),
             child: Row(
               children: [
-                Flexible(
-                  child: IconButton(
-                    constraints: const BoxConstraints(),
-                    padding: const EdgeInsets.only(left: 8, right: 4),
-                    icon: Icon(Icons.clear),
-                    onPressed: () {
-                      textController.clear();
-                    },
-                    color: Colors.white,
+                if (textController.text.isNotEmpty)
+                  Flexible(
+                    child: IconButton(
+                      constraints: const BoxConstraints(),
+                      padding: const EdgeInsets.only(left: 10, right: 4),
+                      icon: Icon(Icons.clear),
+                      onPressed: () {
+                        textController.clear();
+                      },
+                      color: Colors.white,
+                    ),
                   ),
-                ),
                 Expanded(
                   child: TextField(
                     controller: textController,
@@ -111,9 +112,14 @@ class _SearchBarState extends State<SearchBar>
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: SizeHelper.getFontSize(context,
-                            size: FontSize.regularSmall)),
+                            size: FontSize.regular)),
                     textAlign: TextAlign.start,
                     decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(
+                            left: textController.text.isEmpty ? 20 : 0,
+                            top: 0,
+                            bottom: 0,
+                            right: 0),
                         hintStyle:
                             TextStyle(color: Colors.white.withOpacity(0.7)),
                         border: InputBorder.none,
