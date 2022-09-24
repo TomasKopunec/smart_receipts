@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
-import 'package:smart_receipts/screens/abstract_screen.dart';
+import 'package:smart_receipts/screens/abstract_tab_screen.dart';
 import 'package:smart_receipts/screens/add_receipt_screen.dart';
 import 'package:smart_receipts/screens/all_receipts_screen.dart';
 import 'package:smart_receipts/screens/dashboard_screen.dart';
@@ -15,7 +15,7 @@ class TabsScaffold extends StatefulWidget {
 }
 
 class _TabsScaffoldState extends State<TabsScaffold> {
-  late List<AbstractScreen> _screens;
+  late List<AbstractTabScreen> _screens;
   int _selectedPageIndex = 0;
 
   @override
@@ -49,14 +49,16 @@ class _TabsScaffoldState extends State<TabsScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final AbstractTabScreen selectedScreen = _screens[_selectedPageIndex];
+
     return Scaffold(
       appBar: null,
-      body: _screens[_selectedPageIndex],
+      body: selectedScreen,
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: BottomNavigationBar(
+        items: _screens.map((screen) => screen.getAppBarItem()).toList(),
         onTap: _selectPage,
         currentIndex: _selectedPageIndex,
-        items: _screens.map((screen) => screen.getAppBarItem()).toList(),
         type: BottomNavigationBarType.shifting,
         selectedItemColor: Colors.white,
         selectedIconTheme:
@@ -65,12 +67,6 @@ class _TabsScaffoldState extends State<TabsScaffold> {
         unselectedIconTheme:
             IconThemeData(opacity: 0.6, size: getUnselectedHeight(context)),
       ),
-    );
-  }
-
-  Widget getSampleScreen(String text) {
-    return Scaffold(
-      body: Center(child: Text(text)),
     );
   }
 }

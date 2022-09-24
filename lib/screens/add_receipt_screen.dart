@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:smart_receipts/screens/abstract_screen.dart';
+import 'package:smart_receipts/screens/abstract_tab_screen.dart';
 import 'package:smart_receipts/screens/playgroundScreen.dart';
 
-class AddReceiptScreen extends AbstractScreen {
+class AddReceiptScreen extends AbstractTabScreen {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -15,14 +15,6 @@ class AddReceiptScreen extends AbstractScreen {
   }
 
   @override
-  BottomNavigationBarItem getAppBarItem() {
-    return BottomNavigationBarItem(
-        backgroundColor: getColor(),
-        icon: const Icon(Icons.add),
-        label: getTitle());
-  }
-
-  @override
   String getTitle() {
     return 'Add Receipt';
   }
@@ -30,5 +22,10 @@ class AddReceiptScreen extends AbstractScreen {
   @override
   Color getColor() {
     return const Color.fromRGBO(103, 125, 220, 1);
+  }
+
+  @override
+  IconData getIcon() {
+    return Icons.add;
   }
 }

@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:smart_receipts/screens/abstract_screen.dart';
+import 'package:smart_receipts/screens/abstract_tab_screen.dart';
 
-class SettingsScreen extends AbstractScreen {
+class SettingsScreen extends AbstractTabScreen {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(child: Text(getTitle())),
     );
-  }
-
-  @override
-  BottomNavigationBarItem getAppBarItem() {
-    return BottomNavigationBarItem(
-        backgroundColor: getColor(),
-        icon: const Icon(Icons.settings),
-        label: getTitle());
   }
 
   @override
@@ -25,5 +17,10 @@ class SettingsScreen extends AbstractScreen {
   @override
   Color getColor() {
     return const Color.fromARGB(255, 59, 59, 59);
+  }
+
+  @override
+  IconData getIcon() {
+    return Icons.settings;
   }
 }
