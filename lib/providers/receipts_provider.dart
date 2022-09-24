@@ -57,6 +57,7 @@ class ReceiptsProvider with ChangeNotifier {
           uid: '$i',
           status: ReceiptStatus.active));
     }
+    generated.shuffle();
     return generated;
   }
 }

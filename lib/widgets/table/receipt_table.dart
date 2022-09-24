@@ -62,6 +62,37 @@ class _ReceiptTableState extends State<ReceiptTable> {
     setState(() => _isLoading = false);
   }
 
+  _sortData(value) {
+    setState(() => _isLoading = true);
+
+    final receiptAttribute = ReceiptAttribute.from(value);
+
+    _sortColumn = value;
+
+    // Flip the ascending property
+    _sortAscending = !_sortAscending;
+
+    // Sort
+    _sourceFiltered.sort((a, b) {
+      return b[receiptAttribute.name].compareTo(a[receiptAttribute.name]);
+    });
+
+    _sourceFiltered =
+        _sortAscending ? _sourceFiltered : _sourceFiltered.reversed.toList();
+
+    var rangeTop = _currentPerPage < _sourceFiltered.length
+        ? _currentPerPage
+        : _sourceFiltered.length;
+
+    // Update source
+    _source = _sourceFiltered.getRange(0, rangeTop).toList();
+
+    // Change the search key
+    _searchKey = value;
+
+    setState(() => _isLoading = false);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -83,16 +114,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  void _updateTableFooter({int start = 0}) {
-    setState(() {
-      var expandedLen =
-          _total - start < _currentPerPage ? _total - start : _currentPerPage;
-      _expanded = List.generate(expandedLen, (index) => false);
-      _source.clear();
-      _source = _sourceFiltered.getRange(start, start + expandedLen).toList();
-    });
   }
 
   void _updateTableFilter(
@@ -123,6 +144,16 @@ class _ReceiptTableState extends State<ReceiptTable> {
 
     // Update the source
     _source = receipts.getRange(0, upperRange).toList();
+  }
+
+  void _updateTableFooter({int start = 0}) {
+    setState(() {
+      var expandedLen =
+          _total - start < _currentPerPage ? _total - start : _currentPerPage;
+      _expanded = List.generate(expandedLen, (index) => false);
+      _source.clear();
+      _source = _sourceFiltered.getRange(start, start + expandedLen).toList();
+    });
   }
 
   @override
@@ -168,28 +199,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
           onTabRow: (data) {
             print(data);
           },
-          onSort: (value) {
-            setState(() => _isLoading = true);
-
-            setState(() {
-              _sortColumn = value;
-              _sortAscending = !_sortAscending;
-              if (_sortAscending) {
-                _sourceFiltered.sort(
-                    (a, b) => b["$_sortColumn"].compareTo(a["$_sortColumn"]));
-              } else {
-                _sourceFiltered.sort(
-                    (a, b) => a["$_sortColumn"].compareTo(b["$_sortColumn"]));
-              }
-              var rangeTop = _currentPerPage < _sourceFiltered.length
-                  ? _currentPerPage
-                  : _sourceFiltered.length;
-              // _source = _sourceFiltered.getRange(0, rangeTop).toList();
-              _searchKey = value;
-
-              _isLoading = false;
-            });
-          },
+          onSort: (value) => _sortData(value),
           expanded: _expanded,
           sortAscending: _sortAscending,
           sortColumn: _sortColumn,

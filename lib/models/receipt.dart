@@ -24,6 +24,10 @@ enum ReceiptAttribute {
   String toString() {
     return colName;
   }
+
+  static ReceiptAttribute from(String name) {
+    return ReceiptAttribute.values.firstWhere((e) => e.name == name);
+  }
 }
 
 class Receipt {
