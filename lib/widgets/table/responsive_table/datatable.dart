@@ -2,6 +2,7 @@ import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_receipts/models/receipt.dart';
+import 'package:smart_receipts/widgets/table/receipt_status_label.dart';
 import 'datatable_header.dart';
 
 class ResponsiveDatatable extends StatefulWidget {
@@ -214,13 +215,24 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
               const SizedBox(
                 width: 2,
               ),
-              Icon(Icons.location_on),
+              const Icon(Icons.location_on),
               Text(data[ReceiptAttribute.store_location.name]),
             ],
           ),
           subtitle: Text(DateFormat.yMMMMd().format(
               DateTime.parse(data[ReceiptAttribute.purchase_date.name]))),
-          trailing: Text('${data[ReceiptAttribute.amount.name].toString()}\$'),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text('${data[ReceiptAttribute.amount.name].toString()}\$'),
+              const SizedBox(height: 2),
+              ReceiptStatusLabel(
+                  color: widget.prefferedColor,
+                  status:
+                      ReceiptStatus.from(data[ReceiptAttribute.status.name]))
+            ],
+          ),
           textColor: widget.prefferedColor,
           iconColor: widget.prefferedColor,
           children: [

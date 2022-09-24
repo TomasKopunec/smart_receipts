@@ -3,7 +3,12 @@ import 'package:smart_receipts/models/json_attribute.dart';
 enum ReceiptStatus {
   active,
   expired,
+  redeemed,
   invalid;
+
+  static ReceiptStatus from(String name) {
+    return ReceiptStatus.values.firstWhere((e) => e.name == name.toLowerCase());
+  }
 }
 
 enum ReceiptAttribute {
@@ -26,7 +31,8 @@ enum ReceiptAttribute {
   }
 
   static ReceiptAttribute from(String name) {
-    return ReceiptAttribute.values.firstWhere((e) => e.name == name);
+    return ReceiptAttribute.values
+        .firstWhere((e) => e.name == name.toLowerCase());
   }
 }
 
