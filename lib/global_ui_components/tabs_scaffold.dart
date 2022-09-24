@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
-import 'package:smart_receipts/screens/abstract_tab_screen.dart';
-import 'package:smart_receipts/screens/add_receipt_screen.dart';
-import 'package:smart_receipts/screens/all_receipts_screen.dart';
-import 'package:smart_receipts/screens/dashboard_screen.dart';
-import 'package:smart_receipts/screens/groups_screen.dart';
-import 'package:smart_receipts/screens/settings_screen.dart';
+
+import '../screens/tabs/abstract_tab_screen.dart';
+import '../screens/tabs/add_receipt_screen.dart';
+import '../screens/tabs/all_receipts_screen.dart';
+import '../screens/tabs/dashboard_screen.dart';
+import '../screens/tabs/groups_screen.dart';
+import '../screens/tabs/settings_screen.dart';
 
 class TabsScaffold extends StatefulWidget {
   static const route = '/';

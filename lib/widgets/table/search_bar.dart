@@ -26,7 +26,7 @@ class _SearchBarState extends State<SearchBar>
     with SingleTickerProviderStateMixin {
   bool _isForward = true;
 
-  final FocusNode _inputFocusNode = FocusNode();
+  late FocusNode _inputFocusNode;
 
   final textController = TextEditingController();
 
@@ -37,6 +37,8 @@ class _SearchBarState extends State<SearchBar>
   @override
   void initState() {
     super.initState();
+
+    _inputFocusNode = FocusNode();
 
     // Animation
     widthAnimationController =
@@ -90,7 +92,7 @@ class _SearchBarState extends State<SearchBar>
                     child: IconButton(
                       constraints: const BoxConstraints(),
                       padding: const EdgeInsets.only(left: 10, right: 4),
-                      icon: Icon(Icons.clear),
+                      icon: const Icon(Icons.clear),
                       onPressed: () {
                         textController.clear();
                       },
@@ -154,7 +156,10 @@ class _SearchBarState extends State<SearchBar>
             ),
             IconButton(
                 icon: !_isForward ? selectedIcon : unselectedIcon,
-                onPressed: _trigger)
+                onPressed: (() {
+                  _trigger();
+                  widget.filter(textController.text);
+                }))
           ],
         ),
       ],

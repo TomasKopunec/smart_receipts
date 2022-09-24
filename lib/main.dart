@@ -24,7 +24,6 @@ class Main extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        // dividerColor: Colors.amber),
         home: TabsScaffold(), // PlaygroundScreen(),
         routes: getRoutes(),
       ),

@@ -18,8 +18,8 @@ class ReceiptsProvider with ChangeNotifier {
   }
 
   List<Map<String, dynamic>> getFilteredReceipts(
-      String searchKey, String? value) {
-    if (value == null || value.isEmpty) {
+      String searchKey, String value) {
+    if (value.isEmpty) {
       return receiptsAsJson;
     }
 

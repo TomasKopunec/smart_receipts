@@ -53,11 +53,10 @@ class _ReceiptTableState extends State<ReceiptTable> {
   _filterData(value) {
     // Start loading
     setState(() => _isLoading = true);
-    _filterValue = value;
 
-    // Update filtered receipts
-    _sourceFiltered = Provider.of<ReceiptsProvider>(context, listen: false)
-        .getFilteredReceipts(_searchKey!, _filterValue);
+    final data = Provider.of<ReceiptsProvider>(context, listen: false)
+        .getFilteredReceipts(_searchKey!, value);
+    _updateTableFilter(value, data);
 
     // Finish loading
     setState(() => _isLoading = false);
@@ -96,35 +95,45 @@ class _ReceiptTableState extends State<ReceiptTable> {
     });
   }
 
-  void _updateTable(List<Map<String, dynamic>>? receipts) {
-    // Ignore other rebuild if the receipts passed are false
-    if (receipts == null || receipts.isEmpty) {
-      return;
-    }
+  void _updateTableFilter(
+      String searchValue, List<Map<String, dynamic>> newSource) {
+    _filterValue = searchValue;
 
-    // Update if we are filtering
-    if (_filterValue.isEmpty) {
-      _sourceFiltered = receipts;
+    _total = newSource.length;
+    _sourceFiltered = newSource;
 
-      final upperRange =
-          receipts.length < _currentPerPage ? receipts.length : _currentPerPage;
+    // Get the upper range
+    final upperRange = _sourceFiltered.length < _currentPerPage
+        ? _sourceFiltered.length
+        : _currentPerPage;
 
-      _source = _sourceFiltered.getRange(0, upperRange).toList();
-    } else {
-      var rangeTop = _total < _currentPerPage ? _total : _currentPerPage;
-      _expanded = List.generate(rangeTop, (index) => false);
-    }
+    _source = _sourceFiltered.getRange(0, upperRange).toList();
+  }
 
-    _total = _sourceFiltered.length;
+  void _updateTable({required List<Map<String, dynamic>> receipts}) {
+    // Update the total
+    _total = receipts.length;
 
-    // setState(() => _isLoading = false);
+    // Get the upper range
+    final upperRange =
+        receipts.length < _currentPerPage ? receipts.length : _currentPerPage;
+
+    // Update the filtered source
+    _sourceFiltered = receipts;
+
+    // Update the source
+    _source = receipts.getRange(0, upperRange).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     // Add listener that rebuilds the list whenever the receipts get changed, resetting all filters and everything
     final provider = Provider.of<ReceiptsProvider>(context, listen: true);
-    provider.addListener(() => _updateTable(provider.receiptsAsJson));
+    provider.addListener(() {
+      // Refresh the table and clear the filter
+      _filterValue = '';
+      _updateTable(receipts: provider.receiptsAsJson);
+    });
 
     return DatatableWrapper(
         color: widget.headerColor,
