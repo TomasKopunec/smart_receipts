@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/widgets/table/receipt_status_label.dart';
+import 'package:smart_receipts/widgets/table/responsive_table/data_entry_widget.dart';
 import 'datatable_header.dart';
 
 class ResponsiveDatatable extends StatefulWidget {
-  final bool showSelect;
   final List<DatatableHeader> headers;
   final List<Map<String, dynamic>>? source;
   final List<Map<String, dynamic>>? selecteds;
+  final int total;
   final Widget? title;
   final List<Widget>? actions;
   final List<Widget>? footers;
@@ -37,13 +38,13 @@ class ResponsiveDatatable extends StatefulWidget {
 
   const ResponsiveDatatable(
       {Key? key,
-      this.showSelect = false,
       this.onSelectAll,
       this.onSelect,
       this.onTabRow,
       this.onSort,
       this.headers = const [],
       this.source,
+      required this.total,
       this.selecteds,
       this.title,
       this.actions,
@@ -73,14 +74,16 @@ class ResponsiveDatatable extends StatefulWidget {
 
 class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   Widget mobileHeader() {
+    final bool areAllSelected = widget.total == widget.selecteds!.length &&
+        widget.source != null &&
+        widget.source!.isNotEmpty;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Checkbox(
           activeColor: widget.prefferedColor,
-          value: widget.selecteds!.length == widget.source!.length &&
-              widget.source != null &&
-              widget.source!.isNotEmpty,
+          value: areAllSelected,
           onChanged: (value) {
             if (widget.onSelectAll != null) {
               widget.onSelectAll!(value);
@@ -194,94 +197,20 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
     final List<Widget> list = [];
 
     for (var i = 0; i < widget.source!.length; i++) {
-      final Map<String, dynamic> data = widget.source!.elementAt(i);
-      list.add(Container(
-        clipBehavior: Clip.antiAlias,
-        margin: const EdgeInsets.only(bottom: 8, left: 6, right: 6),
-        decoration: _decoration,
-        child: ExpansionTile(
-          backgroundColor: widget.prefferedColor.withOpacity(0.1),
-          childrenPadding:
-              const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          key: ValueKey(data['uid']),
-          onExpansionChanged: (value) {
-            widget.onTabRow?.call(data);
-          },
-          tilePadding: const EdgeInsets.only(left: 10, right: 20),
-          controlAffinity: ListTileControlAffinity.leading,
-          title: Row(
-            children: [
-              Text(data[ReceiptAttribute.store_name.name]),
-              const SizedBox(
-                width: 2,
-              ),
-              const Icon(Icons.location_on),
-              Text(data[ReceiptAttribute.store_location.name]),
-            ],
-          ),
-          subtitle: Text(DateFormat.yMMMMd().format(
-              DateTime.parse(data[ReceiptAttribute.purchase_date.name]))),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text('${data[ReceiptAttribute.amount.name].toString()}\$'),
-              const SizedBox(height: 2),
-              ReceiptStatusLabel(
-                  color: widget.prefferedColor,
-                  status:
-                      ReceiptStatus.from(data[ReceiptAttribute.status.name]))
-            ],
-          ),
-          textColor: widget.prefferedColor,
-          iconColor: widget.prefferedColor,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (widget.commonMobileView && widget.dropContainer != null)
-                  widget.dropContainer!(data),
-                if (!widget.commonMobileView)
-                  ...widget.headers
-                      .where((header) => header.show == true)
-                      .toList()
-                      .map((header) => getEntry(header, data))
-                      .toList(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // const Spacer(),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.delete),
-                        color: widget.prefferedColor,
-                      ),
-                      ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: widget.prefferedColor,
-                          ),
-                          onPressed: () {},
-                          icon: const Icon(Icons.receipt),
-                          label: const Text("Show Receipt")),
-                      if (widget.showSelect && widget.selecteds != null)
-                        Checkbox(
-                            activeColor: widget.prefferedColor,
-                            value: widget.selecteds!.contains(data),
-                            onChanged: (value) {
-                              if (widget.onSelect != null) {
-                                widget.onSelect!(value, data);
-                              }
-                            }),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ));
+      final data = widget.source!.elementAt(i);
+
+      list.add(DataEntryWidget(
+          selected: widget.selecteds!.contains(data),
+          color: widget.prefferedColor,
+          data: data,
+          headers: widget.headers,
+          commonMobileView: widget.commonMobileView,
+          dropContainer: widget.dropContainer,
+          onSelected: (value) {
+            if (widget.onSelect != null) {
+              widget.onSelect!(value, data);
+            }
+          }));
     }
     return list;
   }
@@ -353,7 +282,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (widget.showSelect && widget.selecteds != null)
+          if (widget.selecteds != null)
             Checkbox(
                 value: widget.selecteds!.length == widget.source!.length &&
                     widget.source != null &&
@@ -417,14 +346,14 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
               });
             },
             child: Container(
-              padding: EdgeInsets.all(widget.showSelect ? 0 : 11),
+              padding: const EdgeInsets.all(0),
 
               /// TODO:
               decoration: _decoration,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (widget.showSelect && widget.selecteds != null)
+                  if (widget.selecteds != null)
                     Row(
                       children: [
                         Checkbox(
@@ -501,8 +430,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
               if (widget.autoHeight)
                 Column(
                   children: [
-                    if (widget.showSelect && widget.selecteds != null)
-                      mobileHeader(),
+                    if (widget.selecteds != null) mobileHeader(),
                     if (widget.isLoading) loadingIndicator,
                     ...mobileList(),
                   ],
@@ -512,8 +440,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                   child: ListView(
                     /// itemCount: source.length,
                     children: [
-                      if (widget.showSelect && widget.selecteds != null)
-                        mobileHeader(),
+                      if (widget.selecteds != null) mobileHeader(),
                       if (widget.isLoading) loadingIndicator,
 
                       /// mobileList

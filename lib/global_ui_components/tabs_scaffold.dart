@@ -33,6 +33,8 @@ class _TabsScaffoldState extends State<TabsScaffold> {
 
   void _selectPage(int index) {
     setState(() {
+      _screens[_selectedPageIndex];
+
       _selectedPageIndex = index;
     });
   }

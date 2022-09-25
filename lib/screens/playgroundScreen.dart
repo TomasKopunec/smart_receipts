@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_receipts/screens/returnable_screen.dart';
+import 'package:smart_receipts/widgets/table/animated/animated_opacity_container.dart';
+import 'package:smart_receipts/widgets/table/animated/animated_translation_container.dart';
 
 class PlaygroundScreen extends StatelessWidget {
   static const route = '/playground';
@@ -15,33 +17,24 @@ class PlaygroundScreen extends StatelessWidget {
   }
 
   Widget getReceiptView() {
-    return Card(
-      elevation: 4,
-      child: ExpansionTile(
-        // trailing: Text("Trailing"),
-        leading: Text("Leading"),
-        title: Text("Title"),
-        subtitle: Text("Subtitle"),
-        children: [
-          ListTile(title: Text("Title 1")),
-          ListTile(title: Text("Title 2")),
-          ListTile(title: Text("Title 3")),
-        ],
-      ),
-    );
+    final Duration duration = Duration(seconds: 1);
 
-    /*return Card(
-      child: Padding(
-        padding: EdgeInsets.only(top: 36.0, left: 6.0, right: 6.0, bottom: 6.0),
+    return AnimatedOpacityContainer(
+      duration: duration,
+      child: Card(
+        elevation: 4,
         child: ExpansionTile(
-          title: Text('Birth of Universe'),
+          // trailing: Text("Trailing"),
+          leading: Text("Leading"),
+          title: Text("Title"),
+          subtitle: Text("Subtitle"),
           children: [
-            Text('Big Bang'),
-            Text('Birth of the Sun'),
-            Text('Earth is Born'),
+            ListTile(title: Text("Title 1")),
+            ListTile(title: Text("Title 2")),
+            ListTile(title: Text("Title 3")),
           ],
         ),
       ),
-    ); */
+    );
   }
 }

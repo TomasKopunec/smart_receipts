@@ -23,6 +23,7 @@ class Main extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
+          // dividerColor: Colors.transparent,
         ),
         home: TabsScaffold(), // PlaygroundScreen(),
         routes: getRoutes(),

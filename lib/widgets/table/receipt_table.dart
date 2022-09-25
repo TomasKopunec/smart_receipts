@@ -172,6 +172,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
           prefferedColor: widget.headerColor,
           reponseScreenSizes: const [ScreenSize.xs],
           title: _getTitle(),
+          total: _total,
           actions: [
             Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 8, right: 4),
@@ -186,19 +187,18 @@ class _ReceiptTableState extends State<ReceiptTable> {
           headers: _headers,
           source: _source,
           selecteds: _selecteds,
-          showSelect: true,
           autoHeight: true,
-          onChangedRow: (value, header) {
-            /// print(value);
-            /// print(header);
-          },
-          onSubmittedRow: (value, header) {
-            /// print(value);
-            /// print(header);
-          },
-          onTabRow: (data) {
-            print(data);
-          },
+          // onChangedRow: (value, header) {
+          //   print(value);
+          //   print(header);
+          // },
+          // onSubmittedRow: (value, header) {
+          //   print(value);
+          //   print(header);
+          // },
+          // onTabRow: (data) {
+          //   print(data);
+          // },
           onSort: (value) => _sortData(value),
           expanded: _expanded,
           sortAscending: _sortAscending,
@@ -214,10 +214,15 @@ class _ReceiptTableState extends State<ReceiptTable> {
           },
           onSelectAll: (value) {
             if (value!) {
-              setState(() => _selecteds =
-                  _sourceFiltered.map((entry) => entry).toList().cast());
+              setState(() {
+                _selecteds = [..._sourceFiltered];
+                print('Selecting all receipts: ${_selecteds.length}');
+              });
             } else {
-              setState(() => _selecteds.clear());
+              setState(() {
+                _selecteds.clear();
+                print('Un-selecting all receipts: ${_selecteds.length}');
+              });
             }
           },
           footers: _getFooters(),
