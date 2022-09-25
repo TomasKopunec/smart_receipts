@@ -92,40 +92,40 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
         ),
         PopupMenuButton(
           padding: EdgeInsets.zero,
-          // offset: Offset(-10, 0),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           tooltip: "SORT BY",
           initialValue: widget.sortColumn,
           itemBuilder: (_) {
             List<PopupMenuEntry> widgets = [];
-
             for (final header in widget.headers) {
               if (header.show == true && header.sortable == true) {
                 widgets.add(PopupMenuItem(
-                  padding: const EdgeInsets.only(
-                      left: 8, top: 4, bottom: 4, right: 8),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
                   height: 0,
                   value: header.value,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (widget.sortColumn != null &&
-                          widget.sortColumn == header.value)
-                        widget.sortAscending!
-                            ? Icon(Icons.arrow_downward,
-                                color: widget.prefferedColor)
-                            : Icon(Icons.arrow_upward,
-                                color: widget.prefferedColor),
-                      const SizedBox(width: 10),
-                      Text(
-                        header.text,
-                        textAlign: header.textAlign,
-                      ),
-                    ],
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if (widget.sortColumn != null &&
+                            widget.sortColumn == header.value)
+                          widget.sortAscending!
+                              ? Icon(Icons.arrow_downward,
+                                  color: widget.prefferedColor)
+                              : Icon(Icons.arrow_upward,
+                                  color: widget.prefferedColor),
+                        // const SizedBox(width: 10),
+                        Text(
+                          header.text,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
                 ));
-                widgets.add(PopupMenuDivider());
+                widgets.add(const PopupMenuDivider());
               }
             }
 

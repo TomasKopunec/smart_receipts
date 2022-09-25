@@ -6,10 +6,12 @@ import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/widgets/table/responsive_table/datatable_wrapper.dart';
+import 'package:smart_receipts/widgets/table/search_bar.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 import 'responsive_table/datatable_header.dart';
 import 'responsive_table/datatable.dart';
-import 'search_bar.dart';
+import 'search_bar_old_animated.dart';
 
 class ReceiptTable extends StatefulWidget {
   final Color headerColor;
@@ -171,18 +173,53 @@ class _ReceiptTableState extends State<ReceiptTable> {
         table: ResponsiveDatatable(
           prefferedColor: widget.headerColor,
           reponseScreenSizes: const [ScreenSize.xs],
-          title: _getTitle(),
+          title: null,
           total: _total,
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8, right: 4),
-              child: SearchBar(
-                  searchKey: _searchKey!,
-                  width: SizeHelper.getScreenWidth(context) * 0.5,
-                  color: widget.headerColor,
-                  filter: _filterData,
-                  searchIcon: Icons.search),
-            )
+            /*SearchBar(
+                searchKey: _searchKey!,
+                width: SizeHelper.getScreenWidth(context) * 0.5,
+                color: widget.headerColor,
+                filter: _filterData, // Function
+                searchIcon: Icons.search) */
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                child: Column(
+                  children: [
+                    Text('All receipts'),
+                    SizedBox(height: 10),
+                    SearchBar(color: widget.headerColor),
+                    SizedBox(height: 10),
+                    ToggleSwitch(
+                      minWidth: SizeHelper.getScreenWidth(context) - 16,
+                      dividerMargin: 0,
+                      animationDuration: 500,
+                      initialLabelIndex: 0,
+                      cornerRadius: 20.0,
+                      dividerColor: Colors.transparent,
+                      activeFgColor: Colors.white,
+                      inactiveBgColor: Colors.grey,
+                      inactiveFgColor: Colors.white,
+                      totalSwitches: 2,
+                      labels: const ['ALL', 'STARRED'],
+                      icons: const [Icons.search, Icons.star],
+                      // iconSize: 30.0,
+                      activeBgColors: [
+                        [widget.headerColor, widget.headerColor.withAlpha(120)],
+                        [widget.headerColor, widget.headerColor.withAlpha(120)]
+                      ],
+                      animate: true,
+                      curve: Curves.fastLinearToSlowEaseIn,
+                      onToggle: (index) {
+                        print('switched to: $index');
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+            // Expanded(child: SearchBar(color: widget.headerColor)),
           ],
           headers: _headers,
           source: _source,
