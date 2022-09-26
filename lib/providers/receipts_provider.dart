@@ -18,13 +18,13 @@ class ReceiptsProvider with ChangeNotifier {
   }
 
   List<Map<String, dynamic>> getFilteredReceipts(
-      String searchKey, String value) {
+      ReceiptAttribute searchKey, String value) {
     if (value.isEmpty) {
       return receiptsAsJson;
     }
 
     return receiptsAsJson
-        .where((receipt) => receipt[searchKey]
+        .where((receipt) => receipt[searchKey.name]
             .toString()
             .toLowerCase()
             .contains(value.toString().toLowerCase()))

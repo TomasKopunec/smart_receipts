@@ -25,7 +25,7 @@ class ResponsiveDatatable extends StatefulWidget {
   final bool hideUnderline;
   final bool commonMobileView;
   final bool isExpandRows;
-  final List<bool>? expanded;
+  final List<bool> expanded;
   final Widget Function(Map<String, dynamic> value)? dropContainer;
   final Function(Map<String, dynamic> value, DatatableHeader header)?
       onChangedRow;
@@ -56,7 +56,7 @@ class ResponsiveDatatable extends StatefulWidget {
       this.hideUnderline = true,
       this.commonMobileView = false,
       this.isExpandRows = true,
-      this.expanded,
+      required this.expanded,
       this.dropContainer,
       this.onChangedRow,
       this.onSubmittedRow,
@@ -73,11 +73,13 @@ class ResponsiveDatatable extends StatefulWidget {
 }
 
 class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
-  Widget mobileHeader() {
-    final bool areAllSelected = widget.total == widget.selecteds!.length &&
+  bool get areAllSelected {
+    return widget.total == widget.selecteds!.length &&
         widget.source != null &&
         widget.source!.isNotEmpty;
+  }
 
+  Widget mobileHeader() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -284,9 +286,8 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
         children: [
           if (widget.selecteds != null)
             Checkbox(
-                value: widget.selecteds!.length == widget.source!.length &&
-                    widget.source != null &&
-                    widget.source!.isNotEmpty,
+                activeColor: widget.prefferedColor,
+                value: areAllSelected,
                 onChanged: (value) {
                   if (widget.onSelectAll != null) widget.onSelectAll!(value);
                 }),
@@ -357,6 +358,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                     Row(
                       children: [
                         Checkbox(
+                            activeColor: widget.prefferedColor,
                             value: widget.selecteds!.contains(data),
                             onChanged: (value) {
                               if (widget.onSelect != null) {

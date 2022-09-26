@@ -29,8 +29,8 @@ class _ReceiptTableState extends State<ReceiptTable> {
 
   int _total = 100;
   int _currentPerPage = 10;
-  List<bool>? _expanded;
-  String? _searchKey = "uid";
+  late List<bool> _expanded;
+  ReceiptAttribute _searchKey = ReceiptAttribute.uid;
 
   int _currentPage = 1;
 
@@ -52,14 +52,15 @@ class _ReceiptTableState extends State<ReceiptTable> {
 
   _filterData(value) {
     // Start loading
-    setState(() => _isLoading = true);
+    // setState(() => _isLoading = true);
 
     final data = Provider.of<ReceiptsProvider>(context, listen: false)
         .getFilteredReceipts(_searchKey!, value);
     _updateTableFilter(value, data);
 
+    setState(() {});
     // Finish loading
-    setState(() => _isLoading = false);
+    // setState(() => _isLoading = false);
   }
 
   _sortData(value) {
@@ -88,7 +89,8 @@ class _ReceiptTableState extends State<ReceiptTable> {
     _source = _sourceFiltered.getRange(0, rangeTop).toList();
 
     // Change the search key
-    _searchKey = value;
+    _searchKey = receiptAttribute;
+    // _searchKey = receiptAttribute.toString();
 
     setState(() => _isLoading = false);
   }
@@ -109,6 +111,8 @@ class _ReceiptTableState extends State<ReceiptTable> {
         .toList();
 
     _fetchData();
+
+    _updateExpanded();
   }
 
   @override
@@ -129,6 +133,9 @@ class _ReceiptTableState extends State<ReceiptTable> {
         : _currentPerPage;
 
     _source = _sourceFiltered.getRange(0, upperRange).toList();
+
+    // Expanded
+    _updateExpanded();
   }
 
   void _updateTable({required List<Map<String, dynamic>> receipts}) {
@@ -144,13 +151,21 @@ class _ReceiptTableState extends State<ReceiptTable> {
 
     // Update the source
     _source = receipts.getRange(0, upperRange).toList();
+
+    // Update expanded
+    _updateExpanded();
+  }
+
+  int _updateExpanded({int start = 0}) {
+    var expandedLen =
+        _total - start < _currentPerPage ? _total - start : _currentPerPage;
+    _expanded = List.generate(expandedLen, (index) => false);
+    return expandedLen;
   }
 
   void _updateTableFooter({int start = 0}) {
     setState(() {
-      var expandedLen =
-          _total - start < _currentPerPage ? _total - start : _currentPerPage;
-      _expanded = List.generate(expandedLen, (index) => false);
+      final int expandedLen = _updateExpanded(start: start);
       _source.clear();
       _source = _sourceFiltered.getRange(start, start + expandedLen).toList();
     });
@@ -180,14 +195,19 @@ class _ReceiptTableState extends State<ReceiptTable> {
                 color: widget.headerColor,
                 filter: _filterData, // Function
                 searchIcon: Icons.search) */
+
             Expanded(
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 child: Column(
                   children: [
-                    Text('All receipts'),
+                    const Text('All receipts'),
                     const SizedBox(height: 10),
-                    SearchBar(color: widget.headerColor),
+                    SearchBar(
+                      searchKey: _searchKey.toString(),
+                      color: widget.headerColor,
+                      filter: _filterData,
+                    ),
                     const SizedBox(height: 10),
                     AnimatedToggleSwitch(
                       width: SizeHelper.getScreenWidth(context),
