@@ -5,13 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
+import 'package:smart_receipts/widgets/table/animated/animated_toggle_switch.dart';
 import 'package:smart_receipts/widgets/table/responsive_table/datatable_wrapper.dart';
 import 'package:smart_receipts/widgets/table/search_bar.dart';
-import 'package:toggle_switch/toggle_switch.dart';
-
 import 'responsive_table/datatable_header.dart';
 import 'responsive_table/datatable.dart';
-import 'search_bar_old_animated.dart';
 
 class ReceiptTable extends StatefulWidget {
   final Color headerColor;
@@ -188,32 +186,19 @@ class _ReceiptTableState extends State<ReceiptTable> {
                 child: Column(
                   children: [
                     Text('All receipts'),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     SearchBar(color: widget.headerColor),
-                    SizedBox(height: 10),
-                    ToggleSwitch(
-                      minWidth: SizeHelper.getScreenWidth(context) - 16,
-                      dividerMargin: 0,
-                      animationDuration: 500,
-                      initialLabelIndex: 0,
-                      cornerRadius: 20.0,
-                      dividerColor: Colors.transparent,
-                      activeFgColor: Colors.white,
-                      inactiveBgColor: Colors.grey,
-                      inactiveFgColor: Colors.white,
-                      totalSwitches: 2,
-                      labels: const ['ALL', 'STARRED'],
-                      icons: const [Icons.search, Icons.star],
-                      // iconSize: 30.0,
-                      activeBgColors: [
-                        [widget.headerColor, widget.headerColor.withAlpha(120)],
-                        [widget.headerColor, widget.headerColor.withAlpha(120)]
-                      ],
-                      animate: true,
-                      curve: Curves.fastLinearToSlowEaseIn,
-                      onToggle: (index) {
-                        print('switched to: $index');
+                    const SizedBox(height: 10),
+                    AnimatedToggleSwitch(
+                      width: SizeHelper.getScreenWidth(context),
+                      animDuration: const Duration(milliseconds: 750),
+                      values: const ['ALL', 'STARRED'],
+                      onToggleCallback: (value) {
+                        print(value);
                       },
+                      buttonColor: widget.headerColor,
+                      backgroundColor: Colors.black.withOpacity(0.1),
+                      textColor: Colors.white,
                     )
                   ],
                 ),
