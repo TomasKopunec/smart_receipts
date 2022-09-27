@@ -5,9 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
-import 'package:smart_receipts/widgets/table/animated/animated_toggle_switch.dart';
+import 'package:smart_receipts/widgets/no_data_found_widget.dart';
 import 'package:smart_receipts/widgets/table/responsive_table/datatable_wrapper.dart';
-import 'package:smart_receipts/widgets/table/search_bar.dart';
+import '../animated/animated_toggle_switch.dart';
+import '../search_bar.dart';
 import 'responsive_table/datatable_header.dart';
 import 'responsive_table/datatable.dart';
 
@@ -181,21 +182,26 @@ class _ReceiptTableState extends State<ReceiptTable> {
       _updateTable(receipts: provider.receiptsAsJson);
     });
 
+    final title = (_filterValue.isNotEmpty && _total == 0)
+        ? 'Sorry, we couldn\'t find this item in any of your receipts.'
+        : 'Sorry, we couldn\'t find any receipts.';
+
+    final subtitle = (_filterValue.isNotEmpty && _total == 0)
+        ? 'Please check the spelling or search for another receipt.'
+        : 'Please check your internet connection or add your first receipt.';
+
     return DatatableWrapper(
         color: widget.headerColor,
         table: ResponsiveDatatable(
+          noDataWidget: NoDataFoundWidget(
+              height: SizeHelper.getScreenHeight(context) * 0.5,
+              title: title,
+              subtitle: subtitle),
           prefferedColor: widget.headerColor,
           reponseScreenSizes: const [ScreenSize.xs],
           title: null,
           total: _total,
           actions: [
-            /*SearchBar(
-                searchKey: _searchKey!,
-                width: SizeHelper.getScreenWidth(context) * 0.5,
-                color: widget.headerColor,
-                filter: _filterData, // Function
-                searchIcon: Icons.search) */
-
             Expanded(
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),

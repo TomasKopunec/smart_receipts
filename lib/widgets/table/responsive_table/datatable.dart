@@ -7,6 +7,7 @@ import 'package:smart_receipts/widgets/table/responsive_table/data_entry_widget.
 import 'datatable_header.dart';
 
 class ResponsiveDatatable extends StatefulWidget {
+  final Widget noDataWidget;
   final List<DatatableHeader> headers;
   final List<Map<String, dynamic>>? source;
   final List<Map<String, dynamic>>? selecteds;
@@ -38,6 +39,7 @@ class ResponsiveDatatable extends StatefulWidget {
 
   const ResponsiveDatatable(
       {Key? key,
+      required this.noDataWidget,
       this.onSelectAll,
       this.onSelect,
       this.onTabRow,
@@ -132,38 +134,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
             }
 
             return widgets;
-
-            /*
-            return widget.headers
-                .where(
-                    (header) => header.show == true && header.sortable == true)
-                .toList()
-                .map(
-              (header) {
-                return PopupMenuItem(
-                  value: header.value,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (widget.sortColumn != null &&
-                          widget.sortColumn == header.value)
-                        widget.sortAscending!
-                            ? Icon(Icons.arrow_downward,
-                                color: widget.prefferedColor)
-                            : Icon(Icons.arrow_upward,
-                                color: widget.prefferedColor),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          header.text,
-                          textAlign: header.textAlign,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ).toList();*/
           },
           onSelected: (dynamic value) {
             if (widget.onSort != null) widget.onSort!(value);
@@ -183,6 +153,10 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   }
 
   List<Widget> mobileList() {
+    if (widget.total == 0) {
+      return [widget.noDataWidget];
+    }
+
     const BorderRadius _radius = BorderRadius.all(Radius.circular(8));
 
     final _decoration = BoxDecoration(
@@ -330,6 +304,10 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   }
 
   List<Widget> desktopList() {
+    if (widget.total == 0) {
+      return [widget.noDataWidget];
+    }
+
     final _decoration = BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)));
     //  final _rowDecoration = widget.rowDecoration ?? _decoration;
@@ -343,7 +321,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
             onTap: () {
               widget.onTabRow?.call(data);
               setState(() {
-                widget.expanded![index] = !widget.expanded![index];
+                widget.expanded[index] = !widget.expanded[index];
               });
             },
             child: Container(
@@ -411,13 +389,14 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
         /// for small screen
         Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               /// title and actions
               if (widget.title != null || widget.actions != null)
                 Container(
                   // padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
+                      color: Colors.red.shade300,
                       border:
                           Border(bottom: BorderSide(color: Colors.grey[300]!))),
                   child: Row(
@@ -430,17 +409,20 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                 ),
 
               if (widget.autoHeight)
-                Column(
-                  children: [
-                    if (widget.selecteds != null) mobileHeader(),
-                    if (widget.isLoading) loadingIndicator,
-                    ...mobileList(),
-                  ],
+                Container(
+                  color: Colors.blue.shade300,
+                  child: Column(
+                    children: [
+                      if (widget.selecteds != null) mobileHeader(),
+                      if (widget.isLoading) loadingIndicator,
+                      ...mobileList(),
+                    ],
+                  ),
                 ),
+
               if (!widget.autoHeight)
                 Expanded(
-                  child: ListView(
-                    /// itemCount: source.length,
+                  child: Column(
                     children: [
                       if (widget.selecteds != null) mobileHeader(),
                       if (widget.isLoading) loadingIndicator,
@@ -453,12 +435,16 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
               /// footer
               if (widget.footers != null)
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [...widget.footers!],
+                Container(
+                  color: Colors.green.shade300,
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [...widget.footers!],
+                  ),
                 )
             ],
           )
+
         /**
           * for large screen
           */
