@@ -1,10 +1,12 @@
 import 'package:adaptivex/adaptivex.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
+import 'package:smart_receipts/widgets/animated_dropdown_button.dart';
 import 'package:smart_receipts/widgets/no_data_found_widget.dart';
 import 'package:smart_receipts/widgets/table/responsive_table/datatable_wrapper.dart';
 import '../animated/animated_toggle_switch.dart';
@@ -194,6 +196,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
         color: widget.headerColor,
         table: ResponsiveDatatable(
           noDataWidget: NoDataFoundWidget(
+              color: widget.headerColor,
               height: SizeHelper.getScreenHeight(context) * 0.5,
               title: title,
               subtitle: subtitle),
@@ -225,7 +228,41 @@ class _ReceiptTableState extends State<ReceiptTable> {
                       buttonColor: widget.headerColor,
                       backgroundColor: Colors.black.withOpacity(0.1),
                       textColor: Colors.white,
-                    )
+                    ),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(
+                            Icons.arrow_drop_up,
+                            color: widget.headerColor,
+                            size: SizeHelper.getFontSize(context,
+                                    size: FontSize.regular) *
+                                3,
+                          ),
+                          Text(
+                            'SORT BY:',
+                            style: TextStyle(
+                                color: widget.headerColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: SizeHelper.getFontSize(context,
+                                    size: FontSize.regular)),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Expanded(
+                            child: AnimatedDropdownButton(
+                                color: widget.headerColor,
+                                items: ReceiptAttribute.values
+                                    .map((e) => e.toString())
+                                    .toList(),
+                                selected: _searchKey.toString()),
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -275,23 +312,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
           },
           footers: _getFooters(),
         ));
-  }
-
-  /// Header
-  Widget _getTitle() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 4),
-      child: TextButton.icon(
-        onPressed: () => {
-          // Do something
-        },
-        icon: _getIcon(Icons.add, true),
-        label: Text(
-          "Add receipt",
-          style: TextStyle(color: widget.headerColor),
-        ),
-      ),
-    );
   }
 
   /// Footer

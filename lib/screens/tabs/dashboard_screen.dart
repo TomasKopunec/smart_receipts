@@ -9,6 +9,7 @@ class DashboardScreen extends AbstractTabScreen {
   Widget build(BuildContext context) {
     return Center(
         child: NoDataFoundWidget(
+      color: getColor(),
       title: 'Sorry, we couldn\'t find this item in any of your receipts.',
       subtitle:
           'Please check the spelling or search for another item. askljdfkasjlkdsajlkadsjads',

@@ -396,7 +396,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                 Container(
                   // padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                      color: Colors.red.shade300,
                       border:
                           Border(bottom: BorderSide(color: Colors.grey[300]!))),
                   child: Row(
@@ -410,7 +409,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
               if (widget.autoHeight)
                 Container(
-                  color: Colors.blue.shade300,
                   child: Column(
                     children: [
                       if (widget.selecteds != null) mobileHeader(),
@@ -436,7 +434,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
               /// footer
               if (widget.footers != null)
                 Container(
-                  color: Colors.green.shade300,
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [...widget.footers!],
