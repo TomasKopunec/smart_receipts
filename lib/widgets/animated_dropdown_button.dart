@@ -4,7 +4,7 @@ import 'package:smart_receipts/models/receipt.dart';
 enum SortStatus { asc, desc }
 
 class AnimatedDropdownButton extends StatefulWidget {
-  final Function(String) sortBy;
+  final Function(String, SortStatus) sortBy;
   final double width;
   final Color color;
   final List<ReceiptAttribute> items;
@@ -87,7 +87,7 @@ class _AnimatedDropdownButtonState extends State<AnimatedDropdownButton> {
               }
             });
 
-            widget.sortBy(_selected.name);
+            widget.sortBy(_selected.name, _sortStatus);
           },
           child: SizedBox(
             width: widget.width,

@@ -40,8 +40,9 @@ class _ReceiptTableState extends State<ReceiptTable> {
   List<Map<String, dynamic>> _sourceFiltered = [];
   List<Map<String, dynamic>> _selecteds = [];
 
-  String? _sortColumn;
-  bool _sortAscending = true;
+  // String? _sortColumn;
+  // bool _sortAscending = true;
+
   bool _isLoading = true;
 
   _fetchData() async {
@@ -65,23 +66,20 @@ class _ReceiptTableState extends State<ReceiptTable> {
     // setState(() => _isLoading = false);
   }
 
-  _sortData(value) {
+  _sortData(String value, SortStatus sortStatus) {
     setState(() => _isLoading = true);
 
     final receiptAttribute = ReceiptAttribute.from(value);
-
-    _sortColumn = value;
-
-    // Flip the ascending property
-    _sortAscending = !_sortAscending;
 
     // Sort
     _sourceFiltered.sort((a, b) {
       return b[receiptAttribute.name].compareTo(a[receiptAttribute.name]);
     });
 
-    _sourceFiltered =
-        _sortAscending ? _sourceFiltered : _sourceFiltered.reversed.toList();
+    // Reverse according to ASC/DESC
+    _sourceFiltered = sortStatus == SortStatus.asc
+        ? _sourceFiltered.reversed.toList()
+        : _sourceFiltered;
 
     var rangeTop = _currentPerPage < _sourceFiltered.length
         ? _currentPerPage
@@ -92,7 +90,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
 
     // Change the search key
     _searchKey = receiptAttribute;
-    // _searchKey = receiptAttribute.toString();
 
     setState(() => _isLoading = false);
   }
@@ -278,28 +275,33 @@ class _ReceiptTableState extends State<ReceiptTable> {
           // },
           // onSort: (value) => _sortData(value),
           expanded: _expanded,
-          sortAscending: _sortAscending,
-          sortColumn: _sortColumn,
+          // sortAscending: _sortAscending,
+          // sortColumn: _sortColumn,
           isLoading: _isLoading,
           onSelect: (value, item) {
-            print("$value  $item ");
             if (value!) {
-              setState(() => _selecteds.add(item));
+              setState(() {
+                _selecteds.add(item);
+                print('Selected ${item.toString()}');
+              });
             } else {
-              setState(() => _selecteds.removeAt(_selecteds.indexOf(item)));
+              setState(() {
+                _selecteds.removeAt(_selecteds.indexOf(item));
+                print('Un-Selected ${item.toString()}');
+              });
             }
           },
           onSelectAll: (value) {
             if (value!) {
               setState(() {
                 _selecteds = [..._sourceFiltered];
-                print('Selecting all receipts: ${_selecteds.length}');
               });
+              print('Selecting all receipts: ${_selecteds.length}');
             } else {
               setState(() {
                 _selecteds.clear();
-                print('Un-selecting all receipts: ${_selecteds.length}');
               });
+              print('Un-selecting all receipts: ${_selecteds.length}');
             }
           },
           footers: _getFooters(),

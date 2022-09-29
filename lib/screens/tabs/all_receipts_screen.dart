@@ -16,7 +16,7 @@ class AllReceiptsScreen extends AbstractTabScreen {
 
   @override
   Color getColor() {
-    return const Color.fromARGB(255, 91, 69, 151);
+    return Color.fromRGBO(91, 69, 151, 1);
   }
 
   @override

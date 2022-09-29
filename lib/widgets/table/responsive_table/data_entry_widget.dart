@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_receipts/helpers/size_helper.dart';
+import 'package:smart_receipts/widgets/animated/animated_opacity_container.dart';
 
 import '../../../models/receipt.dart';
 import '../receipt_status_label.dart';
@@ -36,11 +38,20 @@ class DataEntryWidget extends StatefulWidget {
 }
 
 class _DataEntryWidgetState extends State<DataEntryWidget> {
+  // late double iconHeight;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // iconHeight = SizeHelper.getFontSize(context, size: FontSize.regular);
+
     final decoration = BoxDecoration(
       color: Colors.white,
-      borderRadius: BorderRadius.all(Radius.circular(8)),
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
       boxShadow: [
         BoxShadow(
             color: widget.color.withOpacity(0.3),
@@ -72,18 +83,49 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
               Text(widget.data[ReceiptAttribute.store_location.name]),
             ],
           ),
-          subtitle: Text(DateFormat.yMMMMd().format(DateTime.parse(
-              widget.data[ReceiptAttribute.purchase_date.name]))),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(DateFormat.yMMMMd().format(DateTime.parse(
+                  widget.data[ReceiptAttribute.purchase_date.name]))),
+              const SizedBox(width: 8),
+              ReceiptStatusLabel(
+                  color: widget.color,
+                  status: ReceiptStatus.from(
+                      widget.data[ReceiptAttribute.status.name]))
+            ],
+          ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('${widget.data[ReceiptAttribute.amount.name].toString()}\$'),
               const SizedBox(height: 2),
-              ReceiptStatusLabel(
-                  color: widget.color,
-                  status: ReceiptStatus.from(
-                      widget.data[ReceiptAttribute.status.name]))
+              AnimatedOpacity(
+                curve: Curves.fastLinearToSlowEaseIn,
+                duration: const Duration(milliseconds: 750),
+                opacity: widget.selected ? 1 : 0,
+                child: AnimatedScale(
+                  curve: Curves.fastLinearToSlowEaseIn,
+                  duration: const Duration(milliseconds: 750),
+                  scale: widget.selected ? 1 : 0,
+                  child: AnimatedContainer(
+                      curve: Curves.decelerate,
+                      duration: const Duration(milliseconds: 750),
+                      height: widget.selected
+                          ? SizeHelper.getFontSize(context,
+                              size: FontSize.larger)
+                          : 0,
+                      child: Icon(
+                        Icons.check_circle,
+                        color: widget.color,
+                        size: widget.selected
+                            ? SizeHelper.getFontSize(context,
+                                size: FontSize.larger)
+                            : 0,
+                      )),
+                ),
+              )
             ],
           ),
           textColor: widget.color,
