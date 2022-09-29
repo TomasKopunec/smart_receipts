@@ -35,7 +35,7 @@ class ReceiptsProvider with ChangeNotifier {
     List<Receipt> newList = [];
 
     return Future.delayed(const Duration(milliseconds: 1500)).then((value) {
-      newList.addAll(_generateData(n: 0));
+      newList.addAll(_generateData(n: 10));
       _receipts = newList;
       notifyListeners();
     });

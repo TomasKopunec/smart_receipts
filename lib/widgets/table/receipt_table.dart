@@ -33,7 +33,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
   int _total = 100;
   int _currentPerPage = 10;
   late List<bool> _expanded;
-  ReceiptAttribute _searchKey = ReceiptAttribute.uid;
+  ReceiptAttribute _searchKey = ReceiptAttribute.purchase_date;
 
   int _currentPage = 1;
 
@@ -230,37 +230,30 @@ class _ReceiptTableState extends State<ReceiptTable> {
                       textColor: Colors.white,
                     ),
                     const SizedBox(height: 10),
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                            Icons.arrow_drop_up,
-                            color: widget.headerColor,
-                            size: SizeHelper.getFontSize(context,
-                                    size: FontSize.regular) *
-                                3,
-                          ),
-                          Text(
-                            'SORT BY:',
-                            style: TextStyle(
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6),
+                      child: Center(
+                        child: Row(
+                          children: [
+                            Text(
+                              'SORT BY:',
+                              style: TextStyle(
+                                  color: widget.headerColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: SizeHelper.getFontSize(context,
+                                      size: FontSize.regular)),
+                            ),
+                            const SizedBox(
+                              width: 16,
+                            ),
+                            AnimatedDropdownButton(
+                                sortBy: _sortData,
+                                width: SizeHelper.getScreenWidth(context) * 0.4,
                                 color: widget.headerColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: SizeHelper.getFontSize(context,
-                                    size: FontSize.regular)),
-                          ),
-                          const SizedBox(
-                            width: 16,
-                          ),
-                          Expanded(
-                            child: AnimatedDropdownButton(
-                                color: widget.headerColor,
-                                items: ReceiptAttribute.values
-                                    .map((e) => e.toString())
-                                    .toList(),
-                                selected: _searchKey.toString()),
-                          )
-                        ],
+                                items: ReceiptAttribute.values,
+                                selected: _searchKey)
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -284,7 +277,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
           // onTabRow: (data) {
           //   print(data);
           // },
-          onSort: (value) => _sortData(value),
+          // onSort: (value) => _sortData(value),
           expanded: _expanded,
           sortAscending: _sortAscending,
           sortColumn: _sortColumn,
