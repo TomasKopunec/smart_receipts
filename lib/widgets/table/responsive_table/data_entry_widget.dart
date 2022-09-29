@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
-import 'package:smart_receipts/helpers/size_helper.dart';
-import 'package:smart_receipts/widgets/animated/animated_opacity_container.dart';
-
+import 'package:provider/provider.dart';
+import 'package:smart_receipts/providers/receipts_provider.dart';
 import '../../../models/receipt.dart';
 import '../receipt_status_label.dart';
 import 'datatable.dart';
@@ -17,11 +14,11 @@ class DataEntryWidget extends StatefulWidget {
   final bool commonMobileView;
   final Function(Map<String, dynamic>)? dropContainer;
   final Function(bool) onSelected;
-  final bool selected;
+  final bool isSelecting;
 
-  const DataEntryWidget({
+  DataEntryWidget({
+    required this.isSelecting,
     required this.color,
-    required this.selected,
     required this.data,
     required this.headers,
     required this.commonMobileView,
@@ -38,6 +35,8 @@ class DataEntryWidget extends StatefulWidget {
 }
 
 class _DataEntryWidgetState extends State<DataEntryWidget> {
+  bool _isExpanded = false;
+
   // late double iconHeight;
 
   @override
@@ -45,12 +44,58 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
     super.initState();
   }
 
+  Widget get expansionIcon {
+    return AnimatedRotation(
+        alignment: Alignment.center,
+        turns: _isExpanded ? 0 : -0.5,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.linearToEaseOut,
+        child: Icon(Icons.expand_less));
+  }
+
+  Widget get selectionIcon {
+    const animDuration = Duration(milliseconds: 800);
+    const animCurve = Curves.fastLinearToSlowEaseIn;
+    Widget icon;
+
+    final provider = Provider.of<ReceiptsProvider>(context);
+
+    icon = widget.isSelecting
+        ? provider.selectedContains(widget.uid)
+            ? Icon(Icons.radio_button_checked, color: widget.color)
+            : Icon(Icons.radio_button_unchecked, color: widget.color)
+        : Text('');
+
+    return AnimatedScale(
+      scale: widget.isSelecting ? 1 : 0,
+      duration: animDuration,
+      curve: animCurve,
+      child: AnimatedOpacity(
+          opacity: widget.isSelecting ? 1 : 0,
+          duration: animDuration,
+          curve: animCurve,
+          child: InkWell(
+              onTap: () {
+                setState(() {
+                  if (provider.selectedContains(widget.uid)) {
+                    provider.removeSelectedByUID(widget.uid);
+                  } else {
+                    provider.addSelectedByUID(widget.uid);
+                  }
+                });
+              },
+              child: Ink(child: icon))),
+    );
+  }
+
+  bool get selected {
+    return Provider.of<ReceiptsProvider>(context).selectedContains(widget.uid);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // iconHeight = SizeHelper.getFontSize(context, size: FontSize.regular);
-
     final decoration = BoxDecoration(
-      color: Colors.white,
+      color: selected ? Colors.grey.shade200 : Colors.white,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       boxShadow: [
         BoxShadow(
@@ -67,6 +112,15 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
+          onExpansionChanged: (value) {
+            setState(() {
+              _isExpanded = value;
+            });
+          },
+          leading: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [selectionIcon, SizedBox(width: 10), expansionIcon],
+          ),
           backgroundColor: widget.color.withOpacity(0.1),
           childrenPadding:
               const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -95,39 +149,8 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
                       widget.data[ReceiptAttribute.status.name]))
             ],
           ),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+          trailing:
               Text('${widget.data[ReceiptAttribute.amount.name].toString()}\$'),
-              const SizedBox(height: 2),
-              AnimatedOpacity(
-                curve: Curves.fastLinearToSlowEaseIn,
-                duration: const Duration(milliseconds: 750),
-                opacity: widget.selected ? 1 : 0,
-                child: AnimatedScale(
-                  curve: Curves.fastLinearToSlowEaseIn,
-                  duration: const Duration(milliseconds: 750),
-                  scale: widget.selected ? 1 : 0,
-                  child: AnimatedContainer(
-                      curve: Curves.decelerate,
-                      duration: const Duration(milliseconds: 750),
-                      height: widget.selected
-                          ? SizeHelper.getFontSize(context,
-                              size: FontSize.larger)
-                          : 0,
-                      child: Icon(
-                        Icons.check_circle,
-                        color: widget.color,
-                        size: widget.selected
-                            ? SizeHelper.getFontSize(context,
-                                size: FontSize.larger)
-                            : 0,
-                      )),
-                ),
-              )
-            ],
-          ),
           textColor: widget.color,
           iconColor: widget.color,
           children: [
@@ -163,7 +186,7 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
 
                       Checkbox(
                           activeColor: widget.color,
-                          value: widget.selected,
+                          value: selected,
                           onChanged: (value) => widget.onSelected(value!)),
                     ],
                   ),

@@ -21,6 +21,7 @@ class ResponsiveDatatable extends StatefulWidget {
   final bool? sortAscending;
   final bool isLoading;
   final bool autoHeight;
+  final bool isSelecting;
   final bool hideUnderline;
   final bool commonMobileView;
   final bool isExpandRows;
@@ -59,6 +60,7 @@ class ResponsiveDatatable extends StatefulWidget {
       required this.expanded,
       this.dropContainer,
       this.onChangedRow,
+      required this.isSelecting,
       this.onSubmittedRow,
       this.reponseScreenSizes = const [
         ScreenSize.xs,
@@ -80,7 +82,8 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   }
 
   Widget mobileHeader() {
-    return Row(
+    return Container();
+    Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Checkbox(
@@ -161,7 +164,8 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
       final data = widget.source!.elementAt(i);
 
       list.add(DataEntryWidget(
-          selected: widget.selecteds!.contains(data),
+          isSelecting: widget.isSelecting,
+          // selected: widget.selecteds!.contains(data),
           color: widget.prefferedColor,
           data: data,
           headers: widget.headers,

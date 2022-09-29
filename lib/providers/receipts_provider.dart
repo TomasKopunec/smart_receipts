@@ -1,10 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import 'package:smart_receipts/models/receipt.dart';
 
 class ReceiptsProvider with ChangeNotifier {
+  Set<String> _selecteds = {}; // List of receipts (uid)
+
   List<Receipt> _receipts = [];
 
   List<Receipt> get receipts {
@@ -61,5 +62,32 @@ class ReceiptsProvider with ChangeNotifier {
     }
     generated.shuffle();
     return generated;
+  }
+
+  int get selectedsLen {
+    return _selecteds.length;
+  }
+
+  void addSelectedByUID(String uid) {
+    _selecteds.add(uid);
+    notifyListeners();
+  }
+
+  void removeSelectedByUID(String uid) {
+    _selecteds.remove(uid);
+    notifyListeners();
+  }
+
+  void clearSelecteds() {
+    _selecteds.clear();
+    notifyListeners();
+  }
+
+  bool selectedContains(String uid) {
+    return _selecteds.contains(uid);
+  }
+
+  List<String> get selecteds {
+    return [..._selecteds];
   }
 }

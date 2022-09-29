@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
+import 'package:smart_receipts/providers/nav_bar_provider.dart';
 
 import '../screens/tabs/abstract_tab_screen.dart';
 import '../screens/tabs/add_receipt_screen.dart';
@@ -18,27 +20,8 @@ class TabsScaffold extends StatefulWidget {
 }
 
 class _TabsScaffoldState extends State<TabsScaffold> {
-  late List<AbstractTabScreen> _screens;
-  int _selectedPageIndex = 0;
-
-  @override
-  void initState() {
-    _screens = [
-      AllReceiptsScreen(),
-      DashboardScreen(),
-      AddReceiptScreen(),
-      GroupsScreen(),
-      SettingsScreen()
-    ];
-    super.initState();
-  }
-
   void _selectPage(int index) {
-    setState(() {
-      _screens[_selectedPageIndex];
-
-      _selectedPageIndex = index;
-    });
+    Provider.of<NavBarProvider>(context, listen: false).selectPage(index);
   }
 
   double getSelectedHeight(BuildContext context) {
@@ -54,24 +37,28 @@ class _TabsScaffoldState extends State<TabsScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final AbstractTabScreen selectedScreen = _screens[_selectedPageIndex];
-
-    return Scaffold(
-      appBar: null,
-      body: selectedScreen,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      bottomNavigationBar: BottomNavigationBar(
-        items: _screens.map((screen) => screen.getAppBarItem()).toList(),
-        onTap: _selectPage,
-        currentIndex: _selectedPageIndex,
-        type: BottomNavigationBarType.shifting,
-        selectedItemColor: Colors.white,
-        selectedIconTheme:
-            IconThemeData(opacity: 1, size: getSelectedHeight(context)),
-        unselectedItemColor: Colors.white,
-        unselectedIconTheme:
-            IconThemeData(opacity: 0.6, size: getUnselectedHeight(context)),
-      ),
+    return Consumer<NavBarProvider>(
+      builder: (ctx, provider, child) {
+        return Scaffold(
+          appBar: null,
+          body: provider.selectedScreen,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          bottomNavigationBar: provider.isNavBarShown()
+              ? BottomNavigationBar(
+                  items: provider.items,
+                  onTap: _selectPage,
+                  currentIndex: provider.selectedIndex,
+                  type: BottomNavigationBarType.shifting,
+                  selectedItemColor: Colors.white,
+                  selectedIconTheme: IconThemeData(
+                      opacity: 1, size: getSelectedHeight(context)),
+                  unselectedItemColor: Colors.white,
+                  unselectedIconTheme: IconThemeData(
+                      opacity: 0.6, size: getUnselectedHeight(context)),
+                )
+              : null,
+        );
+      },
     );
   }
 }

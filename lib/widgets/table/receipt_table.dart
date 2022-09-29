@@ -1,10 +1,13 @@
 import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_receipts/global_ui_components/modal_sheet.dart';
 
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
+import 'package:smart_receipts/providers/nav_bar_provider.dart';
+import 'package:smart_receipts/utils/snackbar_builder.dart';
 import 'package:smart_receipts/widgets/animated_dropdown_button.dart';
 import 'package:smart_receipts/widgets/no_data_found_widget.dart';
 import 'package:smart_receipts/widgets/table/responsive_table/datatable_wrapper.dart';
@@ -23,6 +26,8 @@ class ReceiptTable extends StatefulWidget {
 }
 
 class _ReceiptTableState extends State<ReceiptTable> {
+  bool _isSelecting = false;
+
   String _filterValue = '';
 
   late List<DatatableHeader> _headers; // Will be set in initState
@@ -191,6 +196,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
     return DatatableWrapper(
         color: widget.headerColor,
         table: ResponsiveDatatable(
+          isSelecting: _isSelecting,
           noDataWidget: NoDataFoundWidget(
               color: widget.headerColor,
               height: SizeHelper.getScreenHeight(context) * 0.5,
@@ -203,10 +209,73 @@ class _ReceiptTableState extends State<ReceiptTable> {
           actions: [
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                 child: Column(
                   children: [
-                    const Text('All receipts'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(Icons.receipt, color: widget.headerColor),
+                        Text(
+                          'All receipts',
+                          style: TextStyle(
+                              color: widget.headerColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeHelper.getFontSize(context,
+                                  size: FontSize.regular)),
+                        ),
+                        TextButton(
+                            style: ButtonStyle(
+                              overlayColor: MaterialStateProperty.all(
+                                  widget.headerColor.withOpacity(0.2)),
+                            ),
+                            onPressed: () {
+                              if (_total == 0 || _source == null) {
+                                AppSnackBar.show(
+                                    context,
+                                    AppSnackBarBuilder()
+                                        .withText('No receipts available.')
+                                        .withDuration(Duration(seconds: 3)));
+                                return;
+                              }
+
+                              final receiptsProvider =
+                                  Provider.of<ReceiptsProvider>(context,
+                                      listen: false);
+
+                              setState(() {
+                                _isSelecting = !_isSelecting;
+
+                                if (_isSelecting) {
+                                  Scaffold.of(context).showBottomSheet(
+                                      (ctx) => ModalSheet(
+                                            color: widget.headerColor
+                                                .withOpacity(0.95),
+                                            delete: () {
+                                              print(
+                                                  'Deleting receipts with following ids: ${provider.selecteds}');
+                                            },
+                                            star: () {
+                                              print(
+                                                  'Starring receipts with following ids: ${provider.selecteds}');
+                                            },
+                                          ),
+                                      enableDrag: false);
+                                } else {
+                                  Provider.of<ReceiptsProvider>(context,
+                                          listen: false)
+                                      .clearSelecteds();
+                                  Navigator.of(context).pop();
+                                }
+                              });
+                            },
+                            child: Text(
+                              _isSelecting ? 'Cancel' : 'Select',
+                              style: TextStyle(color: widget.headerColor),
+                            ))
+                      ],
+                    ),
                     const SizedBox(height: 10),
                     SearchBar(
                       searchKey: _searchKey.toString(),
@@ -230,6 +299,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
                       padding: const EdgeInsets.only(left: 6),
                       child: Center(
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               'SORT BY:',
@@ -247,11 +317,12 @@ class _ReceiptTableState extends State<ReceiptTable> {
                                 width: SizeHelper.getScreenWidth(context) * 0.4,
                                 color: widget.headerColor,
                                 items: ReceiptAttribute.values,
-                                selected: _searchKey)
+                                selected: _searchKey),
                           ],
                         ),
                       ),
                     ),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
