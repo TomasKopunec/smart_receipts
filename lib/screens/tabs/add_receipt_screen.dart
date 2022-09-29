@@ -11,7 +11,7 @@ class AddReceiptScreen extends AbstractTabScreen {
           onPressed: () {
             Navigator.of(context).pushNamed(PlaygroundScreen.route);
           },
-          child: Text('Press me')),
+          child: const Text('Press me')),
     );
   }
 

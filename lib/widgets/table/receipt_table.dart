@@ -1,5 +1,4 @@
 import 'package:adaptivex/adaptivex.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +16,7 @@ import 'responsive_table/datatable.dart';
 class ReceiptTable extends StatefulWidget {
   final Color headerColor;
 
-  const ReceiptTable({required this.headerColor});
+  const ReceiptTable({super.key, required this.headerColor});
 
   @override
   State<ReceiptTable> createState() => _ReceiptTableState();
@@ -58,7 +57,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
     // setState(() => _isLoading = true);
 
     final data = Provider.of<ReceiptsProvider>(context, listen: false)
-        .getFilteredReceipts(_searchKey!, value);
+        .getFilteredReceipts(_searchKey, value);
     _updateTableFilter(value, data);
 
     setState(() {});
@@ -320,8 +319,8 @@ class _ReceiptTableState extends State<ReceiptTable> {
             value: _currentPerPage,
             items: _perPages
                 .map((e) => DropdownMenuItem<int>(
-                      child: Text("$e"),
                       value: e,
+                      child: Text('$e'),
                     ))
                 .toList(),
             onChanged: (dynamic value) {
@@ -338,11 +337,11 @@ class _ReceiptTableState extends State<ReceiptTable> {
   }
 
   Row _getCurrentPageSection() {
-    _isFirstPage() {
+    isFirstPage() {
       return _currentPage == 1;
     }
 
-    _isLastPage() {
+    isLastPage() {
       return _currentPage + _currentPerPage - 1 >= _total;
     }
 
@@ -357,24 +356,24 @@ class _ReceiptTableState extends State<ReceiptTable> {
       children: [
         Text("$_currentPage - ${upperRange()} of $_total"),
         IconButton(
-          icon: _isFirstPage()
+          icon: isFirstPage()
               ? _getIcon(Icons.arrow_back_ios_new_rounded, false)
               : _getIcon(Icons.arrow_back_ios_new_rounded, true),
-          onPressed: _isFirstPage()
+          onPressed: isFirstPage()
               ? null
               : () {
-                  var _nextSet = _currentPage - _currentPerPage;
+                  var nextSet = _currentPage - _currentPerPage;
                   setState(() {
-                    _currentPage = _nextSet > 1 ? _nextSet : 1;
+                    _currentPage = nextSet > 1 ? nextSet : 1;
                     _updateTableFooter(start: _currentPage - 1);
                   });
                 },
         ),
         IconButton(
-          icon: _isLastPage()
+          icon: isLastPage()
               ? _getIcon(Icons.arrow_forward_ios_rounded, false)
               : _getIcon(Icons.arrow_forward_ios_rounded, true),
-          onPressed: _isLastPage()
+          onPressed: isLastPage()
               ? null
               : () {
                   var nextSet = _currentPage + _currentPerPage;

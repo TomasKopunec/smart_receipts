@@ -1,9 +1,7 @@
 import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:smart_receipts/models/receipt.dart';
-import 'package:smart_receipts/widgets/table/receipt_status_label.dart';
-import 'package:smart_receipts/widgets/table/responsive_table/data_entry_widget.dart';
+import 'data_entry_widget.dart';
 import 'datatable_header.dart';
 
 class ResponsiveDatatable extends StatefulWidget {
@@ -157,19 +155,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
       return [widget.noDataWidget];
     }
 
-    const BorderRadius _radius = BorderRadius.all(Radius.circular(8));
-
-    final _decoration = BoxDecoration(
-      color: Colors.white,
-      borderRadius: _radius,
-      boxShadow: [
-        BoxShadow(
-            color: widget.prefferedColor.withOpacity(0.3),
-            blurRadius: 1.5,
-            offset: const Offset(0, 2.5)),
-      ],
-    );
-
     final List<Widget> list = [];
 
     for (var i = 0; i < widget.source!.length; i++) {
@@ -250,11 +235,10 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   }
 
   Widget desktopHeader() {
-    final _headerDecoration = BoxDecoration(
+    final headerDecoration = BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)));
     return Container(
-      /// TODO:
-      decoration: _headerDecoration,
+      decoration: headerDecoration,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -308,10 +292,8 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
       return [widget.noDataWidget];
     }
 
-    final _decoration = BoxDecoration(
+    final decoration = BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)));
-    //  final _rowDecoration = widget.rowDecoration ?? _decoration;
-    //  final _selectedDecoration = widget.selectedDecoration ?? _decoration;
     List<Widget> widgets = [];
     for (var index = 0; index < widget.source!.length; index++) {
       final data = widget.source![index];
@@ -326,9 +308,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
             },
             child: Container(
               padding: const EdgeInsets.all(0),
-
-              /// TODO:
-              decoration: _decoration,
+              decoration: decoration,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -372,7 +352,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
             ),
           ),
           if (widget.isExpandRows &&
-              widget.expanded![index] &&
+              widget.expanded[index] &&
               widget.dropContainer != null)
             widget.dropContainer!(data)
         ],
@@ -408,14 +388,12 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                 ),
 
               if (widget.autoHeight)
-                Container(
-                  child: Column(
-                    children: [
-                      if (widget.selecteds != null) mobileHeader(),
-                      if (widget.isLoading) loadingIndicator,
-                      ...mobileList(),
-                    ],
-                  ),
+                Column(
+                  children: [
+                    if (widget.selecteds != null) mobileHeader(),
+                    if (widget.isLoading) loadingIndicator,
+                    ...mobileList(),
+                  ],
                 ),
 
               if (!widget.autoHeight)
@@ -433,11 +411,9 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
               /// footer
               if (widget.footers != null)
-                Container(
-                  child: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [...widget.footers!],
-                  ),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [...widget.footers!],
                 )
             ],
           )

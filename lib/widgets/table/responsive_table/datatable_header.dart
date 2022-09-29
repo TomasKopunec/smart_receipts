@@ -28,11 +28,11 @@ class DatatableHeader {
         flex: map['flex'],
       );
   Map<String, dynamic> toMap() => {
-        "text": this.text,
-        "value": this.value,
-        "sortable": this.sortable,
-        "show": this.show,
-        "textAlign": this.textAlign,
-        "flex": this.flex,
+        "text": text,
+        "value": value,
+        "sortable": sortable,
+        "show": show,
+        "textAlign": textAlign,
+        "flex": flex,
       };
 }

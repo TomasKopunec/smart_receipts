@@ -11,6 +11,8 @@ import '../screens/tabs/settings_screen.dart';
 class TabsScaffold extends StatefulWidget {
   static const route = '/';
 
+  const TabsScaffold({super.key});
+
   @override
   State<TabsScaffold> createState() => _TabsScaffoldState();
 }

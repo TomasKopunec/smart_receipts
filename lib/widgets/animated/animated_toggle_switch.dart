@@ -11,7 +11,7 @@ class AnimatedToggleSwitch extends StatefulWidget {
   final double width;
   final Duration animDuration;
 
-  AnimatedToggleSwitch({
+  const AnimatedToggleSwitch({
     required this.width,
     required this.values,
     required this.onToggleCallback,
@@ -36,7 +36,7 @@ class _AnimatedToggleSwitchState extends State<AnimatedToggleSwitch> {
   bool initialPosition = true;
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: widget.width,
       child: Stack(
         children: [
