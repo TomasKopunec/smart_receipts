@@ -3,13 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/nav_bar_provider.dart';
 
-import '../screens/tabs/abstract_tab_screen.dart';
-import '../screens/tabs/add_receipt_screen.dart';
-import '../screens/tabs/all_receipts_screen.dart';
-import '../screens/tabs/dashboard_screen.dart';
-import '../screens/tabs/groups_screen.dart';
-import '../screens/tabs/settings_screen.dart';
-
 class TabsScaffold extends StatefulWidget {
   static const route = '/';
 
@@ -40,7 +33,7 @@ class _TabsScaffoldState extends State<TabsScaffold> {
     return Consumer<NavBarProvider>(
       builder: (ctx, provider, child) {
         return Scaffold(
-          appBar: null,
+          appBar: provider.appBar,
           body: provider.selectedScreen,
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: provider.isNavBarShown()

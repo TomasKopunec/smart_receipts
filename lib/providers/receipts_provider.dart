@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:smart_receipts/models/receipt.dart';
 
 class ReceiptsProvider with ChangeNotifier {
-  Set<String> _selecteds = {}; // List of receipts (uid)
+  final Set<String> _selecteds = {}; // List of receipts (uid)
 
   List<Receipt> _receipts = [];
 
@@ -56,7 +56,7 @@ class ReceiptsProvider with ChangeNotifier {
           expiration: DateTime.now()
               .subtract(Duration(days: i))
               .add(const Duration(days: 365)),
-          sku: '$i\000$i',
+          sku: '{$i}000{$i}',
           uid: '$i',
           status: ReceiptStatus.values[rand]));
     }
@@ -80,7 +80,7 @@ class ReceiptsProvider with ChangeNotifier {
 
   void clearSelecteds() {
     _selecteds.clear();
-    notifyListeners();
+    // notifyListeners();
   }
 
   bool selectedContains(String uid) {

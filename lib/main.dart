@@ -29,7 +29,7 @@ class Main extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           // dividerColor: Colors.transparent,
         ),
-        home: TabsScaffold(), // PlaygroundScreen(),
+        home: const TabsScaffold(), // PlaygroundScreen(),
         routes: getRoutes(),
       ),
     );

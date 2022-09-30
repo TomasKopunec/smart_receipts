@@ -1,7 +1,6 @@
 import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_receipts/global_ui_components/modal_sheet.dart';
 
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/models/receipt.dart';
@@ -10,6 +9,7 @@ import 'package:smart_receipts/providers/nav_bar_provider.dart';
 import 'package:smart_receipts/utils/snackbar_builder.dart';
 import 'package:smart_receipts/widgets/animated_dropdown_button.dart';
 import 'package:smart_receipts/widgets/no_data_found_widget.dart';
+import 'package:smart_receipts/widgets/selection_app_bar.dart';
 import 'package:smart_receipts/widgets/table/responsive_table/datatable_wrapper.dart';
 import '../animated/animated_toggle_switch.dart';
 import '../search_bar.dart';
@@ -240,14 +240,27 @@ class _ReceiptTableState extends State<ReceiptTable> {
                                 return;
                               }
 
-                              final receiptsProvider =
-                                  Provider.of<ReceiptsProvider>(context,
-                                      listen: false);
+                              // final receiptsProvider =
+                              //     Provider.of<ReceiptsProvider>(context,
+                              //         listen: false);
+
+                              final uiProvider = Provider.of<NavBarProvider>(
+                                  context,
+                                  listen: false);
 
                               setState(() {
                                 _isSelecting = !_isSelecting;
 
                                 if (_isSelecting) {
+                                  uiProvider.setAppBar(SelectionAppBar(
+                                    selecting: _isSelecting,
+                                    color: widget.headerColor,
+                                  ));
+                                } else {
+                                  uiProvider.clearAppBar();
+                                }
+
+                                /* if (_isSelecting) {
                                   Scaffold.of(context).showBottomSheet(
                                       (ctx) => ModalSheet(
                                             color: widget.headerColor
@@ -267,7 +280,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
                                           listen: false)
                                       .clearSelecteds();
                                   Navigator.of(context).pop();
-                                }
+                                } */
                               });
                             },
                             child: Text(
