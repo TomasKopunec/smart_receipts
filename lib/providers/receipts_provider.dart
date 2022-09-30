@@ -35,7 +35,7 @@ class ReceiptsProvider with ChangeNotifier {
   Future<dynamic> fetchAndSetReceipts() async {
     List<Receipt> newList = [];
 
-    return Future.delayed(const Duration(milliseconds: 1500)).then((value) {
+    return Future.delayed(const Duration(milliseconds: 250)).then((value) {
       newList.addAll(_generateData(n: 10));
       _receipts = newList;
       notifyListeners();

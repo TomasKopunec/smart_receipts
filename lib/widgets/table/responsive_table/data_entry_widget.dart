@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
+import 'package:smart_receipts/widgets/table/responsive_table/table_dismissible.dart';
 import '../../../models/receipt.dart';
 import '../receipt_status_label.dart';
 import 'datatable.dart';
@@ -111,89 +112,93 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
       decoration: decoration,
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          onExpansionChanged: (value) {
-            setState(() {
-              _isExpanded = value;
-            });
-          },
-          leading: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [selectionIcon, SizedBox(width: 10), expansionIcon],
-          ),
-          backgroundColor: widget.color.withOpacity(0.1),
-          childrenPadding:
-              const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: TableDismissible(
+          color: widget.color,
           key: ValueKey(widget.uid),
-          tilePadding: const EdgeInsets.only(left: 10, right: 20),
-          controlAffinity: ListTileControlAffinity.leading,
-          title: Row(
-            children: [
-              Text(widget.data[ReceiptAttribute.store_name.name]),
-              const SizedBox(
-                width: 2,
-              ),
-              const Icon(Icons.location_on),
-              Text(widget.data[ReceiptAttribute.store_location.name]),
-            ],
-          ),
-          subtitle: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(DateFormat.yMMMMd().format(DateTime.parse(
-                  widget.data[ReceiptAttribute.purchase_date.name]))),
-              const SizedBox(width: 8),
-              ReceiptStatusLabel(
-                  color: widget.color,
-                  status: ReceiptStatus.from(
-                      widget.data[ReceiptAttribute.status.name]))
-            ],
-          ),
-          trailing:
-              Text('${widget.data[ReceiptAttribute.amount.name].toString()}\$'),
-          textColor: widget.color,
-          iconColor: widget.color,
-          children: [
-            Column(
+          child: ExpansionTile(
+            onExpansionChanged: (value) {
+              setState(() {
+                _isExpanded = value;
+              });
+            },
+            leading: Row(
               mainAxisSize: MainAxisSize.min,
+              children: [selectionIcon, SizedBox(width: 10), expansionIcon],
+            ),
+            backgroundColor: widget.color.withOpacity(0.1),
+            childrenPadding:
+                const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            key: ValueKey(widget.uid),
+            tilePadding: const EdgeInsets.only(left: 10, right: 20),
+            controlAffinity: ListTileControlAffinity.leading,
+            title: Row(
               children: [
-                if (widget.commonMobileView && widget.dropContainer != null)
-                  widget.dropContainer!(widget.data),
-                if (!widget.commonMobileView)
-                  ...widget.headers
-                      .where((header) => header.show == true)
-                      .toList()
-                      .map((header) => getEntry(header, widget.data))
-                      .toList(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // const Spacer(),
-                      IconButton(
-                        onPressed: _deleteReceipt,
-                        icon: const Icon(Icons.delete),
-                        color: widget.color,
-                      ),
-                      ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: widget.color,
-                          ),
-                          onPressed: _showReceipt,
-                          icon: const Icon(Icons.receipt),
-                          label: const Text("Show Receipt")),
-
-                      Checkbox(
-                          activeColor: widget.color,
-                          value: selected,
-                          onChanged: (value) => widget.onSelected(value!)),
-                    ],
-                  ),
+                Text(widget.data[ReceiptAttribute.store_name.name]),
+                const SizedBox(
+                  width: 2,
                 ),
+                const Icon(Icons.location_on),
+                Text(widget.data[ReceiptAttribute.store_location.name]),
               ],
             ),
-          ],
+            subtitle: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(DateFormat.yMMMMd().format(DateTime.parse(
+                    widget.data[ReceiptAttribute.purchase_date.name]))),
+                const SizedBox(width: 8),
+                ReceiptStatusLabel(
+                    color: widget.color,
+                    status: ReceiptStatus.from(
+                        widget.data[ReceiptAttribute.status.name]))
+              ],
+            ),
+            trailing: Text(
+                '${widget.data[ReceiptAttribute.amount.name].toString()}\$'),
+            textColor: widget.color,
+            iconColor: widget.color,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (widget.commonMobileView && widget.dropContainer != null)
+                    widget.dropContainer!(widget.data),
+                  if (!widget.commonMobileView)
+                    ...widget.headers
+                        .where((header) => header.show == true)
+                        .toList()
+                        .map((header) => getEntry(header, widget.data))
+                        .toList(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // const Spacer(),
+                        IconButton(
+                          onPressed: _deleteReceipt,
+                          icon: const Icon(Icons.delete),
+                          color: widget.color,
+                        ),
+                        ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: widget.color,
+                            ),
+                            onPressed: _showReceipt,
+                            icon: const Icon(Icons.receipt),
+                            label: const Text("Show Receipt")),
+
+                        Checkbox(
+                            activeColor: widget.color,
+                            value: selected,
+                            onChanged: (value) => widget.onSelected(value!)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
