@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
+import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/widgets/dialogs/confirm_dialog.dart';
 
-class TableDismissible extends StatelessWidget {
-  final Key key;
+class EntryDismissible extends StatelessWidget {
+  final String uid;
   final Widget child;
   final Color color;
 
-  const TableDismissible(
-      {required this.key, required this.child, required this.color});
+  const EntryDismissible(
+      {required this.child, required this.color, required this.uid});
 
   void _delete(BuildContext context) async {
     final result = await showDialog(
@@ -26,14 +28,14 @@ class TableDismissible extends StatelessWidget {
     }
   }
 
-  void _star() {
-    print('Staring receipt with uid: 1001');
+  void _star(BuildContext context) {
+    Provider.of<ReceiptsProvider>(context, listen: false).flipFavorite(uid);
   }
 
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      key: key,
+      key: ValueKey(uid),
       enabled: true,
       direction: Axis.horizontal,
       endActionPane: ActionPane(
@@ -53,7 +55,7 @@ class TableDismissible extends StatelessWidget {
         motion: const ScrollMotion(),
         children: [
           SlidableAction(
-            onPressed: (ctx) => _star(),
+            onPressed: (ctx) => _star(context),
             backgroundColor: const Color.fromRGBO(250, 220, 0, 1),
             foregroundColor: Colors.white,
             icon: Icons.star,

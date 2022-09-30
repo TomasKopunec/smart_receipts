@@ -9,7 +9,8 @@ class AllReceiptsScreen extends AbstractTabScreen {
   @override
   Widget build(BuildContext context) {
     // On load clear the selecton
-    Provider.of<ReceiptsProvider>(context, listen: false).clearSelecteds();
+    Provider.of<ReceiptsProvider>(context, listen: false)
+        .clearSelecteds(notify: false);
 
     return ReceiptTable(headerColor: getColor());
   }

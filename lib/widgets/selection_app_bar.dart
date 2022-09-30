@@ -50,8 +50,8 @@ class _SelectionAppBarState extends State<SelectionAppBar> {
                   children: [
                     TextButton.icon(
                         onPressed: () {
-                          print(
-                              'Staring receipts with following ids: ${provider.selecteds}');
+                          Provider.of<ReceiptsProvider>(context, listen: false)
+                              .flipFavorites(provider.selecteds);
                         },
                         icon: Icon(
                           Icons.star,
@@ -61,13 +61,26 @@ class _SelectionAppBarState extends State<SelectionAppBar> {
                           total > 0 ? 'Star ($total)' : 'Star',
                           style: TextStyle(color: yellow),
                         )),
-                    Text(
-                      'Select Receipts',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: SizeHelper.getFontSize(context,
-                              size: FontSize.regular)),
-                    ),
+                    TextButton(
+                        onPressed: () {
+                          if (total == 0) {
+                            provider.receipts
+                                .map((e) => e.uid.value)
+                                .toList()
+                                .forEach((uid) {
+                              provider.addSelectedByUID(uid);
+                            });
+                          } else {
+                            provider.clearSelecteds(notify: true);
+                          }
+                        },
+                        child: Text(
+                          total == 0 ? 'Select All' : 'Unselect All',
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: SizeHelper.getFontSize(context,
+                                  size: FontSize.regular)),
+                        )),
                     TextButton.icon(
                         onPressed: () {
                           print(

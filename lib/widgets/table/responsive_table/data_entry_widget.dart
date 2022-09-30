@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
-import 'package:smart_receipts/widgets/table/responsive_table/table_dismissible.dart';
+import 'package:smart_receipts/screens/show_receipt_screen.dart';
+import 'package:smart_receipts/widgets/table/responsive_table/entry_dismissible.dart';
 import '../../../models/receipt.dart';
 import '../receipt_status_label.dart';
 import 'datatable.dart';
@@ -37,12 +39,14 @@ class DataEntryWidget extends StatefulWidget {
 
 class _DataEntryWidgetState extends State<DataEntryWidget> {
   bool _isExpanded = false;
-
-  // late double iconHeight;
+  late bool _isFavorite;
 
   @override
   void initState() {
     super.initState();
+
+    _isFavorite = Provider.of<ReceiptsProvider>(context, listen: false)
+        .isFavorite(widget.uid);
   }
 
   Widget get expansionIcon {
@@ -93,6 +97,40 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
     return Provider.of<ReceiptsProvider>(context).selectedContains(widget.uid);
   }
 
+  Widget get favoriteLabel {
+    const animDuration = Duration(seconds: 3);
+    const animCurve = Curves.fastLinearToSlowEaseIn;
+    final double iconHeight =
+        SizeHelper.getFontSize(context, size: FontSize.larger);
+
+    final provider = Provider.of<ReceiptsProvider>(context);
+    provider.addListener(
+      () {
+        if (provider.isFavorite(widget.uid) != _isFavorite) {
+          setState(() {
+            _isFavorite = provider.isFavorite(widget.uid);
+          });
+        }
+      },
+    );
+
+    return AnimatedContainer(
+      duration: animDuration,
+      curve: animCurve,
+      height: _isFavorite ? iconHeight : 0,
+      child: AnimatedScale(
+        scale: _isFavorite ? 1 : 0,
+        duration: animDuration,
+        curve: animCurve,
+        child: AnimatedOpacity(
+            opacity: _isFavorite ? 1 : 0,
+            duration: animDuration,
+            curve: animCurve,
+            child: const Icon(Icons.star, color: Colors.yellow)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final decoration = BoxDecoration(
@@ -112,9 +150,9 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
       decoration: decoration,
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: TableDismissible(
+        child: EntryDismissible(
+          uid: widget.uid,
           color: widget.color,
-          key: ValueKey(widget.uid),
           child: ExpansionTile(
             onExpansionChanged: (value) {
               setState(() {
@@ -123,7 +161,11 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
             },
             leading: Row(
               mainAxisSize: MainAxisSize.min,
-              children: [selectionIcon, SizedBox(width: 10), expansionIcon],
+              children: [
+                selectionIcon,
+                const SizedBox(width: 10),
+                expansionIcon
+              ],
             ),
             backgroundColor: widget.color.withOpacity(0.1),
             childrenPadding:
@@ -153,8 +195,15 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
                         widget.data[ReceiptAttribute.status.name]))
               ],
             ),
-            trailing: Text(
-                '${widget.data[ReceiptAttribute.amount.name].toString()}\$'),
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                    '${widget.data[ReceiptAttribute.amount.name].toString()}\$'),
+                favoriteLabel
+              ],
+            ),
             textColor: widget.color,
             iconColor: widget.color,
             children: [
@@ -171,29 +220,13 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
                         .toList(),
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // const Spacer(),
-                        IconButton(
-                          onPressed: _deleteReceipt,
-                          icon: const Icon(Icons.delete),
-                          color: widget.color,
+                    child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: widget.color,
                         ),
-                        ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: widget.color,
-                            ),
-                            onPressed: _showReceipt,
-                            icon: const Icon(Icons.receipt),
-                            label: const Text("Show Receipt")),
-
-                        Checkbox(
-                            activeColor: widget.color,
-                            value: selected,
-                            onChanged: (value) => widget.onSelected(value!)),
-                      ],
-                    ),
+                        onPressed: _showReceipt,
+                        icon: const Icon(Icons.receipt),
+                        label: const Text("Show Receipt")),
                   ),
                 ],
               ),
@@ -204,12 +237,15 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
     );
   }
 
-  void _deleteReceipt() {
-    print('Delete receipt with UID: ${widget.uid}');
-  }
-
   void _showReceipt() {
     print('Show receipt with UID: ${widget.uid}');
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ShowReceiptScreen(),
+          settings: RouteSettings(arguments: widget.uid),
+        ));
   }
 
   Widget getEntry(DatatableHeader header, Map<String, dynamic> data) {

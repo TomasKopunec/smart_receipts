@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/nav_bar_provider.dart';
+import 'package:smart_receipts/providers/receipts_provider.dart';
 
 class TabsScaffold extends StatefulWidget {
   static const route = '/';
@@ -13,6 +14,19 @@ class TabsScaffold extends StatefulWidget {
 }
 
 class _TabsScaffoldState extends State<TabsScaffold> {
+  @override
+  void initState() {
+    // 1. Fetch all receipts
+    final receiptsProvider =
+        Provider.of<ReceiptsProvider>(context, listen: false);
+    receiptsProvider.fetchAndSetReceipts();
+
+    // 2. Fetch all favorites
+    receiptsProvider.fetchAndSetFavorites();
+
+    super.initState();
+  }
+
   void _selectPage(int index) {
     Provider.of<NavBarProvider>(context, listen: false).selectPage(index);
   }

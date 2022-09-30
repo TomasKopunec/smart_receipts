@@ -81,84 +81,16 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
         widget.source!.isNotEmpty;
   }
 
-  Widget mobileHeader() {
-    return Container();
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Checkbox(
-          activeColor: widget.prefferedColor,
-          value: areAllSelected,
-          onChanged: (value) {
-            if (widget.onSelectAll != null) {
-              widget.onSelectAll!(value);
-            }
-          },
-        ),
-        PopupMenuButton(
-          padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          tooltip: "SORT BY",
-          initialValue: widget.sortColumn,
-          itemBuilder: (_) {
-            List<PopupMenuEntry> widgets = [];
-            for (final header in widget.headers) {
-              if (header.show == true && header.sortable == true) {
-                widgets.add(PopupMenuItem(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-                  height: 0,
-                  value: header.value,
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        if (widget.sortColumn != null &&
-                            widget.sortColumn == header.value)
-                          widget.sortAscending!
-                              ? Icon(Icons.arrow_downward,
-                                  color: widget.prefferedColor)
-                              : Icon(Icons.arrow_upward,
-                                  color: widget.prefferedColor),
-                        // const SizedBox(width: 10),
-                        Text(
-                          header.text,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                ));
-                widgets.add(const PopupMenuDivider());
-              }
-            }
-
-            return widgets;
-          },
-          onSelected: (dynamic value) {
-            if (widget.onSort != null) widget.onSort!(value);
-          },
-          child: Container(
-            padding: const EdgeInsets.only(right: 20),
-            child: InkWell(
-                child: Text(
-              "SORT BY",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, color: widget.prefferedColor),
-            )),
-          ),
-        ),
-      ],
-    );
-  }
-
   List<Widget> mobileList() {
     if (widget.total == 0) {
       return [widget.noDataWidget];
     }
 
-    final List<Widget> list = [];
+    final List<Widget> list = [
+      const SizedBox(
+        height: 8,
+      )
+    ];
 
     for (var i = 0; i < widget.source!.length; i++) {
       final data = widget.source!.elementAt(i);
@@ -394,7 +326,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
               if (widget.autoHeight)
                 Column(
                   children: [
-                    if (widget.selecteds != null) mobileHeader(),
+                    //  if (widget.selecteds != null) mobileHeader(),
                     if (widget.isLoading) loadingIndicator,
                     ...mobileList(),
                   ],
@@ -404,7 +336,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                 Expanded(
                   child: Column(
                     children: [
-                      if (widget.selecteds != null) mobileHeader(),
+                      // if (widget.selecteds != null) mobileHeader(),
                       if (widget.isLoading) loadingIndicator,
 
                       /// mobileList

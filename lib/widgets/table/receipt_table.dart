@@ -259,28 +259,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
                                 } else {
                                   uiProvider.clearAppBar();
                                 }
-
-                                /* if (_isSelecting) {
-                                  Scaffold.of(context).showBottomSheet(
-                                      (ctx) => ModalSheet(
-                                            color: widget.headerColor
-                                                .withOpacity(0.95),
-                                            delete: () {
-                                              print(
-                                                  'Deleting receipts with following ids: ${provider.selecteds}');
-                                            },
-                                            star: () {
-                                              print(
-                                                  'Starring receipts with following ids: ${provider.selecteds}');
-                                            },
-                                          ),
-                                      enableDrag: false);
-                                } else {
-                                  Provider.of<ReceiptsProvider>(context,
-                                          listen: false)
-                                      .clearSelecteds();
-                                  Navigator.of(context).pop();
-                                } */
                               });
                             },
                             child: Text(

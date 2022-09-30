@@ -1,15 +1,22 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_receipts/models/receipt.dart';
+import 'package:smart_receipts/utils/shared_preferences_helper.dart';
 
 class ReceiptsProvider with ChangeNotifier {
   final Set<String> _selecteds = {}; // List of receipts (uid)
+  final Set<String> _favorites = {};
 
   List<Receipt> _receipts = [];
 
   List<Receipt> get receipts {
     return [..._receipts];
+  }
+
+  Receipt getReceiptByUid(String uid) {
+    return _receipts.firstWhere((element) => element.uid.value == uid);
   }
 
   List<Map<String, dynamic>> get receiptsAsJson {
@@ -36,7 +43,7 @@ class ReceiptsProvider with ChangeNotifier {
     List<Receipt> newList = [];
 
     return Future.delayed(const Duration(milliseconds: 250)).then((value) {
-      newList.addAll(_generateData(n: 10));
+      newList.addAll(_generateData(n: 6));
       _receipts = newList;
       notifyListeners();
     });
@@ -56,7 +63,7 @@ class ReceiptsProvider with ChangeNotifier {
           expiration: DateTime.now()
               .subtract(Duration(days: i))
               .add(const Duration(days: 365)),
-          sku: '{$i}000{$i}',
+          sku: '${i}000${i}',
           uid: '$i',
           status: ReceiptStatus.values[rand]));
     }
@@ -78,9 +85,11 @@ class ReceiptsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearSelecteds() {
+  void clearSelecteds({bool notify = false}) {
     _selecteds.clear();
-    // notifyListeners();
+    if (notify) {
+      notifyListeners();
+    }
   }
 
   bool selectedContains(String uid) {
@@ -89,5 +98,49 @@ class ReceiptsProvider with ChangeNotifier {
 
   List<String> get selecteds {
     return [..._selecteds];
+  }
+
+  List<String> get favorites {
+    return [..._favorites];
+  }
+
+  void flipFavorite(String uid) {
+    if (_favorites.contains(uid)) {
+      _favorites.remove(uid);
+    } else {
+      _favorites.add(uid);
+    }
+
+    SharedPreferencesHelper.saveFavorites(_favorites.toList()).then((value) {
+      notifyListeners();
+    });
+  }
+
+  void flipFavorites(List<String> list) {
+    for (final uid in list) {
+      flipFavorite(uid);
+    }
+
+    SharedPreferencesHelper.saveFavorites(_favorites.toList()).then((value) {
+      notifyListeners();
+    });
+  }
+
+  bool isFavorite(String uid) {
+    return _favorites.contains(uid);
+  }
+
+  void fetchAndSetFavorites() async {
+    final fetched = await SharedPreferencesHelper.getFavorites();
+
+    if (fetched == null) {
+      return;
+    }
+
+    _favorites.addAll(fetched);
+
+    print('Successfully fetched favorites: $_favorites');
+
+    notifyListeners();
   }
 }
