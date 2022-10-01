@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
-import 'package:smart_receipts/widgets/table/receipt_table.dart';
+import 'package:smart_receipts/widgets/responsive_table/receipt_table.dart';
 
 import 'abstract_tab_screen.dart';
 

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/utils/shared_preferences_helper.dart';
 

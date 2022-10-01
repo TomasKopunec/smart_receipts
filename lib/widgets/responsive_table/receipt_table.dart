@@ -1,4 +1,3 @@
-import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,13 +6,13 @@ import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/providers/nav_bar_provider.dart';
 import 'package:smart_receipts/utils/snackbar_builder.dart';
+import 'package:smart_receipts/widgets/animated/animated_toggle_switch.dart';
 import 'package:smart_receipts/widgets/animated_dropdown_button.dart';
 import 'package:smart_receipts/widgets/no_data_found_widget.dart';
+import 'package:smart_receipts/widgets/responsive_table/datatable.dart';
+import 'package:smart_receipts/widgets/responsive_table/datatable_wrapper.dart';
+import 'package:smart_receipts/widgets/search_bar.dart';
 import 'package:smart_receipts/widgets/selection_app_bar.dart';
-import 'package:smart_receipts/widgets/table/responsive_table/datatable_wrapper.dart';
-import '../animated/animated_toggle_switch.dart';
-import '../search_bar.dart';
-import 'responsive_table/datatable.dart';
 
 class ReceiptTable extends StatefulWidget {
   final Color headerColor;
@@ -36,7 +35,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
   int _total = 100;
   int _currentPerPage = 10;
   late List<bool> _expanded;
-  ReceiptAttribute _searchKey = ReceiptAttribute.purchase_date;
+  ReceiptAttribute _searchKey = ReceiptAttribute.storeName;
 
   int _currentPage = 1;
 
@@ -191,8 +190,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
               title: title,
               subtitle: subtitle),
           prefferedColor: widget.headerColor,
-          reponseScreenSizes: const [ScreenSize.xs],
-          title: null,
           total: _total,
           actions: [
             Expanded(
@@ -311,7 +308,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
           headers: _headers,
           source: _source,
           selecteds: _selecteds,
-          autoHeight: true,
+          // autoHeight: true,
           // onChangedRow: (value, header) {
           //   print(value);
           //   print(header);
@@ -328,32 +325,32 @@ class _ReceiptTableState extends State<ReceiptTable> {
           // sortAscending: _sortAscending,
           // sortColumn: _sortColumn,
           isLoading: _isLoading,
-          onSelect: (value, item) {
-            if (value!) {
-              setState(() {
-                _selecteds.add(item);
-                print('Selected ${item.toString()}');
-              });
-            } else {
-              setState(() {
-                _selecteds.removeAt(_selecteds.indexOf(item));
-                print('Un-Selected ${item.toString()}');
-              });
-            }
-          },
-          onSelectAll: (value) {
-            if (value!) {
-              setState(() {
-                _selecteds = [..._sourceFiltered];
-              });
-              print('Selecting all receipts: ${_selecteds.length}');
-            } else {
-              setState(() {
-                _selecteds.clear();
-              });
-              print('Un-selecting all receipts: ${_selecteds.length}');
-            }
-          },
+          // onSelect: (value, item) {
+          //   if (value!) {
+          //     setState(() {
+          //       _selecteds.add(item);
+          //       print('Selected ${item.toString()}');
+          //     });
+          //   } else {
+          //     setState(() {
+          //       _selecteds.removeAt(_selecteds.indexOf(item));
+          //       print('Un-Selected ${item.toString()}');
+          //     });
+          //   }
+          // },
+          // onSelectAll: (value) {
+          //   if (value!) {
+          //     setState(() {
+          //       _selecteds = [..._sourceFiltered];
+          //     });
+          //     print('Selecting all receipts: ${_selecteds.length}');
+          //   } else {
+          //     setState(() {
+          //       _selecteds.clear();
+          //     });
+          //     print('Un-selecting all receipts: ${_selecteds.length}');
+          //   }
+          // },
           footers: _getFooters(),
         ));
   }

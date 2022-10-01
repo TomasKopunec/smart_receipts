@@ -12,10 +12,10 @@ enum ReceiptStatus {
 }
 
 enum ReceiptAttribute {
-  store_name('Store Name'),
+  storeName('Store Name'),
   amount('Amount'),
-  purchase_date('Date'),
-  store_location('Location'),
+  purchaseDate('Date'),
+  storeLocation('Location'),
   category('Category'),
   expiration('Expiration'),
   sku('SKU'),
@@ -31,8 +31,7 @@ enum ReceiptAttribute {
   }
 
   static ReceiptAttribute from(String name) {
-    return ReceiptAttribute.values
-        .firstWhere((e) => e.name == name.toLowerCase());
+    return ReceiptAttribute.values.firstWhere((e) => e.name == name);
   }
 }
 
@@ -57,12 +56,12 @@ class Receipt {
       required String sku,
       required String uid,
       required ReceiptStatus status})
-      : storeName = JsonAttribute(ReceiptAttribute.store_name.name, storeName),
+      : storeName = JsonAttribute(ReceiptAttribute.storeName.name, storeName),
         amount = JsonAttribute(ReceiptAttribute.amount.name, amount),
-        purchaseDate = JsonAttribute(ReceiptAttribute.purchase_date.name,
-            purchaseDate.toIso8601String()),
+        purchaseDate = JsonAttribute(
+            ReceiptAttribute.purchaseDate.name, purchaseDate.toIso8601String()),
         storeLocation =
-            JsonAttribute(ReceiptAttribute.store_location.name, storeLocation),
+            JsonAttribute(ReceiptAttribute.storeLocation.name, storeLocation),
         category = JsonAttribute(ReceiptAttribute.category.name, category),
         expiration = JsonAttribute(
             ReceiptAttribute.expiration.name, expiration.toIso8601String()),

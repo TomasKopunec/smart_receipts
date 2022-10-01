@@ -4,15 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/screens/show_receipt_screen.dart';
-import 'package:smart_receipts/widgets/table/responsive_table/entry_dismissible.dart';
 import '../../../models/receipt.dart';
 import '../receipt_status_label.dart';
+import 'entry_dismissible.dart';
 
 class DataEntryWidgetMobile extends StatefulWidget {
   final Color color;
   final Map<String, dynamic> data;
   final List<ReceiptAttribute> headers;
-  final Function(bool) onSelected;
   final bool isSelecting;
 
   DataEntryWidgetMobile({
@@ -20,8 +19,7 @@ class DataEntryWidgetMobile extends StatefulWidget {
     required this.color,
     required this.data,
     required this.headers,
-    required this.onSelected,
-  });
+  }) : super(key: ValueKey(data[ReceiptAttribute.uid.name]));
 
   @override
   State<DataEntryWidgetMobile> createState() => _DataEntryWidgetMobileState();
@@ -169,19 +167,19 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
             controlAffinity: ListTileControlAffinity.leading,
             title: Row(
               children: [
-                Text(widget.data[ReceiptAttribute.store_name.name]),
+                Text(widget.data[ReceiptAttribute.storeName.name]),
                 const SizedBox(
                   width: 2,
                 ),
                 const Icon(Icons.location_on),
-                Text(widget.data[ReceiptAttribute.store_location.name]),
+                Text(widget.data[ReceiptAttribute.storeLocation.name]),
               ],
             ),
             subtitle: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(DateFormat.yMMMMd().format(DateTime.parse(
-                    widget.data[ReceiptAttribute.purchase_date.name]))),
+                    widget.data[ReceiptAttribute.purchaseDate.name]))),
                 const SizedBox(width: 8),
                 ReceiptStatusLabel(
                     status: ReceiptStatus.from(
@@ -237,7 +235,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     final value = widget.data[attribute.name];
 
     String stringOutput = '$value';
-    if (attribute == ReceiptAttribute.purchase_date ||
+    if (attribute == ReceiptAttribute.purchaseDate ||
         attribute == ReceiptAttribute.expiration) {
       stringOutput = DateFormat.yMMMMd().format(DateTime.parse(stringOutput));
     }

@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
-import 'package:smart_receipts/widgets/table/receipt_status_label.dart';
+import 'package:smart_receipts/widgets/receipt_status_label.dart';
 import '../../../models/receipt.dart';
 
 class DataEntryWidgetDesktop extends StatefulWidget {
@@ -11,15 +11,15 @@ class DataEntryWidgetDesktop extends StatefulWidget {
   final Map<String, dynamic> data;
   final List<ReceiptAttribute> headers;
   final bool isSelecting;
+  final bool isOdd;
 
-  final Function(Map<String, dynamic> value)? onTabRow;
-
-  const DataEntryWidgetDesktop(
+  DataEntryWidgetDesktop(
       {required this.isSelecting,
       required this.color,
       required this.data,
       required this.headers,
-      this.onTabRow});
+      required this.isOdd})
+      : super(key: ValueKey(data[ReceiptAttribute.uid.name]));
 
   @override
   State<DataEntryWidgetDesktop> createState() => _DataEntryWidgetDesktopState();
@@ -78,28 +78,25 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
     );
   }
 
-  BoxDecoration get decoration {
-    return BoxDecoration(
-        border: Border(
-            bottom:
-                BorderSide(color: Colors.black.withOpacity(0.1), width: 1)));
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      splashColor: widget.color.withOpacity(1 / 3),
       onTap: () {
-        widget.onTabRow?.call(widget.data);
+        // Do something
       },
-      child: Container(
-        // padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: decoration,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: widget.headers
-              .map((e) => Expanded(child: getEntry(e.name)))
-              .toList(),
+      child: Ink(
+        child: Container(
+          color: widget.isOdd
+              ? widget.color.withOpacity(0.075)
+              : Colors.transparent,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: widget.headers
+                .map((e) => Expanded(child: getEntry(e.name)))
+                .toList(),
+          ),
         ),
       ),
     );
@@ -123,7 +120,7 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
     String formattedString = '$value';
 
     if (attribute == ReceiptAttribute.expiration ||
-        attribute == ReceiptAttribute.purchase_date) {
+        attribute == ReceiptAttribute.purchaseDate) {
       formattedString = DateFormat.yMMMMd().format(DateTime.parse(value));
     }
 
