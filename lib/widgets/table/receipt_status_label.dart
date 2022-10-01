@@ -3,10 +3,9 @@ import '../../helpers/size_helper.dart';
 import '../../models/receipt.dart';
 
 class ReceiptStatusLabel extends StatelessWidget {
-  final Color color;
   final ReceiptStatus status;
 
-  const ReceiptStatusLabel({required this.status, required this.color});
+  const ReceiptStatusLabel({required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +15,7 @@ class ReceiptStatusLabel extends StatelessWidget {
           color: _getColor(status), borderRadius: BorderRadius.circular(6)),
       child: Text(
         status.name.toUpperCase(),
+        textAlign: TextAlign.center,
         style: TextStyle(
             fontSize: SizeHelper.getFontSize(context, size: FontSize.small)),
       ),
@@ -31,7 +31,7 @@ class ReceiptStatusLabel extends StatelessWidget {
       case ReceiptStatus.invalid:
         return const Color.fromRGBO(255, 200, 0, 0.5);
       case ReceiptStatus.redeemed:
-        return color.withOpacity(0.6);
+        return const Color.fromRGBO(111, 0, 255, 0.5);
     }
   }
 }

@@ -1,12 +1,13 @@
 import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'data_entry_widget.dart';
-import 'datatable_header.dart';
+import 'package:smart_receipts/models/receipt.dart';
+import 'package:smart_receipts/widgets/table/responsive_table/data_entry_widget_desktop.dart';
+import 'data_entry_widget_mobile.dart';
 
 class ResponsiveDatatable extends StatefulWidget {
   final Widget noDataWidget;
-  final List<DatatableHeader> headers;
+  final List<ReceiptAttribute> headers;
   final List<Map<String, dynamic>>? source;
   final List<Map<String, dynamic>>? selecteds;
   final int total;
@@ -27,10 +28,6 @@ class ResponsiveDatatable extends StatefulWidget {
   final bool isExpandRows;
   final List<bool> expanded;
   final Widget Function(Map<String, dynamic> value)? dropContainer;
-  final Function(Map<String, dynamic> value, DatatableHeader header)?
-      onChangedRow;
-  final Function(Map<String, dynamic> value, DatatableHeader header)?
-      onSubmittedRow;
   final List<ScreenSize> reponseScreenSizes;
 
   /// Color to be used
@@ -59,9 +56,7 @@ class ResponsiveDatatable extends StatefulWidget {
       this.isExpandRows = true,
       required this.expanded,
       this.dropContainer,
-      this.onChangedRow,
       required this.isSelecting,
-      this.onSubmittedRow,
       this.reponseScreenSizes = const [
         ScreenSize.xs,
         ScreenSize.sm,
@@ -95,14 +90,12 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
     for (var i = 0; i < widget.source!.length; i++) {
       final data = widget.source!.elementAt(i);
 
-      list.add(DataEntryWidget(
+      list.add(DataEntryWidgetMobile(
           isSelecting: widget.isSelecting,
           // selected: widget.selecteds!.contains(data),
           color: widget.prefferedColor,
           data: data,
           headers: widget.headers,
-          commonMobileView: widget.commonMobileView,
-          dropContainer: widget.dropContainer,
           onSelected: (value) {
             if (widget.onSelect != null) {
               widget.onSelect!(value, data);
@@ -112,14 +105,12 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
     return list;
   }
 
-  Widget getEntry(DatatableHeader header, Map<String, dynamic> data) {
-    final bool isDate =
-        header.value.toString().toLowerCase().contains('date') ||
-            header.value.toString().toLowerCase().contains('expiration');
-    final bool isAmount =
-        header.value.toString().toLowerCase().contains("amount");
+  Widget getEntry(String header, Map<String, dynamic> data) {
+    final bool isDate = header.toString().toLowerCase().contains('date') ||
+        header.toString().toLowerCase().contains('expiration');
+    final bool isAmount = header.toString().toLowerCase().contains("amount");
 
-    String stringOutput = '${data[header.value]}';
+    String stringOutput = '${data[header]}';
     if (isDate) {
       stringOutput = DateFormat.yMMMMd().format(DateTime.parse(stringOutput));
     }
@@ -136,20 +127,21 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                header.text,
+                header,
                 overflow: TextOverflow.clip,
               ),
               const Spacer(),
-              header.editable
-                  ? TextEditableWidget(
-                      data: data,
-                      header: header,
-                      textAlign: TextAlign.end,
-                      onChanged: widget.onChangedRow,
-                      onSubmitted: widget.onSubmittedRow,
-                      hideUnderline: widget.hideUnderline,
-                    )
-                  : Text(stringOutput)
+              Text(stringOutput)
+              // header.editable
+              //     ? TextEditableWidget(
+              //         data: data,
+              //         header: header,
+              //         textAlign: TextAlign.end,
+              //         onChanged: widget.onChangedRow,
+              //         onSubmitted: widget.onSubmittedRow,
+              //         hideUnderline: widget.hideUnderline,
+              //       )
+              //     : Text(stringOutput)
             ],
           ),
         ),
@@ -172,129 +164,50 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
   Widget desktopHeader() {
     final headerDecoration = BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)));
+        border: Border(
+            bottom:
+                BorderSide(color: Colors.black.withOpacity(0.1), width: 1)));
+
     return Container(
       decoration: headerDecoration,
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           if (widget.selecteds != null)
-            Checkbox(
-                activeColor: widget.prefferedColor,
-                value: areAllSelected,
-                onChanged: (value) {
-                  if (widget.onSelectAll != null) widget.onSelectAll!(value);
-                }),
-          ...widget.headers
-              .where((header) => header.show == true)
-              .map(
-                (header) => Expanded(
-                    flex: header.flex,
-                    child: InkWell(
-                      onTap: () {
-                        if (widget.onSort != null && header.sortable) {
-                          widget.onSort!(header.value);
-                        }
-                      },
+            ...widget.headers
+                .map(
+                  (header) => Expanded(
                       child: Container(
-                        padding: const EdgeInsets.all(11),
-                        alignment: headerAlignSwitch(header.textAlign),
-                        child: Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            Text(
-                              header.text,
-                              textAlign: header.textAlign,
-                              // style: ,
-                            ),
-                            if (widget.sortColumn != null &&
-                                widget.sortColumn == header.value)
-                              widget.sortAscending!
-                                  ? const Icon(Icons.arrow_downward, size: 15)
-                                  : const Icon(Icons.arrow_upward, size: 15)
-                          ],
-                        ),
-                      ),
-                    )),
-              )
-              .toList()
+                    color: Colors.amber.withOpacity(0.75),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                    alignment: Alignment.center,
+                    child: Text(
+                      header.toString(),
+                    ),
+                  )),
+                )
+                .toList()
         ],
       ),
     );
   }
 
   List<Widget> desktopList() {
+    // If no receipts, show no data widget
     if (widget.total == 0) {
       return [widget.noDataWidget];
     }
 
-    final decoration = BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)));
-    List<Widget> widgets = [];
-    for (var index = 0; index < widget.source!.length; index++) {
-      final data = widget.source![index];
-      widgets.add(Column(
-        children: [
-          InkWell(
-            onTap: () {
-              widget.onTabRow?.call(data);
-              setState(() {
-                widget.expanded[index] = !widget.expanded[index];
-              });
-            },
-            child: Container(
-              padding: const EdgeInsets.all(0),
-              decoration: decoration,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (widget.selecteds != null)
-                    Row(
-                      children: [
-                        Checkbox(
-                            activeColor: widget.prefferedColor,
-                            value: widget.selecteds!.contains(data),
-                            onChanged: (value) {
-                              if (widget.onSelect != null) {
-                                widget.onSelect!(value, data);
-                              }
-                            }),
-                      ],
-                    ),
-                  ...widget.headers
-                      .where((header) => header.show == true)
-                      .map(
-                        (header) => Expanded(
-                          flex: header.flex,
-                          child: header.editable
-                              ? TextEditableWidget(
-                                  data: data,
-                                  header: header,
-                                  textAlign: header.textAlign,
-                                  onChanged: widget.onChangedRow,
-                                  onSubmitted: widget.onSubmittedRow,
-                                  hideUnderline: widget.hideUnderline,
-                                )
-                              : Text(
-                                  "${data[header.value]}",
-                                  textAlign: header.textAlign,
-                                  // style:
-                                ),
-                        ),
-                      )
-                      .toList()
-                ],
-              ),
-            ),
-          ),
-          if (widget.isExpandRows &&
-              widget.expanded[index] &&
-              widget.dropContainer != null)
-            widget.dropContainer!(data)
-        ],
-      ));
-    }
-    return widgets;
+    // Otherwise map to desktop entries
+    return widget.source!.map((e) {
+      return DataEntryWidgetDesktop(
+          isSelecting: widget.isSelecting,
+          color: widget.prefferedColor,
+          data: e,
+          headers: widget.headers);
+    }).toList();
   }
 
   @override
@@ -401,58 +314,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
     return LinearProgressIndicator(
       backgroundColor: widget.prefferedColor.withOpacity(0.5),
       color: widget.prefferedColor,
-    );
-  }
-}
-
-class TextEditableWidget extends StatelessWidget {
-  final Map<String, dynamic> data;
-
-  final DatatableHeader header;
-
-  final TextAlign textAlign;
-
-  final bool hideUnderline;
-
-  final Function(Map<String, dynamic> vaue, DatatableHeader header)? onChanged;
-
-  final Function(Map<String, dynamic> vaue, DatatableHeader header)?
-      onSubmitted;
-
-  const TextEditableWidget({
-    Key? key,
-    required this.data,
-    required this.header,
-    this.textAlign = TextAlign.center,
-    this.hideUnderline = false,
-    this.onChanged,
-    this.onSubmitted,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      // constraints: const BoxConstraints(maxWidth: 150),
-      padding: const EdgeInsets.all(0),
-      margin: const EdgeInsets.all(0),
-      child: TextField(
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(0),
-          border: hideUnderline
-              ? InputBorder.none
-              : const UnderlineInputBorder(borderSide: BorderSide(width: 1)),
-          alignLabelWithHint: true,
-        ),
-        textAlign: textAlign,
-        controller: TextEditingController.fromValue(
-          TextEditingValue(text: "${data[header.value]}"),
-        ),
-        onChanged: (newValue) {
-          data[header.value] = newValue;
-          onChanged?.call(data, header);
-        },
-        onSubmitted: (x) => onSubmitted?.call(data, header),
-      ),
     );
   }
 }

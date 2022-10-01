@@ -7,37 +7,31 @@ import 'package:smart_receipts/screens/show_receipt_screen.dart';
 import 'package:smart_receipts/widgets/table/responsive_table/entry_dismissible.dart';
 import '../../../models/receipt.dart';
 import '../receipt_status_label.dart';
-import 'datatable.dart';
-import 'datatable_header.dart';
 
-class DataEntryWidget extends StatefulWidget {
+class DataEntryWidgetMobile extends StatefulWidget {
   final Color color;
   final Map<String, dynamic> data;
-  final List<DatatableHeader> headers;
-  final bool commonMobileView;
-  final Function(Map<String, dynamic>)? dropContainer;
+  final List<ReceiptAttribute> headers;
   final Function(bool) onSelected;
   final bool isSelecting;
 
-  DataEntryWidget({
+  DataEntryWidgetMobile({
     required this.isSelecting,
     required this.color,
     required this.data,
     required this.headers,
-    required this.commonMobileView,
-    required this.dropContainer,
     required this.onSelected,
   });
 
   @override
-  State<DataEntryWidget> createState() => _DataEntryWidgetState();
+  State<DataEntryWidgetMobile> createState() => _DataEntryWidgetMobileState();
 
   String get uid {
     return data[ReceiptAttribute.uid.name];
   }
 }
 
-class _DataEntryWidgetState extends State<DataEntryWidget> {
+class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
   bool _isExpanded = false;
   late bool _isFavorite;
 
@@ -190,7 +184,6 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
                     widget.data[ReceiptAttribute.purchase_date.name]))),
                 const SizedBox(width: 8),
                 ReceiptStatusLabel(
-                    color: widget.color,
                     status: ReceiptStatus.from(
                         widget.data[ReceiptAttribute.status.name]))
               ],
@@ -210,14 +203,7 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (widget.commonMobileView && widget.dropContainer != null)
-                    widget.dropContainer!(widget.data),
-                  if (!widget.commonMobileView)
-                    ...widget.headers
-                        .where((header) => header.show == true)
-                        .toList()
-                        .map((header) => getEntry(header, widget.data))
-                        .toList(),
+                  ...widget.headers.map((e) => getEntry(e.name)).toList(),
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: ElevatedButton.icon(
@@ -238,8 +224,6 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
   }
 
   void _showReceipt() {
-    print('Show receipt with UID: ${widget.uid}');
-
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -248,18 +232,16 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
         ));
   }
 
-  Widget getEntry(DatatableHeader header, Map<String, dynamic> data) {
-    final bool isDate =
-        header.value.toString().toLowerCase().contains('date') ||
-            header.value.toString().toLowerCase().contains('expiration');
-    final bool isAmount =
-        header.value.toString().toLowerCase().contains("amount");
+  Widget getEntry(String header) {
+    final ReceiptAttribute attribute = ReceiptAttribute.from(header);
+    final value = widget.data[attribute.name];
 
-    String stringOutput = '${data[header.value]}';
-    if (isDate) {
+    String stringOutput = '$value';
+    if (attribute == ReceiptAttribute.purchase_date ||
+        attribute == ReceiptAttribute.expiration) {
       stringOutput = DateFormat.yMMMMd().format(DateTime.parse(stringOutput));
     }
-    if (isAmount) {
+    if (attribute == ReceiptAttribute.amount) {
       stringOutput = '$stringOutput\$';
     }
 
@@ -275,16 +257,12 @@ class _DataEntryWidgetState extends State<DataEntryWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  header.text,
+                  attribute.toString(),
                   overflow: TextOverflow.clip,
                 ),
                 const Spacer(),
-                header.editable
-                    ? TextEditableWidget(
-                        data: data,
-                        header: header,
-                        textAlign: TextAlign.end,
-                      )
+                attribute == ReceiptAttribute.status
+                    ? ReceiptStatusLabel(status: ReceiptStatus.from(value))
                     : Text(stringOutput)
               ],
             ),

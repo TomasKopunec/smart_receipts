@@ -13,7 +13,6 @@ import 'package:smart_receipts/widgets/selection_app_bar.dart';
 import 'package:smart_receipts/widgets/table/responsive_table/datatable_wrapper.dart';
 import '../animated/animated_toggle_switch.dart';
 import '../search_bar.dart';
-import 'responsive_table/datatable_header.dart';
 import 'responsive_table/datatable.dart';
 
 class ReceiptTable extends StatefulWidget {
@@ -30,7 +29,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
 
   String _filterValue = '';
 
-  late List<DatatableHeader> _headers; // Will be set in initState
+  final List<ReceiptAttribute> _headers = ReceiptAttribute.values;
 
   final List<int> _perPages = [10, 20, 50, 100];
 
@@ -102,17 +101,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
   @override
   void initState() {
     super.initState();
-
-    /// Initialize headers
-    _headers = ReceiptAttribute.values
-        .map((attr) => DatatableHeader(
-            text: attr.toString(),
-            value: attr.name,
-            show: true,
-            sortable: true,
-            textAlign: TextAlign.left,
-            editable: false))
-        .toList();
 
     _fetchData();
 
@@ -376,6 +364,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         const Text('Rows per page:'),
+        const SizedBox(width: 6),
         if (_perPages.isNotEmpty)
           DropdownButton<int>(
             borderRadius: BorderRadius.circular(8),
