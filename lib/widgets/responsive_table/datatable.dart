@@ -114,6 +114,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
       // Add the header
       if (widget.headers.isNotEmpty) {
         children.add(DatatableDesktopHeader(
+            isSelecting: widget.isSelecting,
             color: widget.prefferedColor,
             headers: widget.headers,
             decoration: widget.decoration));

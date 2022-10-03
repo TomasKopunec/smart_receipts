@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,8 @@ class DataEntryWidgetMobile extends StatefulWidget {
   final Map<String, dynamic> data;
   final List<ReceiptAttribute> headers;
   final bool isSelecting;
+
+  late double iconSize;
 
   DataEntryWidgetMobile({
     required this.isSelecting,
@@ -47,42 +51,46 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
         turns: _isExpanded ? 0 : -0.5,
         duration: const Duration(milliseconds: 500),
         curve: Curves.linearToEaseOut,
-        child: Icon(Icons.expand_less));
+        child: Icon(
+          Icons.expand_less,
+          size: SizeHelper.getIconSize(context),
+        ));
   }
 
   Widget get selectionIcon {
-    const animDuration = Duration(milliseconds: 800);
-    const animCurve = Curves.fastLinearToSlowEaseIn;
     Widget icon;
 
     final provider = Provider.of<ReceiptsProvider>(context);
 
     icon = widget.isSelecting
         ? provider.selectedContains(widget.uid)
-            ? Icon(Icons.radio_button_checked, color: widget.color)
-            : Icon(Icons.radio_button_unchecked, color: widget.color)
-        : Text('');
+            ? Icon(Icons.radio_button_checked,
+                color: widget.color, size: SizeHelper.getIconSize(context))
+            : Icon(Icons.radio_button_unchecked,
+                color: widget.color, size: SizeHelper.getIconSize(context))
+        : const Text('');
 
-    return AnimatedScale(
-      scale: widget.isSelecting ? 1 : 0,
-      duration: animDuration,
-      curve: animCurve,
-      child: AnimatedOpacity(
-          opacity: widget.isSelecting ? 1 : 0,
-          duration: animDuration,
-          curve: animCurve,
-          child: InkWell(
-              onTap: () {
-                setState(() {
-                  if (provider.selectedContains(widget.uid)) {
-                    provider.removeSelectedByUID(widget.uid);
-                  } else {
-                    provider.addSelectedByUID(widget.uid);
-                  }
-                });
-              },
-              child: Ink(child: icon))),
-    );
+    final Widget view = InkWell(
+        onTap: () {
+          setState(() {
+            if (provider.selectedContains(widget.uid)) {
+              provider.removeSelectedByUID(widget.uid);
+            } else {
+              provider.addSelectedByUID(widget.uid);
+            }
+          });
+        },
+        child: Ink(child: icon));
+
+    return AnimatedOpacity(
+        opacity: widget.isSelecting ? 1 : 0,
+        duration: const Duration(milliseconds: 1000),
+        curve: Curves.fastLinearToSlowEaseIn,
+        child: AnimatedScale(
+            scale: widget.isSelecting ? 1 : 0,
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.fastLinearToSlowEaseIn,
+            child: view));
   }
 
   bool get selected {
@@ -151,12 +159,18 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                 _isExpanded = value;
               });
             },
-            leading: Row(
-              mainAxisSize: MainAxisSize.min,
+            leading: Stack(
               children: [
-                selectionIcon,
-                const SizedBox(width: 10),
-                expansionIcon
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 2000),
+                  curve: Curves.fastLinearToSlowEaseIn,
+                  margin: EdgeInsets.only(
+                      left: widget.isSelecting
+                          ? SizeHelper.getIconSize(context) * 1.25
+                          : 0),
+                  child: expansionIcon,
+                ),
+                selectionIcon
               ],
             ),
             backgroundColor: widget.color.withOpacity(0.1),
@@ -268,5 +282,11 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
         ],
       ),
     );
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (!mounted) return;
+    super.setState(fn);
   }
 }

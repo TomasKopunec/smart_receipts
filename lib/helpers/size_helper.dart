@@ -12,6 +12,12 @@ enum FontSize {
   largest
 }
 
+enum IconSize {
+  small,
+  regular,
+  large,
+}
+
 class SizeHelper {
   static double getScreenWidth(BuildContext context) {
     return MediaQuery.of(context).size.width;
@@ -55,6 +61,25 @@ class SizeHelper {
         return regularSize * 1.4;
       case FontSize.largest:
         return regularSize * 1.65;
+    }
+  }
+
+  static double getIconSize(BuildContext context, {IconSize? size}) {
+    final query = MediaQuery.of(context).size;
+    final double ref = (query.width + query.height) / 2;
+
+    final double regularSize = ref * 0.0425;
+    if (size == null) {
+      return regularSize;
+    }
+
+    switch (size) {
+      case IconSize.small:
+        return regularSize * 0.75;
+      case IconSize.regular:
+        return regularSize;
+      case IconSize.large:
+        return regularSize * 1.5;
     }
   }
 }

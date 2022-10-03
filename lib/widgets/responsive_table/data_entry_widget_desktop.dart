@@ -44,6 +44,98 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
     return Provider.of<ReceiptsProvider>(context).selectedContains(widget.uid);
   }
 
+  Widget get selectionIcon {
+    Widget icon;
+
+    final provider = Provider.of<ReceiptsProvider>(context);
+
+    icon = widget.isSelecting
+        ? provider.selectedContains(widget.uid)
+            ? Icon(Icons.radio_button_checked,
+                color: widget.color, size: SizeHelper.getIconSize(context))
+            : Icon(Icons.radio_button_unchecked,
+                color: widget.color, size: SizeHelper.getIconSize(context))
+        : const Text('');
+
+    final Widget view = InkWell(
+        onTap: () {
+          setState(() {
+            if (provider.selectedContains(widget.uid)) {
+              provider.removeSelectedByUID(widget.uid);
+            } else {
+              provider.addSelectedByUID(widget.uid);
+            }
+          });
+        },
+        child: Ink(child: icon));
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, right: 0),
+      child: AnimatedOpacity(
+          opacity: widget.isSelecting ? 1 : 0,
+          duration: const Duration(milliseconds: 1000),
+          curve: Curves.fastLinearToSlowEaseIn,
+          child: AnimatedScale(
+              scale: widget.isSelecting ? 1 : 0,
+              duration: const Duration(milliseconds: 1000),
+              curve: Curves.fastLinearToSlowEaseIn,
+              child: view)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      splashColor: widget.color.withOpacity(1 / 3),
+      onTap: () {
+        // Do something
+      },
+      child: Ink(
+        child: Container(
+          decoration: BoxDecoration(
+              color: color,
+              border: const Border(
+                bottom: BorderSide(
+                  width: 0.5,
+                  color: Colors.black26,
+                ),
+              )),
+          child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                selectionIcon,
+                ...widget.headers
+                    .map((e) => Expanded(child: getEntry(e.name)))
+                    .toList()
+              ]),
+        ),
+      ),
+    );
+  }
+
+  Color get color {
+    if (selected) {
+      return Colors.black12;
+    } else {
+      return widget.isOdd ? widget.color.withOpacity(0.075) : Colors.white;
+    }
+  }
+
+  /// This container contains label for receipt status and also favorite status
+  Widget getStatusWidget(ReceiptStatus status) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      child: Column(
+        children: [
+          ReceiptStatusLabel(status: status),
+          const SizedBox(height: 2),
+          favoriteLabel
+        ],
+      ),
+    );
+  }
+
   Widget get favoriteLabel {
     const animDuration = Duration(seconds: 3);
     const animCurve = Curves.fastLinearToSlowEaseIn;
@@ -73,39 +165,23 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
             opacity: _isFavorite ? 1 : 0,
             duration: animDuration,
             curve: animCurve,
-            child: const Icon(Icons.star, color: Colors.yellow)),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.star,
+                  color: Colors.yellow,
+                  size: SizeHelper.getIconSize(context, size: IconSize.small),
+                ),
+                const SizedBox(width: 1),
+                Text(
+                  'Favorite',
+                  style: TextStyle(
+                      fontSize: SizeHelper.getFontSize(context,
+                          size: FontSize.small)),
+                )
+              ],
+            )),
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      splashColor: widget.color.withOpacity(1 / 3),
-      onTap: () {
-        // Do something
-      },
-      child: Ink(
-        child: Container(
-          color: widget.isOdd
-              ? widget.color.withOpacity(0.075)
-              : Colors.transparent,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: widget.headers
-                .map((e) => Expanded(child: getEntry(e.name)))
-                .toList(),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget getStatusWidget(ReceiptStatus status) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: ReceiptStatusLabel(status: status),
     );
   }
 
@@ -129,11 +205,17 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
       child: Text(
         formattedString,
         textAlign: TextAlign.center,
       ),
     );
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (!mounted) return;
+    super.setState(fn);
   }
 }

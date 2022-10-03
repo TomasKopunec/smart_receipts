@@ -216,24 +216,27 @@ class _ReceiptTableState extends State<ReceiptTable> {
                                   widget.headerColor.withOpacity(0.2)),
                             ),
                             onPressed: () {
-                              if (_total == 0 || _source == null) {
+                              if (_total == 0) {
                                 AppSnackBar.show(
                                     context,
                                     AppSnackBarBuilder()
                                         .withText('No receipts available.')
-                                        .withDuration(Duration(seconds: 3)));
+                                        .withDuration(
+                                            const Duration(seconds: 3)));
                                 return;
                               }
-
-                              // final receiptsProvider =
-                              //     Provider.of<ReceiptsProvider>(context,
-                              //         listen: false);
 
                               final uiProvider = Provider.of<NavBarProvider>(
                                   context,
                                   listen: false);
 
                               setState(() {
+                                if (_isSelecting) {
+                                  Provider.of<ReceiptsProvider>(context,
+                                          listen: false)
+                                      .clearSelecteds(notify: true);
+                                }
+
                                 _isSelecting = !_isSelecting;
 
                                 if (_isSelecting) {
