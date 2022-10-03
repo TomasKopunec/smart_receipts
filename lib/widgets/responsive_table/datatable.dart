@@ -23,6 +23,8 @@ class ResponsiveDatatable extends StatefulWidget {
       border: Border(
           bottom: BorderSide(color: Colors.black.withOpacity(0.1), width: 1)));
 
+  final Color listBckgColor = Colors.black.withOpacity(0.06);
+
   ResponsiveDatatable(
       {super.key,
       required this.headers,
@@ -87,8 +89,9 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
         MediaQuery.of(context).orientation == Orientation.portrait;
 
     List<Widget> children = [
-      Container(
-        decoration: widget.decoration,
+      Card(
+        margin: EdgeInsets.zero,
+        elevation: 1,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: widget.actions,
@@ -98,17 +101,30 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
     if (isPortrait) {
       // Add the vertical list of children
-      children.add(Column(
-        children: [
-          if (widget.isLoading) loadingIndicator,
-          ...mobileList,
-        ],
+      children.add(Container(
+        color: widget.listBckgColor,
+        child: Column(
+          children: [
+            if (widget.isLoading) loadingIndicator,
+            const SizedBox(height: 10),
+            ...mobileList,
+          ],
+        ),
       ));
 
       // Add the footer
-      children.add(Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: widget.footers,
+      children.add(Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(8),
+          ),
+        ),
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: widget.footers,
+        ),
       ));
     } else {
       // Add the header

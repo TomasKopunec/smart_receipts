@@ -16,11 +16,6 @@ class GroupsScreen extends AbstractTabScreen {
   }
 
   @override
-  Color getColor() {
-    return const Color.fromRGBO(89, 201, 165, 1);
-  }
-
-  @override
   IconData getIcon() {
     return Icons.shopping_bag_rounded;
   }

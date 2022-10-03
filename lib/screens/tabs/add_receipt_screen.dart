@@ -21,11 +21,6 @@ class AddReceiptScreen extends AbstractTabScreen {
   }
 
   @override
-  Color getColor() {
-    return const Color.fromRGBO(103, 125, 220, 1);
-  }
-
-  @override
   IconData getIcon() {
     return Icons.add;
   }

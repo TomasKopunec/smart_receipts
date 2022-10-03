@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -134,13 +132,16 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
   @override
   Widget build(BuildContext context) {
     final decoration = BoxDecoration(
-      color: selected ? Colors.grey.shade200 : Colors.white,
+      // color: selected ? Colors.grey.shade500 : Colors.white,
+
+      color: selected ? widget.color.withOpacity(0.4) : Colors.white,
+
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       boxShadow: [
         BoxShadow(
-            color: widget.color.withOpacity(0.3),
-            blurRadius: 1.5,
-            offset: const Offset(0, 2.5)),
+            color: selected ? Colors.white : Colors.black.withOpacity(0.1),
+            blurRadius: selected ? 0 : 1,
+            offset: Offset(0, selected ? 0 : 2.5)),
       ],
     );
 

@@ -16,11 +16,6 @@ class SettingsScreen extends AbstractTabScreen {
   }
 
   @override
-  Color getColor() {
-    return const Color.fromARGB(255, 59, 59, 59);
-  }
-
-  @override
   IconData getIcon() {
     return Icons.settings;
   }

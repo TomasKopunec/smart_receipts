@@ -12,17 +12,12 @@ class AllReceiptsScreen extends AbstractTabScreen {
     Provider.of<ReceiptsProvider>(context, listen: false)
         .clearSelecteds(notify: false);
 
-    return ReceiptTable(headerColor: getColor());
+    return ReceiptTable(headerColor: appColor);
   }
 
   @override
   String getTitle() {
     return 'All';
-  }
-
-  @override
-  Color getColor() {
-    return Color.fromRGBO(91, 69, 151, 1);
   }
 
   @override

@@ -1,8 +1,16 @@
+import 'dart:ui';
+
+// import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/nav_bar_provider.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
+import 'package:smart_receipts/screens/tabs/all_receipts_screen.dart';
+import 'package:smart_receipts/screens/tabs/dashboard_screen.dart';
+import 'package:smart_receipts/screens/tabs/groups_screen.dart';
 
 class TabsScaffold extends StatefulWidget {
   static const route = '/';
@@ -44,28 +52,23 @@ class _TabsScaffoldState extends State<TabsScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NavBarProvider>(
-      builder: (ctx, provider, child) {
-        return Scaffold(
-          appBar: provider.appBar,
-          body: provider.selectedScreen,
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-          bottomNavigationBar: provider.isNavBarShown()
-              ? BottomNavigationBar(
-                  items: provider.items,
-                  onTap: _selectPage,
-                  currentIndex: provider.selectedIndex,
-                  type: BottomNavigationBarType.shifting,
-                  selectedItemColor: Colors.white,
-                  selectedIconTheme: IconThemeData(
-                      opacity: 1, size: getSelectedHeight(context)),
-                  unselectedItemColor: Colors.white,
-                  unselectedIconTheme: IconThemeData(
-                      opacity: 0.6, size: getUnselectedHeight(context)),
-                )
-              : null,
-        );
-      },
-    );
+    return Consumer<NavBarProvider>(builder: (ctx, provider, _) {
+      return PersistentTabView(
+        context,
+        backgroundColor: const Color.fromRGBO(235, 235, 235, 1),
+        navBarStyle: NavBarStyle.style3,
+        screens: provider.screens,
+        screenTransitionAnimation: const ScreenTransitionAnimation(
+          animateTabTransition: true,
+          curve: Curves.easeInOut,
+          duration: Duration(milliseconds: 300),
+        ),
+        itemAnimationProperties: const ItemAnimationProperties(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        ),
+        items: provider.items,
+      );
+    });
   }
 }

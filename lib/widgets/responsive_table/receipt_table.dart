@@ -36,16 +36,10 @@ class _ReceiptTableState extends State<ReceiptTable> {
   int _currentPerPage = 10;
   late List<bool> _expanded;
   ReceiptAttribute _searchKey = ReceiptAttribute.storeName;
-
   int _currentPage = 1;
-
   List<Map<String, dynamic>> _source = [];
   List<Map<String, dynamic>> _sourceFiltered = [];
-  List<Map<String, dynamic>> _selecteds = [];
-
-  // String? _sortColumn;
-  // bool _sortAscending = true;
-
+  final List<Map<String, dynamic>> _selecteds = [];
   bool _isLoading = true;
 
   _fetchData() async {
@@ -202,13 +196,16 @@ class _ReceiptTableState extends State<ReceiptTable> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Icon(Icons.receipt, color: widget.headerColor),
-                        Text(
-                          'All receipts',
-                          style: TextStyle(
-                              color: widget.headerColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeHelper.getFontSize(context,
-                                  size: FontSize.regular)),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 18),
+                          child: Text(
+                            'All receipts',
+                            style: TextStyle(
+                                color: widget.headerColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: SizeHelper.getFontSize(context,
+                                    size: FontSize.large)),
+                          ),
                         ),
                         TextButton(
                             style: ButtonStyle(
@@ -306,54 +303,12 @@ class _ReceiptTableState extends State<ReceiptTable> {
                 ),
               ),
             ),
-            // Expanded(child: SearchBar(color: widget.headerColor)),
           ],
           headers: _headers,
           source: _source,
           selecteds: _selecteds,
-          // autoHeight: true,
-          // onChangedRow: (value, header) {
-          //   print(value);
-          //   print(header);
-          // },
-          // onSubmittedRow: (value, header) {
-          //   print(value);
-          //   print(header);
-          // },
-          // onTabRow: (data) {
-          //   print(data);
-          // },
-          // onSort: (value) => _sortData(value),
           expanded: _expanded,
-          // sortAscending: _sortAscending,
-          // sortColumn: _sortColumn,
           isLoading: _isLoading,
-          // onSelect: (value, item) {
-          //   if (value!) {
-          //     setState(() {
-          //       _selecteds.add(item);
-          //       print('Selected ${item.toString()}');
-          //     });
-          //   } else {
-          //     setState(() {
-          //       _selecteds.removeAt(_selecteds.indexOf(item));
-          //       print('Un-Selected ${item.toString()}');
-          //     });
-          //   }
-          // },
-          // onSelectAll: (value) {
-          //   if (value!) {
-          //     setState(() {
-          //       _selecteds = [..._sourceFiltered];
-          //     });
-          //     print('Selecting all receipts: ${_selecteds.length}');
-          //   } else {
-          //     setState(() {
-          //       _selecteds.clear();
-          //     });
-          //     print('Un-selecting all receipts: ${_selecteds.length}');
-          //   }
-          // },
           footers: _getFooters(),
         ));
   }

@@ -22,12 +22,7 @@ class DatatableWrapper extends StatelessWidget {
           Container(
             margin: EdgeInsets.only(top: verticalPadding),
             padding: EdgeInsets.zero,
-            child: Card(
-              elevation: 5,
-              shadowColor: color,
-              clipBehavior: Clip.none,
-              child: table,
-            ),
+            child: table,
           )
         ],
       ),
