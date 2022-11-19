@@ -4,13 +4,6 @@ import 'abstract_tab_screen.dart';
 
 class SettingsScreen extends AbstractTabScreen {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Text(getTitle())),
-    );
-  }
-
-  @override
   String getTitle() {
     return 'Settings';
   }
@@ -18,5 +11,17 @@ class SettingsScreen extends AbstractTabScreen {
   @override
   IconData getIcon() {
     return Icons.settings;
+  }
+
+  @override
+  State<StatefulWidget> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<SettingsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(widget.getTitle()),
+    );
   }
 }

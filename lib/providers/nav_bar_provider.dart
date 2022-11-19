@@ -9,8 +9,6 @@ import '../screens/tabs/groups_screen.dart';
 import '../screens/tabs/settings_screen.dart';
 
 class NavBarProvider with ChangeNotifier {
-  PreferredSizeWidget? _appBar;
-
   final List<AbstractTabScreen> _screens = [
     AllReceiptsScreen(),
     DashboardScreen(),
@@ -23,14 +21,10 @@ class NavBarProvider with ChangeNotifier {
     return [..._screens];
   }
 
-  bool _isShown = true;
   int _selectedPageIndex = 0;
 
   void selectPage(int index) {
     _selectedPageIndex = index;
-
-    // Clear the appBar
-    _appBar = null;
 
     notifyListeners();
   }
@@ -45,33 +39,5 @@ class NavBarProvider with ChangeNotifier {
 
   AbstractTabScreen get selectedScreen {
     return _screens[_selectedPageIndex];
-  }
-
-  bool isNavBarShown() {
-    return _isShown;
-  }
-
-  void hideNavBar() {
-    _isShown = false;
-    notifyListeners();
-  }
-
-  void showNavBar() {
-    _isShown = true;
-    notifyListeners();
-  }
-
-  PreferredSizeWidget? get appBar {
-    return _appBar;
-  }
-
-  void setAppBar(PreferredSizeWidget appBar) {
-    _appBar = appBar;
-    notifyListeners();
-  }
-
-  void clearAppBar() {
-    _appBar = null;
-    notifyListeners();
   }
 }

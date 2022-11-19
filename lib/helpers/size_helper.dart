@@ -23,6 +23,10 @@ class SizeHelper {
     return MediaQuery.of(context).size.width;
   }
 
+  static double getSelectionHeight(BuildContext context) {
+    return getScreenHeight(context) * 0.075;
+  }
+
   static double getScreenHeight(BuildContext context) {
     double statusBarHeight = MediaQuery.of(context).padding.top;
     double screenSizeHeight = MediaQuery.of(context).size.height;

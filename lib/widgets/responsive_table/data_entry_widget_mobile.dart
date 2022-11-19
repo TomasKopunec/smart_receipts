@@ -32,36 +32,39 @@ class DataEntryWidgetMobile extends StatefulWidget {
 }
 
 class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
+  late ReceiptsProvider _provider;
   bool _isExpanded = false;
-  late bool _isFavorite;
+  late bool _isFavourite;
 
   @override
   void initState() {
     super.initState();
 
-    _isFavorite = Provider.of<ReceiptsProvider>(context, listen: false)
-        .isFavorite(widget.uid);
+    _provider = Provider.of<ReceiptsProvider>(context, listen: false);
+    _isFavourite = _provider.isFavorite(widget.uid);
   }
 
-  Widget get expansionIcon {
+  Widget get leading {
+    return _provider.isSelecting ? selectionIcon : _expansionIcon;
+  }
+
+  Widget get _expansionIcon {
     return AnimatedRotation(
-        alignment: Alignment.center,
-        turns: _isExpanded ? 0 : -0.5,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.linearToEaseOut,
-        child: Icon(
-          Icons.expand_less,
-          size: SizeHelper.getIconSize(context),
-        ));
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.fastLinearToSlowEaseIn,
+      turns: _isExpanded ? 0.5 : 0,
+      child: Icon(
+        Icons.expand_less,
+        size: SizeHelper.getIconSize(context),
+      ),
+    );
   }
 
   Widget get selectionIcon {
     Widget icon;
 
-    final provider = Provider.of<ReceiptsProvider>(context);
-
     icon = widget.isSelecting
-        ? provider.selectedContains(widget.uid)
+        ? _provider.selectedContains(widget.uid)
             ? Icon(Icons.radio_button_checked,
                 color: widget.color, size: SizeHelper.getIconSize(context))
             : Icon(Icons.radio_button_unchecked,
@@ -71,77 +74,53 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     final Widget view = InkWell(
         onTap: () {
           setState(() {
-            if (provider.selectedContains(widget.uid)) {
-              provider.removeSelectedByUID(widget.uid);
+            if (_provider.selectedContains(widget.uid)) {
+              _provider.removeSelectedByUID(widget.uid);
             } else {
-              provider.addSelectedByUID(widget.uid);
+              _provider.addSelectedByUID(widget.uid);
             }
           });
         },
         child: Ink(child: icon));
 
-    return AnimatedOpacity(
-        opacity: widget.isSelecting ? 1 : 0,
-        duration: const Duration(milliseconds: 1000),
-        curve: Curves.fastLinearToSlowEaseIn,
-        child: AnimatedScale(
-            scale: widget.isSelecting ? 1 : 0,
-            duration: const Duration(milliseconds: 1000),
-            curve: Curves.fastLinearToSlowEaseIn,
-            child: view));
+    return view;
   }
 
-  bool get selected {
+  bool get isSelected {
     return Provider.of<ReceiptsProvider>(context).selectedContains(widget.uid);
   }
 
   Widget get favoriteLabel {
-    const animDuration = Duration(seconds: 3);
-    const animCurve = Curves.fastLinearToSlowEaseIn;
-    final double iconHeight =
-        SizeHelper.getFontSize(context, size: FontSize.larger);
-
     final provider = Provider.of<ReceiptsProvider>(context);
+
     provider.addListener(
       () {
-        if (provider.isFavorite(widget.uid) != _isFavorite) {
+        final bool result = provider.isFavorite(widget.uid);
+        if (result != _isFavourite) {
           setState(() {
-            _isFavorite = provider.isFavorite(widget.uid);
+            _isFavourite = result;
           });
         }
       },
     );
 
-    return AnimatedContainer(
-      duration: animDuration,
-      curve: animCurve,
-      height: _isFavorite ? iconHeight : 0,
-      child: AnimatedScale(
-        scale: _isFavorite ? 1 : 0,
-        duration: animDuration,
-        curve: animCurve,
-        child: AnimatedOpacity(
-            opacity: _isFavorite ? 1 : 0,
-            duration: animDuration,
-            curve: animCurve,
-            child: const Icon(Icons.star, color: Colors.yellow)),
-      ),
-    );
+    return AnimatedOpacity(
+        duration: const Duration(milliseconds: 1200),
+        curve: Curves.fastLinearToSlowEaseIn,
+        opacity: _isFavourite ? 1 : 0,
+        child: const Icon(Icons.star, color: Colors.yellow));
   }
 
   @override
   Widget build(BuildContext context) {
     final decoration = BoxDecoration(
-      // color: selected ? Colors.grey.shade500 : Colors.white,
-
-      color: selected ? widget.color.withOpacity(0.4) : Colors.white,
-
+      color: isSelected ? widget.color.withOpacity(0.4) : Colors.white,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       boxShadow: [
         BoxShadow(
-            color: selected ? Colors.white : Colors.black.withOpacity(0.1),
-            blurRadius: selected ? 0 : 1,
-            offset: Offset(0, selected ? 0 : 2.5)),
+            color: isSelected ? Colors.white : Colors.black.withOpacity(0.1),
+            blurRadius: isSelected ? 0 : 1,
+            offset: Offset(0, isSelected ? 0 : 2.5)),
       ],
     );
 
@@ -155,26 +134,11 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
           uid: widget.uid,
           color: widget.color,
           child: ExpansionTile(
-            onExpansionChanged: (value) {
-              setState(() {
-                _isExpanded = value;
-              });
-            },
-            leading: Stack(
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 2000),
-                  curve: Curves.fastLinearToSlowEaseIn,
-                  margin: EdgeInsets.only(
-                      left: widget.isSelecting
-                          ? SizeHelper.getIconSize(context) * 1.25
-                          : 0),
-                  child: expansionIcon,
-                ),
-                selectionIcon
-              ],
-            ),
+            leading: leading,
             backgroundColor: widget.color.withOpacity(0.1),
+            onExpansionChanged: (value) => setState(() {
+              _isExpanded = value;
+            }),
             childrenPadding:
                 const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             key: ValueKey(widget.uid),

@@ -5,6 +5,8 @@ import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/utils/shared_preferences_helper.dart';
 
 class ReceiptsProvider with ChangeNotifier {
+  bool _isSelecting = false;
+
   final Set<String> _selecteds = {}; // List of receipts (uid)
   final Set<String> _favorites = {};
 
@@ -72,6 +74,15 @@ class ReceiptsProvider with ChangeNotifier {
 
   int get selectedsLen {
     return _selecteds.length;
+  }
+
+  void toggleSelecting() {
+    _isSelecting = !_isSelecting;
+    notifyListeners();
+  }
+
+  bool get isSelecting {
+    return _isSelecting;
   }
 
   void addSelectedByUID(String uid) {

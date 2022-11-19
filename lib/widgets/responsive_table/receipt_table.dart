@@ -4,15 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
-import 'package:smart_receipts/providers/nav_bar_provider.dart';
 import 'package:smart_receipts/utils/snackbar_builder.dart';
-import 'package:smart_receipts/widgets/animated/animated_toggle_switch.dart';
 import 'package:smart_receipts/widgets/animated_dropdown_button.dart';
 import 'package:smart_receipts/widgets/no_data_found_widget.dart';
 import 'package:smart_receipts/widgets/responsive_table/datatable.dart';
 import 'package:smart_receipts/widgets/responsive_table/datatable_wrapper.dart';
 import 'package:smart_receipts/widgets/search_bar.dart';
-import 'package:smart_receipts/widgets/selection_app_bar.dart';
+
+import '../animated/animated_toggle_switch.dart';
 
 class ReceiptTable extends StatefulWidget {
   final Color headerColor;
@@ -24,8 +23,6 @@ class ReceiptTable extends StatefulWidget {
 }
 
 class _ReceiptTableState extends State<ReceiptTable> {
-  bool _isSelecting = false;
-
   String _filterValue = '';
 
   final List<ReceiptAttribute> _headers = ReceiptAttribute.values;
@@ -42,10 +39,12 @@ class _ReceiptTableState extends State<ReceiptTable> {
   final List<Map<String, dynamic>> _selecteds = [];
   bool _isLoading = true;
 
+  late ReceiptsProvider _receiptsProvider;
+
   _fetchData() async {
     setState(() => _isLoading = true);
 
-    Provider.of<ReceiptsProvider>(context, listen: false)
+    _receiptsProvider
         .fetchAndSetReceipts()
         .then((value) => setState(() => _isLoading = false));
   }
@@ -54,8 +53,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
     // Start loading
     // setState(() => _isLoading = true);
 
-    final data = Provider.of<ReceiptsProvider>(context, listen: false)
-        .getFilteredReceipts(_searchKey, value);
+    final data = _receiptsProvider.getFilteredReceipts(_searchKey, value);
     _updateTableFilter(value, data);
 
     setState(() {});
@@ -93,11 +91,11 @@ class _ReceiptTableState extends State<ReceiptTable> {
 
   @override
   void initState() {
-    super.initState();
-
+    _receiptsProvider = Provider.of<ReceiptsProvider>(context, listen: false);
     _fetchData();
-
     _updateExpanded();
+
+    super.initState();
   }
 
   @override
@@ -156,14 +154,120 @@ class _ReceiptTableState extends State<ReceiptTable> {
     });
   }
 
+  Widget get staticTitle {
+    return Column(
+      children: [
+        // Screen Title
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Icon(Icons.receipt, color: widget.headerColor),
+            Padding(
+              padding: const EdgeInsets.only(left: 18),
+              child: Text(
+                'All receipts',
+                style: TextStyle(
+                    color: widget.headerColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize:
+                        SizeHelper.getFontSize(context, size: FontSize.large)),
+              ),
+            ),
+
+            // Select Button
+            TextButton(
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(
+                      widget.headerColor.withOpacity(0.2)),
+                ),
+                onPressed: () {
+                  if (_total == 0) {
+                    AppSnackBar.show(
+                        context,
+                        AppSnackBarBuilder()
+                            .withText('No receipts available.')
+                            .withDuration(const Duration(seconds: 3)));
+                    return;
+                  }
+
+                  if (_receiptsProvider.isSelecting) {
+                    _receiptsProvider.clearSelecteds(notify: true);
+                  }
+
+                  _receiptsProvider.toggleSelecting();
+                },
+                child: Text(
+                  _receiptsProvider.isSelecting ? 'Cancel' : 'Select',
+                  style: TextStyle(color: widget.headerColor),
+                ))
+          ],
+        ),
+
+        // Search Bar
+        const SizedBox(height: 10),
+        SearchBar(
+          searchKey: _searchKey.toString(),
+          color: widget.headerColor,
+          filter: _filterData,
+        ),
+        const SizedBox(height: 10),
+
+        // Toggle Switch
+        AnimatedToggleSwitch(
+          width: SizeHelper.getScreenWidth(context),
+          animDuration: const Duration(milliseconds: 750),
+          values: const ['ALL', 'STARRED'],
+          onToggleCallback: (value) {
+            print(value);
+          },
+          buttonColor: widget.headerColor,
+          backgroundColor: Colors.black.withOpacity(0.1),
+          textColor: Colors.white,
+        ),
+        const SizedBox(height: 10),
+
+        // Sorting
+        Padding(
+          padding: const EdgeInsets.only(left: 6),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'SORT BY:',
+                  style: TextStyle(
+                      color: widget.headerColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: SizeHelper.getFontSize(context,
+                          size: FontSize.regular)),
+                ),
+                const SizedBox(
+                  width: 16,
+                ),
+                AnimatedDropdownButton(
+                    sortBy: _sortData,
+                    width: SizeHelper.getScreenWidth(context) * 0.4,
+                    color: widget.headerColor,
+                    items: ReceiptAttribute.values,
+                    selected: _searchKey),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Add listener that rebuilds the list whenever the receipts get changed, resetting all filters and everything
-    final provider = Provider.of<ReceiptsProvider>(context, listen: true);
-    provider.addListener(() {
+    final receiptsProvider =
+        Provider.of<ReceiptsProvider>(context, listen: true);
+    receiptsProvider.addListener(() {
       // Refresh the table and clear the filter
       _filterValue = '';
-      _updateTable(receipts: provider.receiptsAsJson);
+      _updateTable(receipts: receiptsProvider.receiptsAsJson);
     });
 
     final title = (_filterValue.isNotEmpty && _total == 0)
@@ -177,7 +281,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
     return DatatableWrapper(
         color: widget.headerColor,
         table: ResponsiveDatatable(
-          isSelecting: _isSelecting,
+          isSelecting: receiptsProvider.isSelecting,
           noDataWidget: NoDataFoundWidget(
               color: widget.headerColor,
               height: SizeHelper.getScreenHeight(context) * 0.5,
@@ -190,117 +294,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.receipt, color: widget.headerColor),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 18),
-                          child: Text(
-                            'All receipts',
-                            style: TextStyle(
-                                color: widget.headerColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: SizeHelper.getFontSize(context,
-                                    size: FontSize.large)),
-                          ),
-                        ),
-                        TextButton(
-                            style: ButtonStyle(
-                              overlayColor: MaterialStateProperty.all(
-                                  widget.headerColor.withOpacity(0.2)),
-                            ),
-                            onPressed: () {
-                              if (_total == 0) {
-                                AppSnackBar.show(
-                                    context,
-                                    AppSnackBarBuilder()
-                                        .withText('No receipts available.')
-                                        .withDuration(
-                                            const Duration(seconds: 3)));
-                                return;
-                              }
-
-                              final uiProvider = Provider.of<NavBarProvider>(
-                                  context,
-                                  listen: false);
-
-                              setState(() {
-                                if (_isSelecting) {
-                                  Provider.of<ReceiptsProvider>(context,
-                                          listen: false)
-                                      .clearSelecteds(notify: true);
-                                }
-
-                                _isSelecting = !_isSelecting;
-
-                                if (_isSelecting) {
-                                  uiProvider.setAppBar(SelectionAppBar(
-                                    selecting: _isSelecting,
-                                    color: widget.headerColor,
-                                  ));
-                                } else {
-                                  uiProvider.clearAppBar();
-                                }
-                              });
-                            },
-                            child: Text(
-                              _isSelecting ? 'Cancel' : 'Select',
-                              style: TextStyle(color: widget.headerColor),
-                            ))
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    SearchBar(
-                      searchKey: _searchKey.toString(),
-                      color: widget.headerColor,
-                      filter: _filterData,
-                    ),
-                    const SizedBox(height: 10),
-                    AnimatedToggleSwitch(
-                      width: SizeHelper.getScreenWidth(context),
-                      animDuration: const Duration(milliseconds: 750),
-                      values: const ['ALL', 'STARRED'],
-                      onToggleCallback: (value) {
-                        print(value);
-                      },
-                      buttonColor: widget.headerColor,
-                      backgroundColor: Colors.black.withOpacity(0.1),
-                      textColor: Colors.white,
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 6),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'SORT BY:',
-                              style: TextStyle(
-                                  color: widget.headerColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: SizeHelper.getFontSize(context,
-                                      size: FontSize.regular)),
-                            ),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            AnimatedDropdownButton(
-                                sortBy: _sortData,
-                                width: SizeHelper.getScreenWidth(context) * 0.4,
-                                color: widget.headerColor,
-                                items: ReceiptAttribute.values,
-                                selected: _searchKey),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
+                child: staticTitle,
               ),
             ),
           ],

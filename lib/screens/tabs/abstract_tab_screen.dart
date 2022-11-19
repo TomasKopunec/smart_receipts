@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:smart_receipts/helpers/color_helper.dart';
 
-abstract class AbstractTabScreen extends StatelessWidget {
-  final Color appColor = const Color.fromRGBO(81, 198, 157, 1);
-
+abstract class AbstractTabScreen extends StatefulWidget {
   @nonVirtual
   PersistentBottomNavBarItem getAppBarItem() {
     return PersistentBottomNavBarItem(
@@ -16,12 +15,17 @@ abstract class AbstractTabScreen extends StatelessWidget {
         inactiveColorSecondary: Colors.red);
   }
 
-  String getTitle();
+  @nonVirtual
+  Color get appColor {
+    return ColorHelper.APP_COLOR;
+  }
 
   @nonVirtual
   Color get activeColor {
     return Colors.black;
   }
+
+  String getTitle();
 
   IconData getIcon();
 }

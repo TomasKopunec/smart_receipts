@@ -35,10 +35,6 @@ class _TabsScaffoldState extends State<TabsScaffold> {
     super.initState();
   }
 
-  void _selectPage(int index) {
-    Provider.of<NavBarProvider>(context, listen: false).selectPage(index);
-  }
-
   double getSelectedHeight(BuildContext context) {
     final double screenHeight = SizeHelper.getScreenHeight(context);
     return MediaQuery.of(context).orientation == Orientation.portrait
