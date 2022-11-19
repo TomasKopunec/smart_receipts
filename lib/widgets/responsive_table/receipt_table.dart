@@ -175,31 +175,32 @@ class _ReceiptTableState extends State<ReceiptTable> {
             ),
 
             // Select Button
-            TextButton(
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(
-                      widget.headerColor.withOpacity(0.2)),
-                ),
-                onPressed: () {
-                  if (_total == 0) {
-                    AppSnackBar.show(
-                        context,
-                        AppSnackBarBuilder()
-                            .withText('No receipts available.')
-                            .withDuration(const Duration(seconds: 3)));
-                    return;
-                  }
+            if (MediaQuery.of(context).orientation == Orientation.portrait)
+              TextButton(
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.all(
+                        widget.headerColor.withOpacity(0.2)),
+                  ),
+                  onPressed: () {
+                    if (_total == 0) {
+                      AppSnackBar.show(
+                          context,
+                          AppSnackBarBuilder()
+                              .withText('No receipts available.')
+                              .withDuration(const Duration(seconds: 3)));
+                      return;
+                    }
 
-                  if (_receiptsProvider.isSelecting) {
-                    _receiptsProvider.clearSelecteds(notify: true);
-                  }
+                    if (_receiptsProvider.isSelecting) {
+                      _receiptsProvider.clearSelecteds(notify: true);
+                    }
 
-                  _receiptsProvider.toggleSelecting();
-                },
-                child: Text(
-                  _receiptsProvider.isSelecting ? 'Cancel' : 'Select',
-                  style: TextStyle(color: widget.headerColor),
-                ))
+                    _receiptsProvider.toggleSelecting();
+                  },
+                  child: Text(
+                    _receiptsProvider.isSelecting ? 'Cancel' : 'Select',
+                    style: TextStyle(color: widget.headerColor),
+                  ))
           ],
         ),
 
