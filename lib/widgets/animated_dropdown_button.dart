@@ -4,14 +4,16 @@ import 'package:smart_receipts/models/receipt.dart';
 enum SortStatus { asc, desc }
 
 class AnimatedDropdownButton extends StatefulWidget {
-  final Function(String, SortStatus) sortBy;
+  final SortStatus sortStatus;
+  final Function(String) sortBy;
   final double width;
   final Color color;
   final List<ReceiptAttribute> items;
   final ReceiptAttribute selected;
 
   const AnimatedDropdownButton(
-      {required this.sortBy,
+      {required this.sortStatus,
+      required this.sortBy,
       required this.items,
       required this.selected,
       required this.color,
@@ -22,8 +24,6 @@ class AnimatedDropdownButton extends StatefulWidget {
 }
 
 class _AnimatedDropdownButtonState extends State<AnimatedDropdownButton> {
-  SortStatus _sortStatus = SortStatus.asc;
-
   late ReceiptAttribute _oldSelected;
   late ReceiptAttribute _selected;
 
@@ -71,23 +71,9 @@ class _AnimatedDropdownButtonState extends State<AnimatedDropdownButton> {
           onSelected: (ReceiptAttribute value) {
             setState(() {
               _selected = value;
-
-              if (_selected != _oldSelected) {
-                _sortStatus = SortStatus.asc;
-                _oldSelected = _selected;
-                return;
-              }
-
-              if (_sortStatus == SortStatus.asc) {
-                _sortStatus = SortStatus.desc;
-              } else if (_sortStatus == SortStatus.desc) {
-                _sortStatus = SortStatus.asc;
-              } else {
-                _sortStatus = SortStatus.asc;
-              }
             });
 
-            widget.sortBy(_selected.name, _sortStatus);
+            widget.sortBy(_selected.name);
           },
           child: SizedBox(
             width: widget.width,
@@ -97,7 +83,9 @@ class _AnimatedDropdownButtonState extends State<AnimatedDropdownButton> {
                   child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  sortStatus,
+                  Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      child: getSortStatusIcon(widget.sortStatus)),
                   Text(
                     _selected.toString(),
                     style: TextStyle(color: widget.color),
@@ -110,8 +98,8 @@ class _AnimatedDropdownButtonState extends State<AnimatedDropdownButton> {
         ));
   }
 
-  Icon get sortStatus {
-    switch (_sortStatus) {
+  Icon getSortStatusIcon(SortStatus sortStatus) {
+    switch (sortStatus) {
       case SortStatus.asc:
         return Icon(Icons.arrow_upward, color: widget.color);
       case SortStatus.desc:

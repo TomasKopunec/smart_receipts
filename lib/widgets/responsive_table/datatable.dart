@@ -1,5 +1,9 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_receipts/models/receipt.dart';
+import 'package:smart_receipts/screens/returnable_screen.dart';
 import 'package:smart_receipts/widgets/responsive_table/datatable_desktop_header.dart';
 import 'data_entry_widget_desktop.dart';
 import 'data_entry_widget_mobile.dart';
@@ -18,6 +22,8 @@ class ResponsiveDatatable extends StatefulWidget {
   final int total;
   final Color prefferedColor;
 
+  final bool isSortingByDate;
+
   // Const decoration for entries
   final BoxDecoration decoration = BoxDecoration(
       border: Border(
@@ -27,6 +33,7 @@ class ResponsiveDatatable extends StatefulWidget {
 
   ResponsiveDatatable(
       {super.key,
+      required this.isSortingByDate,
       required this.headers,
       required this.source,
       required this.selecteds,
@@ -53,6 +60,9 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
   /// List of widgets that is shown in the portrait mode
   List<Widget> get mobileList {
+    return getList();
+
+    // getList();
     return widget.total == 0
         ? [widget.noDataWidget]
         : widget.source
@@ -62,6 +72,76 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                 data: e,
                 headers: widget.headers))
             .toList();
+  }
+
+  List<Widget> getList() {
+    if (widget.isSortingByDate) {
+      List<Widget> widgets = [];
+      LinkedHashMap<String, List<dynamic>> groupping = LinkedHashMap();
+
+      // Group by month-year
+      for (final Map<String, dynamic> entry in widget.source) {
+        final parsedDate =
+            DateTime.parse(entry[ReceiptAttribute.purchaseDate.name]);
+        final String key =
+            "${DateFormat.MMMM().format(DateTime(0, parsedDate.month))}, ${parsedDate.year}";
+
+        groupping.update(
+          key,
+          (value) {
+            value.add(entry);
+            return value;
+          },
+          ifAbsent: () {
+            groupping[key] = [entry];
+            return [entry];
+          },
+        );
+      }
+
+      for (final value in groupping.entries) {
+        final String text = value.key;
+        final List<dynamic> entries = value.value;
+
+        widgets.add(Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                spreadRadius: 0,
+                blurRadius: 1,
+                offset: const Offset(0, 1), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Text(
+            text,
+            textAlign: TextAlign.start,
+          ),
+        ));
+
+        entries.forEach((e) {
+          widgets.add(DataEntryWidgetMobile(
+              isSelecting: widget.isSelecting,
+              color: widget.prefferedColor,
+              data: e,
+              headers: widget.headers));
+        });
+      }
+      return widgets;
+    } else {
+      return widget.source
+          .map((e) => DataEntryWidgetMobile(
+              isSelecting: widget.isSelecting,
+              color: widget.prefferedColor,
+              data: e,
+              headers: widget.headers))
+          .toList();
+    }
   }
 
   /// List of widgets that is shown in landscape mode

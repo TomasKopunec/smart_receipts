@@ -43,8 +43,8 @@ class ReceiptsProvider with ChangeNotifier {
   Future<dynamic> fetchAndSetReceipts() async {
     List<Receipt> newList = [];
 
-    return Future.delayed(const Duration(milliseconds: 250)).then((value) {
-      newList.addAll(_generateData(n: 6));
+    return Future.delayed(const Duration(milliseconds: 0)).then((value) {
+      newList.addAll(_generateData(n: 8));
       _receipts = newList;
       notifyListeners();
     });
@@ -53,20 +53,20 @@ class ReceiptsProvider with ChangeNotifier {
   List<Receipt> _generateData({required int n}) {
     final List<Receipt> generated = [];
     for (int i = 1; i <= n; i++) {
-      final int rand = Random().nextInt(ReceiptStatus.values.length);
-
       generated.add(Receipt(
           storeName: 'Store $i',
           amount: (i * 10.00) - 0.01,
-          purchaseDate: DateTime.now().subtract(Duration(days: i)),
+          purchaseDate: DateTime.now()
+              .subtract(Duration(days: Random().nextInt(2 * 365))),
           storeLocation: 'London, UK',
           category: 'Fashion',
           expiration: DateTime.now()
               .subtract(Duration(days: i))
               .add(const Duration(days: 365)),
-          sku: '${i}000${i}',
+          sku: '${i}000$i',
           uid: '$i',
-          status: ReceiptStatus.values[rand]));
+          status: ReceiptStatus
+              .values[Random().nextInt(ReceiptStatus.values.length)]));
     }
     generated.shuffle();
     return generated;

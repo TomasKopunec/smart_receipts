@@ -32,7 +32,8 @@ class _ReceiptTableState extends State<ReceiptTable> {
   int _total = 100;
   int _currentPerPage = 10;
   late List<bool> _expanded;
-  ReceiptAttribute _searchKey = ReceiptAttribute.storeName;
+  ReceiptAttribute _searchKey = ReceiptAttribute.purchaseDate;
+  SortStatus _sortStatus = SortStatus.desc;
   int _currentPage = 1;
   List<Map<String, dynamic>> _source = [];
   List<Map<String, dynamic>> _sourceFiltered = [];
@@ -61,7 +62,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
     // setState(() => _isLoading = false);
   }
 
-  _sortData(String value, SortStatus sortStatus) {
+  _sortData(String value) {
     setState(() => _isLoading = true);
 
     final receiptAttribute = ReceiptAttribute.from(value);
@@ -72,7 +73,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
     });
 
     // Reverse according to ASC/DESC
-    _sourceFiltered = sortStatus == SortStatus.asc
+    _sourceFiltered = _sortStatus == SortStatus.asc
         ? _sourceFiltered.reversed.toList()
         : _sourceFiltered;
 
@@ -94,6 +95,9 @@ class _ReceiptTableState extends State<ReceiptTable> {
     _receiptsProvider = Provider.of<ReceiptsProvider>(context, listen: false);
     _fetchData();
     _updateExpanded();
+
+    // Sort by default
+    _sortData(ReceiptAttribute.purchaseDate.name);
 
     super.initState();
   }
@@ -134,6 +138,10 @@ class _ReceiptTableState extends State<ReceiptTable> {
 
     // Update the source
     _source = receipts.getRange(0, upperRange).toList();
+
+    // Filter and sort according to the current selection
+    _sortData(_searchKey.name);
+    // _filterData(_filterValue);
 
     // Update expanded
     _updateExpanded();
@@ -246,8 +254,16 @@ class _ReceiptTableState extends State<ReceiptTable> {
                   width: 16,
                 ),
                 AnimatedDropdownButton(
-                    sortBy: _sortData,
-                    width: SizeHelper.getScreenWidth(context) * 0.4,
+                    sortStatus: _sortStatus,
+                    sortBy: (selected) {
+                      if (ReceiptAttribute.from(selected) == _searchKey) {
+                        _sortStatus = _sortStatus == SortStatus.asc
+                            ? SortStatus.desc
+                            : SortStatus.asc;
+                      }
+                      _sortData(selected);
+                    },
+                    width: SizeHelper.getScreenWidth(context) * 0.475,
                     color: widget.headerColor,
                     items: ReceiptAttribute.values,
                     selected: _searchKey),
@@ -279,9 +295,13 @@ class _ReceiptTableState extends State<ReceiptTable> {
         ? 'Please check the spelling or search for another receipt.'
         : 'Please check your internet connection or add your first receipt.';
 
+    bool isSortingByDate = _searchKey == ReceiptAttribute.expiration ||
+        _searchKey == ReceiptAttribute.purchaseDate;
+
     return DatatableWrapper(
         color: widget.headerColor,
         table: ResponsiveDatatable(
+          isSortingByDate: isSortingByDate,
           isSelecting: receiptsProvider.isSelecting,
           noDataWidget: NoDataFoundWidget(
               color: widget.headerColor,

@@ -118,15 +118,15 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       boxShadow: [
         BoxShadow(
-            color: isSelected ? Colors.white : Colors.black.withOpacity(0.1),
+            color: isSelected ? Colors.white : Colors.black.withOpacity(0.25),
             blurRadius: isSelected ? 0 : 1,
-            offset: Offset(0, isSelected ? 0 : 2.5)),
+            offset: Offset(0, isSelected ? 0 : 1)),
       ],
     );
 
     return Container(
       clipBehavior: Clip.antiAlias,
-      margin: const EdgeInsets.only(bottom: 8, left: 6, right: 6),
+      margin: const EdgeInsets.only(bottom: 12, left: 8, right: 8),
       decoration: decoration,
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),

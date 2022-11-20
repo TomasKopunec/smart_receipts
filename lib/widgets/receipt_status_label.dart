@@ -25,13 +25,11 @@ class ReceiptStatusLabel extends StatelessWidget {
   Color _getColor(ReceiptStatus status) {
     switch (status) {
       case ReceiptStatus.active:
-        return const Color.fromRGBO(0, 255, 0, 0.6);
+        return Color.fromARGB(153, 133, 255, 88);
       case ReceiptStatus.expired:
-        return const Color.fromRGBO(255, 0, 0, 0.5);
-      case ReceiptStatus.invalid:
-        return const Color.fromRGBO(255, 200, 0, 0.5);
-      case ReceiptStatus.redeemed:
-        return const Color.fromRGBO(111, 0, 255, 0.5);
+        return Color.fromARGB(202, 255, 81, 62);
+      case ReceiptStatus.returned:
+        return Color.fromARGB(126, 108, 108, 108);
     }
   }
 }
