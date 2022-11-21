@@ -173,6 +173,7 @@ class MenuItem extends StatelessWidget {
     }
 
     return Expanded(
+      flex: isDummy ? 27 : 20,
       child: Opacity(
         opacity: opacity,
         child: Container(
