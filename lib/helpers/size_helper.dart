@@ -24,7 +24,7 @@ class SizeHelper {
   }
 
   static double getSelectionHeight(BuildContext context) {
-    return getScreenHeight(context) * 0.075;
+    return getScreenHeight(context) * 0.4;
   }
 
   static double getScreenHeight(BuildContext context) {

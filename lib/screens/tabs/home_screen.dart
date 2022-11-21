@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'abstract_tab_screen.dart';
 
-class DashboardScreen extends AbstractTabScreen {
+class HomeScreen extends AbstractTabScreen {
   @override
   String getTitle() {
-    return 'Dashboard';
+    return 'Home';
   }
 
   @override
@@ -14,14 +14,14 @@ class DashboardScreen extends AbstractTabScreen {
   }
 
   @override
-  State<StatefulWidget> createState() => _DashboardScreenState();
+  State<StatefulWidget> createState() => _HomeScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(widget.getTitle()),
+    return Container(
+      color: Color.fromRGBO(235, 235, 235, 1),
     );
   }
 }

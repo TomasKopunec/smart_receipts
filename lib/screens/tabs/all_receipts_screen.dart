@@ -39,12 +39,12 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
       builder: (context, provider, child) {
         final bool isSelecting = provider.isSelecting;
 
-        return Stack(alignment: AlignmentDirectional.bottomCenter, children: [
+        return Stack(alignment: AlignmentDirectional.bottomEnd, children: [
           child!,
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 900),
-            height: isSelecting ? SizeHelper.getSelectionHeight(context) : 0,
-            width: SizeHelper.getScreenWidth(context),
+            duration: const Duration(milliseconds: 1800),
+            height: isSelecting ? SizeHelper.getScreenHeight(context) * 0.2 : 0,
+            width: SizeHelper.getScreenWidth(context) * 0.375,
             // width: double.infinity,
             curve: Curves.fastLinearToSlowEaseIn,
             child: AnimatedOpacity(
@@ -58,7 +58,7 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
           ),
         ]);
       },
-      child: ReceiptTable(headerColor: widget.appColor),
+      child: ReceiptTable(headerColor: widget.getColor(context)),
     );
   }
 }

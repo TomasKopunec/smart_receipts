@@ -42,6 +42,15 @@ class _ReceiptTableState extends State<ReceiptTable> {
 
   late ReceiptsProvider _receiptsProvider;
 
+  @override
+  void setState(func) {
+    if (mounted) {
+      super.setState(() {
+        func();
+      });
+    }
+  }
+
   _fetchData() async {
     setState(() => _isLoading = true);
 

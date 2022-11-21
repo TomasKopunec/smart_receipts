@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:smart_receipts/screens/tabs/home_screen.dart';
 
 import '../screens/tabs/abstract_tab_screen.dart';
 import '../screens/tabs/add_receipt_screen.dart';
 import '../screens/tabs/all_receipts_screen.dart';
-import '../screens/tabs/dashboard_screen.dart';
 import '../screens/tabs/groups_screen.dart';
 import '../screens/tabs/settings_screen.dart';
 
 class NavBarProvider with ChangeNotifier {
   final List<AbstractTabScreen> _screens = [
+    SettingsScreen(),
     AllReceiptsScreen(),
-    DashboardScreen(),
+    HomeScreen(),
     AddReceiptScreen(),
     GroupsScreen(),
-    SettingsScreen()
+    // SettingsScreen()
   ];
 
   List<AbstractTabScreen> get screens {
@@ -33,8 +34,8 @@ class NavBarProvider with ChangeNotifier {
     return _selectedPageIndex;
   }
 
-  List<PersistentBottomNavBarItem> get items {
-    return _screens.map((screen) => screen.getAppBarItem()).toList();
+  List<PersistentBottomNavBarItem> getItems(context) {
+    return _screens.map((screen) => screen.getAppBarItem(context)).toList();
   }
 
   AbstractTabScreen get selectedScreen {

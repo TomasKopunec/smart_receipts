@@ -35,9 +35,9 @@ class _SelectionWidgetState extends State<SelectionWidget> {
             color: widget.color,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.4),
+                color: Colors.black.withOpacity(0.2),
                 spreadRadius: 2,
-                blurRadius: 5,
+                blurRadius: 3,
                 offset: const Offset(0, 2), // changes position of shadow
               ),
             ],
@@ -46,8 +46,8 @@ class _SelectionWidgetState extends State<SelectionWidget> {
           ),
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   TextButton.icon(
                       onPressed: () {
@@ -61,6 +61,19 @@ class _SelectionWidgetState extends State<SelectionWidget> {
                       label: Text(
                         total > 0 ? 'Star ($total)' : 'Star',
                         style: TextStyle(color: yellow),
+                      )),
+                  TextButton.icon(
+                      onPressed: () {
+                        print(
+                            'Deleting receipts with following ids: ${provider.selecteds}');
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: red,
+                      ),
+                      label: Text(
+                        total > 0 ? 'Delete ($total)' : 'Delete',
+                        style: TextStyle(color: red),
                       )),
                   OutlinedButton(
                       style: style,
@@ -82,19 +95,6 @@ class _SelectionWidgetState extends State<SelectionWidget> {
                             color: Colors.white.withOpacity(0.9),
                             fontSize: SizeHelper.getFontSize(context,
                                 size: FontSize.regular)),
-                      )),
-                  TextButton.icon(
-                      onPressed: () {
-                        print(
-                            'Deleting receipts with following ids: ${provider.selecteds}');
-                      },
-                      icon: Icon(
-                        Icons.delete,
-                        color: red,
-                      ),
-                      label: Text(
-                        total > 0 ? 'Delete ($total)' : 'Delete',
-                        style: TextStyle(color: red),
                       )),
                 ],
               )),
