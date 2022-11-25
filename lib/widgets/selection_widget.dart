@@ -79,12 +79,7 @@ class _SelectionWidgetState extends State<SelectionWidget> {
                       style: style,
                       onPressed: () {
                         if (total == 0) {
-                          provider.receipts
-                              .map((e) => e.uid.value)
-                              .toList()
-                              .forEach((uid) {
-                            provider.addSelectedByUID(uid);
-                          });
+                          provider.selectAll();
                         } else {
                           provider.clearSelecteds(notify: true);
                         }

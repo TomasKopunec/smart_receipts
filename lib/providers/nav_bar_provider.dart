@@ -4,7 +4,7 @@ import 'package:smart_receipts/screens/tabs/home_screen.dart';
 
 import '../screens/tabs/abstract_tab_screen.dart';
 import '../screens/tabs/add_receipt_screen.dart';
-import '../screens/tabs/all_receipts_screen.dart';
+import '../screens/tabs/all_receipts/all_receipts_screen.dart';
 import '../screens/tabs/groups_screen.dart';
 import '../screens/tabs/settings_screen.dart';
 

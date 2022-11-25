@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_receipts/models/receipt.dart';
-import 'package:smart_receipts/screens/returnable_screen.dart';
 import 'package:smart_receipts/widgets/responsive_table/datatable_desktop_header.dart';
 import 'data_entry_widget_desktop.dart';
 import 'data_entry_widget_mobile.dart';
@@ -11,11 +10,7 @@ import 'data_entry_widget_mobile.dart';
 class ResponsiveDatatable extends StatefulWidget {
   final List<ReceiptAttribute> headers;
   final List<Map<String, dynamic>> source;
-  final List<Map<String, dynamic>> selecteds;
-  final List<Widget> actions;
   final List<Widget> footers;
-  final bool isLoading;
-  final List<bool> expanded;
   // Added
   final bool isSelecting;
   final Widget noDataWidget;
@@ -24,54 +19,33 @@ class ResponsiveDatatable extends StatefulWidget {
 
   final bool isSortingByDate;
 
+  final Color backgroundColor;
+
   // Const decoration for entries
   final BoxDecoration decoration = BoxDecoration(
       border: Border(
           bottom: BorderSide(color: Colors.black.withOpacity(0.1), width: 1)));
-
-  final Color listBckgColor = Colors.black.withOpacity(0.06);
 
   ResponsiveDatatable(
       {super.key,
       required this.isSortingByDate,
       required this.headers,
       required this.source,
-      required this.selecteds,
-      required this.actions,
       required this.footers,
-      required this.isLoading,
-      required this.expanded,
       required this.isSelecting,
       required this.noDataWidget,
       required this.total,
-      required this.prefferedColor});
+      required this.prefferedColor,
+      this.backgroundColor = Colors.transparent});
 
   @override
   State<ResponsiveDatatable> createState() => _ResponsiveDatatableState();
 }
 
 class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
-  LinearProgressIndicator get loadingIndicator {
-    return LinearProgressIndicator(
-      backgroundColor: widget.prefferedColor.withOpacity(0.5),
-      color: widget.prefferedColor,
-    );
-  }
-
   /// List of widgets that is shown in the portrait mode
   List<Widget> get mobileList {
     return getList();
-
-    // getList();
-    return widget.total == 0
-        ? [widget.noDataWidget]
-        : widget.source
-            .map((e) => DataEntryWidgetMobile(
-                isSelecting: widget.isSelecting,
-                color: widget.prefferedColor,
-                data: e,
-                headers: widget.headers))
-            .toList();
   }
 
   List<Widget> getList() {
@@ -174,7 +148,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
         elevation: 1,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: widget.actions,
         ),
       )
     ];
@@ -182,10 +155,9 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
     if (isPortrait) {
       // Add the vertical list of children
       children.add(Container(
-        color: widget.listBckgColor,
+        color: widget.backgroundColor,
         child: Column(
           children: [
-            if (widget.isLoading) loadingIndicator,
             const SizedBox(height: 10),
             ...mobileList,
           ],
@@ -214,11 +186,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
             color: widget.prefferedColor,
             headers: widget.headers,
             decoration: widget.decoration));
-      }
-
-      // Add loading if needed
-      if (widget.isLoading) {
-        children.add(loadingIndicator);
       }
 
       // Add the children

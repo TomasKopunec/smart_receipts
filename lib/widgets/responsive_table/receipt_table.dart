@@ -1,44 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_receipts/helpers/color_helper.dart';
 
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
-import 'package:smart_receipts/utils/snackbar_builder.dart';
-import 'package:smart_receipts/widgets/animated_dropdown_button.dart';
 import 'package:smart_receipts/widgets/no_data_found_widget.dart';
 import 'package:smart_receipts/widgets/responsive_table/datatable.dart';
-import 'package:smart_receipts/widgets/responsive_table/datatable_wrapper.dart';
-import 'package:smart_receipts/widgets/search_bar.dart';
-
-import '../animated/animated_toggle_switch.dart';
 
 class ReceiptTable extends StatefulWidget {
-  final Color headerColor;
-
-  const ReceiptTable({super.key, required this.headerColor});
+  final Color headerColor = ColorHelper.APP_COLOR;
 
   @override
   State<ReceiptTable> createState() => _ReceiptTableState();
 }
 
 class _ReceiptTableState extends State<ReceiptTable> {
-  String _filterValue = '';
-
-  final List<ReceiptAttribute> _headers = ReceiptAttribute.values;
-
   final List<int> _perPages = [10, 20, 50, 100];
 
-  int _total = 100;
   int _currentPerPage = 10;
-  late List<bool> _expanded;
-  ReceiptAttribute _searchKey = ReceiptAttribute.purchaseDate;
-  SortStatus _sortStatus = SortStatus.desc;
+  // ReceiptAttribute _searchKey = ReceiptAttribute.purchaseDate;
+
   int _currentPage = 1;
-  List<Map<String, dynamic>> _source = [];
-  List<Map<String, dynamic>> _sourceFiltered = [];
-  final List<Map<String, dynamic>> _selecteds = [];
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   late ReceiptsProvider _receiptsProvider;
 
@@ -51,64 +35,45 @@ class _ReceiptTableState extends State<ReceiptTable> {
     }
   }
 
+  /* Asynchronous operation */
   _fetchData() async {
     setState(() => _isLoading = true);
-
-    _receiptsProvider
-        .fetchAndSetReceipts()
-        .then((value) => setState(() => _isLoading = false));
-  }
-
-  _filterData(value) {
-    // Start loading
-    // setState(() => _isLoading = true);
-
-    final data = _receiptsProvider.getFilteredReceipts(_searchKey, value);
-    _updateTableFilter(value, data);
-
-    setState(() {});
-    // Finish loading
-    // setState(() => _isLoading = false);
-  }
-
-  _sortData(String value) {
-    setState(() => _isLoading = true);
-
-    final receiptAttribute = ReceiptAttribute.from(value);
-
-    // Sort
-    _sourceFiltered.sort((a, b) {
-      return b[receiptAttribute.name].compareTo(a[receiptAttribute.name]);
+    _receiptsProvider.fetchAndSetReceipts().then((value) {
+      setState(() => _isLoading = false);
     });
+  }
 
-    // Reverse according to ASC/DESC
-    _sourceFiltered = _sortStatus == SortStatus.asc
-        ? _sourceFiltered.reversed.toList()
-        : _sourceFiltered;
-
-    var rangeTop = _currentPerPage < _sourceFiltered.length
-        ? _currentPerPage
-        : _sourceFiltered.length;
-
-    // Update source
-    _source = _sourceFiltered.getRange(0, rangeTop).toList();
-
-    // Change the search key
-    _searchKey = receiptAttribute;
-
-    setState(() => _isLoading = false);
+  _setItems() async {
+    setState(() => _isLoading = true);
+    Future.delayed(
+      const Duration(seconds: 1),
+      () {},
+    ).then((value) {
+      setState(() => _isLoading = false);
+    });
   }
 
   @override
   void initState() {
     _receiptsProvider = Provider.of<ReceiptsProvider>(context, listen: false);
-    _fetchData();
-    _updateExpanded();
 
-    // Sort by default
-    _sortData(ReceiptAttribute.purchaseDate.name);
+    // Check if we have receipts already fetched
+    // if (_receiptsProvider.receiptSize == 0) {
+    //   _fetchData();
+    // }
+
+    // _updateExpanded();
 
     super.initState();
+
+    _receiptsProvider.addListener(() {
+      setState(() {});
+    });
+
+    // Reset the screen everytime opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _receiptsProvider.resetState();
+    });
   }
 
   @override
@@ -116,6 +81,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
     super.dispose();
   }
 
+  /*
   void _updateTableFilter(
       String searchValue, List<Map<String, dynamic>> newSource) {
     _filterValue = searchValue;
@@ -149,192 +115,66 @@ class _ReceiptTableState extends State<ReceiptTable> {
     _source = receipts.getRange(0, upperRange).toList();
 
     // Filter and sort according to the current selection
-    _sortData(_searchKey.name);
+    // _sortData();
     // _filterData(_filterValue);
 
     // Update expanded
     _updateExpanded();
   }
-
-  int _updateExpanded({int start = 0}) {
-    var expandedLen =
-        _total - start < _currentPerPage ? _total - start : _currentPerPage;
-    _expanded = List.generate(expandedLen, (index) => false);
-    return expandedLen;
-  }
+  
+  */
 
   void _updateTableFooter({int start = 0}) {
     setState(() {
-      final int expandedLen = _updateExpanded(start: start);
-      _source.clear();
-      _source = _sourceFiltered.getRange(start, start + expandedLen).toList();
+      // final int expandedLen = _updateExpanded(start: start);
+      // _source.clear();
+      // _source = _sourceFiltered.getRange(start, start + expandedLen).toList();
     });
-  }
-
-  Widget get staticTitle {
-    return Column(
-      children: [
-        // Screen Title
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(Icons.receipt, color: widget.headerColor),
-            Padding(
-              padding: const EdgeInsets.only(left: 18),
-              child: Text(
-                'All receipts',
-                style: TextStyle(
-                    color: widget.headerColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize:
-                        SizeHelper.getFontSize(context, size: FontSize.large)),
-              ),
-            ),
-
-            // Select Button
-            if (MediaQuery.of(context).orientation == Orientation.portrait)
-              TextButton(
-                  style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(
-                        widget.headerColor.withOpacity(0.2)),
-                  ),
-                  onPressed: () {
-                    if (_total == 0) {
-                      AppSnackBar.show(
-                          context,
-                          AppSnackBarBuilder()
-                              .withText('No receipts available.')
-                              .withDuration(const Duration(seconds: 3)));
-                      return;
-                    }
-
-                    if (_receiptsProvider.isSelecting) {
-                      _receiptsProvider.clearSelecteds(notify: true);
-                    }
-
-                    _receiptsProvider.toggleSelecting();
-                  },
-                  child: Text(
-                    _receiptsProvider.isSelecting ? 'Cancel' : 'Select',
-                    style: TextStyle(color: widget.headerColor),
-                  ))
-          ],
-        ),
-
-        // Search Bar
-        const SizedBox(height: 10),
-        SearchBar(
-          searchKey: _searchKey.toString(),
-          color: widget.headerColor,
-          filter: _filterData,
-        ),
-        const SizedBox(height: 10),
-
-        // Toggle Switch
-        AnimatedToggleSwitch(
-          width: SizeHelper.getScreenWidth(context),
-          animDuration: const Duration(milliseconds: 750),
-          values: const ['ALL', 'STARRED'],
-          onToggleCallback: (value) {
-            print(value);
-          },
-          buttonColor: widget.headerColor,
-          backgroundColor: Colors.black.withOpacity(0.1),
-          textColor: Colors.white,
-        ),
-        const SizedBox(height: 10),
-
-        // Sorting
-        Padding(
-          padding: const EdgeInsets.only(left: 6),
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'SORT BY:',
-                  style: TextStyle(
-                      color: widget.headerColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: SizeHelper.getFontSize(context,
-                          size: FontSize.regular)),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                AnimatedDropdownButton(
-                    sortStatus: _sortStatus,
-                    sortBy: (selected) {
-                      if (ReceiptAttribute.from(selected) == _searchKey) {
-                        _sortStatus = _sortStatus == SortStatus.asc
-                            ? SortStatus.desc
-                            : SortStatus.asc;
-                      }
-                      _sortData(selected);
-                    },
-                    width: SizeHelper.getScreenWidth(context) * 0.475,
-                    color: widget.headerColor,
-                    items: ReceiptAttribute.values,
-                    selected: _searchKey),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-      ],
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Add listener that rebuilds the list whenever the receipts get changed, resetting all filters and everything
-    final receiptsProvider =
-        Provider.of<ReceiptsProvider>(context, listen: true);
-    receiptsProvider.addListener(() {
-      // Refresh the table and clear the filter
-      _filterValue = '';
-      _updateTable(receipts: receiptsProvider.receiptsAsJson);
-    });
+    print('Rebuilding receipt table!');
 
-    final title = (_filterValue.isNotEmpty && _total == 0)
+    final title = (_receiptsProvider.filterValue.isNotEmpty &&
+            _receiptsProvider.receiptSize == 0)
         ? 'Sorry, we couldn\'t find this item in any of your receipts.'
         : 'Sorry, we couldn\'t find any receipts.';
 
-    final subtitle = (_filterValue.isNotEmpty && _total == 0)
+    final subtitle = (_receiptsProvider.filterValue.isNotEmpty &&
+            _receiptsProvider.receiptSize == 0)
         ? 'Please check the spelling or search for another receipt.'
         : 'Please check your internet connection or add your first receipt.';
 
-    bool isSortingByDate = _searchKey == ReceiptAttribute.expiration ||
-        _searchKey == ReceiptAttribute.purchaseDate;
+    bool isSortingByDate =
+        _receiptsProvider.searchKey == ReceiptAttribute.expiration ||
+            _receiptsProvider.searchKey == ReceiptAttribute.purchaseDate;
 
-    return DatatableWrapper(
-        color: widget.headerColor,
-        table: ResponsiveDatatable(
-          isSortingByDate: isSortingByDate,
-          isSelecting: receiptsProvider.isSelecting,
-          noDataWidget: NoDataFoundWidget(
-              color: widget.headerColor,
-              height: SizeHelper.getScreenHeight(context) * 0.5,
-              title: title,
-              subtitle: subtitle),
-          prefferedColor: widget.headerColor,
-          total: _total,
-          actions: [
-            Expanded(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                child: staticTitle,
-              ),
-            ),
-          ],
-          headers: _headers,
-          source: _source,
-          selecteds: _selecteds,
-          expanded: _expanded,
-          isLoading: _isLoading,
-          footers: _getFooters(),
-        ));
+    return FutureBuilder(
+      future: Future.delayed(const Duration(milliseconds: 500), () {}),
+      builder: (ctx, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return loadingIndicator;
+        } else if (snapshot.hasError) {
+          return Text('Error');
+        } else {
+          return ResponsiveDatatable(
+              isSortingByDate: isSortingByDate,
+              isSelecting: _receiptsProvider.isSelecting,
+              noDataWidget: NoDataFoundWidget(
+                  color: widget.headerColor,
+                  height: SizeHelper.getScreenHeight(context) * 0.5,
+                  title: title,
+                  subtitle: subtitle),
+              prefferedColor: widget.headerColor,
+              total: _receiptsProvider.receiptSize,
+              headers: ReceiptAttribute.values,
+              source: _receiptsProvider.source,
+              footers: [] //_getFooters(),
+              );
+        }
+      },
+    );
   }
 
   /// Footer
@@ -374,19 +214,21 @@ class _ReceiptTableState extends State<ReceiptTable> {
     }
 
     isLastPage() {
-      return _currentPage + _currentPerPage - 1 >= _total;
+      return _currentPage + _currentPerPage - 1 >=
+          _receiptsProvider.receiptSize;
     }
 
     upperRange() {
-      return _currentPage + _currentPerPage >= _total
-          ? _total
+      return _currentPage + _currentPerPage >= _receiptsProvider.receiptSize
+          ? _receiptsProvider.receiptSize
           : _currentPage + _currentPerPage - 1;
     }
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Text("$_currentPage - ${upperRange()} of $_total"),
+        Text(
+            "$_currentPage - ${upperRange()} of ${_receiptsProvider.receiptSize}"),
         IconButton(
           icon: isFirstPage()
               ? _getIcon(Icons.arrow_back_ios_new_rounded, false)
@@ -411,8 +253,9 @@ class _ReceiptTableState extends State<ReceiptTable> {
                   var nextSet = _currentPage + _currentPerPage;
 
                   setState(() {
-                    _currentPage =
-                        nextSet < _total ? nextSet : _total - _currentPerPage;
+                    _currentPage = nextSet < _receiptsProvider.receiptSize
+                        ? nextSet
+                        : _receiptsProvider.receiptSize - _currentPerPage;
                     _updateTableFooter(start: _currentPage - 1);
                   });
                 },
@@ -435,6 +278,13 @@ class _ReceiptTableState extends State<ReceiptTable> {
       color:
           isActive ? widget.headerColor : widget.headerColor.withOpacity(0.5),
       size: size,
+    );
+  }
+
+  LinearProgressIndicator get loadingIndicator {
+    return LinearProgressIndicator(
+      backgroundColor: widget.headerColor.withOpacity(0.5),
+      color: widget.headerColor,
     );
   }
 }

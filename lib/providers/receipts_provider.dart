@@ -4,49 +4,140 @@ import 'package:flutter/cupertino.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/utils/shared_preferences_helper.dart';
 
+import '../screens/tabs/all_receipts/animated_dropdown_button.dart';
+
 class ReceiptsProvider with ChangeNotifier {
-  bool _isSelecting = false;
-
-  final Set<String> _selecteds = {}; // List of receipts (uid)
-  final Set<String> _favorites = {};
-
   List<Receipt> _receipts = [];
 
-  List<Receipt> get receipts {
-    return [..._receipts];
+  List<Map<String, dynamic>> _source = [];
+
+  bool _isSelecting = false;
+
+  final Set<String> _selecteds = {}; // List of selected receipts (uid)
+  final Set<String> _favorites = {}; // List of favorite receipts (uid)
+
+  int get receiptSize {
+    return _receipts.length;
   }
 
+  bool _isShowingFavorites = false;
+  String _filterValue = '';
+  ReceiptAttribute _searchKey = ReceiptAttribute.purchaseDate;
+  SortStatus _sortStatus = SortStatus.desc;
+
+  void resetState() {
+    _filterValue = '';
+    _searchKey = ReceiptAttribute.purchaseDate;
+    _sortStatus = SortStatus.desc;
+    _selecteds.clear();
+    _isSelecting = false;
+    _isShowingFavorites = false;
+    _updateSource();
+  }
+
+  // FAVOURITES
+  void toggleFavourites() {
+    _isShowingFavorites = !_isShowingFavorites;
+    _updateSource();
+  }
+
+  bool get isShowingFavorites {
+    return _isShowingFavorites;
+  }
+
+  // MAIN
+  void setSource(List<Map<String, dynamic>> newSource) {
+    _source = newSource;
+    notifyListeners();
+  }
+
+  List<Map<String, dynamic>> get source {
+    return _source;
+  }
+
+  // SORTING
+  SortStatus get sortStatus {
+    return _sortStatus;
+  }
+
+  void toggleSorting() {
+    _sortStatus =
+        _sortStatus == SortStatus.asc ? SortStatus.desc : SortStatus.asc;
+    _updateSource();
+  }
+
+  // FILTERING
+  String get filterValue {
+    return _filterValue;
+  }
+
+  void setFilterValue(value) {
+    _filterValue = value;
+    _updateSource();
+  }
+
+  ReceiptAttribute get searchKey {
+    return _searchKey;
+  }
+
+  void setSearchKey(ReceiptAttribute key) {
+    if (key == _searchKey) {
+      toggleSorting();
+    }
+    _searchKey = key;
+    _updateSource();
+  }
+
+  // Other
   Receipt getReceiptByUid(String uid) {
     return _receipts.firstWhere((element) => element.uid.value == uid);
   }
 
-  List<Map<String, dynamic>> get receiptsAsJson {
-    return [..._receipts].map((receipt) {
-      return receipt.asJson();
-    }).toList();
-  }
+  void _updateSource() {
+    List<Map<String, dynamic>> newSource = [];
 
-  List<Map<String, dynamic>> getFilteredReceipts(
-      ReceiptAttribute searchKey, String value) {
-    if (value.isEmpty) {
-      return receiptsAsJson;
-    }
-
-    return receiptsAsJson
-        .where((receipt) => receipt[searchKey.name]
+    newSource = [..._receipts]
+        .map((e) => e.asJson()) // Change to JSON
+        .where((e) {
+          // Filter our favourites
+          if (_isShowingFavorites) {
+            return _favorites.contains(e[ReceiptAttribute.uid.name]);
+          } else {
+            return true;
+          }
+        })
+        .where((e) => e[_searchKey.name] // Filter according to search value
             .toString()
             .toLowerCase()
-            .contains(value.toString().toLowerCase()))
+            .contains(_filterValue.toString().toLowerCase()))
         .toList();
+
+    newSource.sort((a, b) {
+      if (_sortStatus == SortStatus.asc) {
+        return a[_searchKey.name].compareTo(b[_searchKey.name]);
+      } else {
+        return b[_searchKey.name].compareTo(a[_searchKey.name]);
+      }
+    });
+
+    setSource(newSource);
   }
 
   Future<dynamic> fetchAndSetReceipts() async {
     List<Receipt> newList = [];
 
-    return Future.delayed(const Duration(milliseconds: 0)).then((value) {
+    return Future.delayed(const Duration(milliseconds: 500)).then((value) {
       newList.addAll(_generateData(n: 8));
       _receipts = newList;
-      notifyListeners();
+
+      // Update source
+      _updateSource();
+    });
+  }
+
+  void selectAll() {
+    _receipts.forEach((e) {
+      _selecteds.add(e.uid.value);
     });
   }
 

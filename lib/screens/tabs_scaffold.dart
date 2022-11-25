@@ -5,12 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/screens/tabs/add_receipt_screen.dart';
-import 'package:smart_receipts/screens/tabs/all_receipts_screen.dart';
+import 'package:smart_receipts/screens/tabs/all_receipts/all_receipts_screen.dart';
 import 'package:smart_receipts/screens/tabs/groups_screen.dart';
 import 'package:smart_receipts/screens/tabs/home_screen.dart';
 import 'package:smart_receipts/screens/tabs/settings_screen.dart';
 
-import '../screens/tabs/abstract_tab_screen.dart';
+import 'tabs/abstract_tab_screen.dart';
 
 class TabsScaffold extends StatefulWidget {
   static const route = '/';
@@ -41,7 +41,7 @@ class _TabsScaffoldState extends State<TabsScaffold> {
         Provider.of<ReceiptsProvider>(context, listen: false);
     receiptsProvider.fetchAndSetReceipts();
 
-    // 2. Fetch all favorites
+    // 2. Fetch all favorites from local memory
     receiptsProvider.fetchAndSetFavorites();
 
     super.initState();
