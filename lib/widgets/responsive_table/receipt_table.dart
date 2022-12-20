@@ -35,7 +35,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
     }
   }
 
-  /* Asynchronous operation */
+  /* Asynchronous operations */
   _fetchData() async {
     setState(() => _isLoading = true);
     _receiptsProvider.fetchAndSetReceipts().then((value) {
@@ -67,7 +67,9 @@ class _ReceiptTableState extends State<ReceiptTable> {
     super.initState();
 
     _receiptsProvider.addListener(() {
-      setState(() {});
+      setState(() {
+        // Ignore
+      });
     });
 
     // Reset the screen everytime opened
@@ -150,30 +152,18 @@ class _ReceiptTableState extends State<ReceiptTable> {
         _receiptsProvider.searchKey == ReceiptAttribute.expiration ||
             _receiptsProvider.searchKey == ReceiptAttribute.purchaseDate;
 
-    return FutureBuilder(
-      future: Future.delayed(const Duration(milliseconds: 500), () {}),
-      builder: (ctx, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return loadingIndicator;
-        } else if (snapshot.hasError) {
-          return Text('Error');
-        } else {
-          return ResponsiveDatatable(
-              isSortingByDate: isSortingByDate,
-              isSelecting: _receiptsProvider.isSelecting,
-              noDataWidget: NoDataFoundWidget(
-                  color: widget.headerColor,
-                  height: SizeHelper.getScreenHeight(context) * 0.5,
-                  title: title,
-                  subtitle: subtitle),
-              prefferedColor: widget.headerColor,
-              total: _receiptsProvider.receiptSize,
-              headers: ReceiptAttribute.values,
-              source: _receiptsProvider.source,
-              footers: [] //_getFooters(),
-              );
-        }
-      },
+    return ResponsiveDatatable(
+      isSortingByDate: isSortingByDate,
+      isSelecting: _receiptsProvider.isSelecting,
+      noDataWidget: NoDataFoundWidget(
+          color: widget.headerColor,
+          height: SizeHelper.getScreenHeight(context) * 0.5,
+          title: title,
+          subtitle: subtitle),
+      prefferedColor: widget.headerColor,
+      total: _receiptsProvider.receiptSize,
+      headers: ReceiptAttribute.values,
+      source: _receiptsProvider.source,
     );
   }
 

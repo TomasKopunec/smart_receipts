@@ -5,6 +5,9 @@ import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/screens/show_receipt_screen.dart';
 import '../../../models/receipt.dart';
+
+import '../../../models/product.dart';
+
 import '../receipt_status_label.dart';
 import 'entry_dismissible.dart';
 
@@ -34,14 +37,20 @@ class DataEntryWidgetMobile extends StatefulWidget {
 class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
   late ReceiptsProvider _provider;
   bool _isExpanded = false;
-  late bool _isFavourite;
+  // late bool _isFavourite;
 
   @override
   void initState() {
     super.initState();
 
     _provider = Provider.of<ReceiptsProvider>(context, listen: false);
-    _isFavourite = _provider.isFavorite(widget.uid);
+
+    // Listen to changes
+    _provider.addListener(() {
+      setState(() {
+        // Rebuild
+      });
+    });
   }
 
   Widget get leading {
@@ -86,41 +95,37 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     return view;
   }
 
-  bool get isSelected {
-    return Provider.of<ReceiptsProvider>(context).selectedContains(widget.uid);
+  bool get _isSelected {
+    return _provider.selectedContains(widget.uid);
+  }
+
+  bool get _isFavourite {
+    return _provider.isFavorite(widget.uid);
   }
 
   Widget get favoriteLabel {
-    final provider = Provider.of<ReceiptsProvider>(context);
-
-    provider.addListener(
-      () {
-        final bool result = provider.isFavorite(widget.uid);
-        if (result != _isFavourite) {
-          setState(() {
-            _isFavourite = result;
-          });
-        }
-      },
-    );
-
     return AnimatedOpacity(
         duration: const Duration(milliseconds: 1200),
         curve: Curves.fastLinearToSlowEaseIn,
         opacity: _isFavourite ? 1 : 0,
-        child: const Icon(Icons.star, color: Colors.yellow));
+        child: const Icon(Icons.star, color: Color.fromARGB(255, 255, 187, 0)));
+  }
+
+  String get numberOfItems {
+    final int count = widget.data[ReceiptAttribute.items.name].length;
+    return count == 1 ? '(1 product)' : '($count products)';
   }
 
   @override
   Widget build(BuildContext context) {
     final decoration = BoxDecoration(
-      color: isSelected ? widget.color.withOpacity(0.4) : Colors.white,
+      color: _isSelected ? widget.color.withOpacity(0.4) : Colors.white,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       boxShadow: [
         BoxShadow(
-            color: isSelected ? Colors.white : Colors.black.withOpacity(0.25),
-            blurRadius: isSelected ? 0 : 1,
-            offset: Offset(0, isSelected ? 0 : 1)),
+            color: _isSelected ? Colors.white : Colors.black.withOpacity(0.35),
+            blurRadius: _isSelected ? 0 : 1.5,
+            offset: Offset(0, _isSelected ? 0 : 1.5)),
       ],
     );
 
@@ -146,12 +151,14 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
             controlAffinity: ListTileControlAffinity.leading,
             title: Row(
               children: [
-                Text(widget.data[ReceiptAttribute.storeName.name]),
-                const SizedBox(
-                  width: 2,
+                Text(
+                  widget.data[ReceiptAttribute.storeName.name],
+                  style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
-                const Icon(Icons.location_on),
-                Text(widget.data[ReceiptAttribute.storeLocation.name]),
+                const SizedBox(
+                  width: 4,
+                ),
+                Text(numberOfItems),
               ],
             ),
             subtitle: Row(
@@ -159,19 +166,26 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
               children: [
                 Text(DateFormat.yMMMMd().format(DateTime.parse(
                     widget.data[ReceiptAttribute.purchaseDate.name]))),
-                const SizedBox(width: 8),
-                ReceiptStatusLabel(
-                    status: ReceiptStatus.from(
-                        widget.data[ReceiptAttribute.status.name]))
               ],
             ),
-            trailing: Column(
+            trailing: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                    '${widget.data[ReceiptAttribute.amount.name].toString()}\$'),
-                favoriteLabel
+                  '£${widget.data[ReceiptAttribute.amount.name].toString()}',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: SizeHelper.getFontSize(context,
+                          size: FontSize.regularLarge)),
+                ),
+                if (_isFavourite)
+                  Row(
+                    children: [
+                      const SizedBox(width: 2),
+                      favoriteLabel,
+                    ],
+                  )
               ],
             ),
             textColor: widget.color,
@@ -180,7 +194,39 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...widget.headers.map((e) => getEntry(e.name)).toList(),
+                  ...widget.headers
+                      .where(
+                        (e) => e.name != 'items',
+                      )
+                      .map((e) => getEntry(e.name))
+                      .toList(),
+                  Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.black.withOpacity(0.2)),
+                    child: Column(
+                      children: [
+                        const Divider(thickness: 0.5),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Text(
+                                'Products:',
+                                overflow: TextOverflow.clip,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  products,
+                  Theme(
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.black.withOpacity(0.2)),
+                    child: const Divider(thickness: 0.5),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: ElevatedButton.icon(
@@ -197,6 +243,36 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
           ),
         ),
       ),
+    );
+  }
+
+  Container get products {
+    List<Widget> widgets = [];
+
+    (widget.data[ReceiptAttribute.items.name] as List<Map<String, dynamic>>)
+        .forEach((map) {
+      map.entries.forEach((entry) {
+        widgets.add(Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                ProductAttribute.from(entry.key).toString(),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                entry.value,
+              )
+            ],
+          ),
+        ));
+      });
+    });
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Column(children: widgets),
     );
   }
 

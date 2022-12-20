@@ -22,8 +22,8 @@ class TabsScaffold extends StatefulWidget {
 }
 
 class _TabsScaffoldState extends State<TabsScaffold> {
-  final PageController _myPage = PageController(initialPage: 0);
-  int selectedIndex = 0;
+  final PageController _myPage = PageController(initialPage: 1);
+  int _selectedIndex = 1;
 
   final List<AbstractTabScreen> _screens = [
     HomeScreen(),
@@ -73,11 +73,11 @@ class _TabsScaffoldState extends State<TabsScaffold> {
       widgets.add(MenuItem(
           icon: screen.getIcon(),
           label: screen.getTitle(),
-          isSelected: selectedIndex == i,
+          isSelected: _selectedIndex == i,
           isDummy: false,
           changePage: () => safeSetState(() {
                 _myPage.jumpToPage(i);
-                selectedIndex = i;
+                _selectedIndex = i;
               })));
     }
 
@@ -93,11 +93,11 @@ class _TabsScaffoldState extends State<TabsScaffold> {
       widgets.add(MenuItem(
           icon: screen.getIcon(),
           label: screen.getTitle(),
-          isSelected: selectedIndex == i,
+          isSelected: _selectedIndex == i,
           isDummy: false,
           changePage: () => safeSetState(() {
                 _myPage.jumpToPage(i);
-                selectedIndex = i;
+                _selectedIndex = i;
               })));
     }
 
@@ -110,7 +110,7 @@ class _TabsScaffoldState extends State<TabsScaffold> {
       body: PageView(
         controller: _myPage,
         onPageChanged: (value) {
-          print('Page changes to index #value');
+          print('Page changes to index $value');
         },
         physics: const NeverScrollableScrollPhysics(),
         children: _screens,

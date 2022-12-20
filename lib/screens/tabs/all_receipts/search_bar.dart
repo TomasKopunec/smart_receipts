@@ -19,7 +19,6 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    print('Building search bar');
     return Consumer<ReceiptsProvider>(
       builder: (_, provider, child) {
         return TextFormField(

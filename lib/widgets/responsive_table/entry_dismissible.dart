@@ -56,7 +56,7 @@ class EntryDismissible extends StatelessWidget {
         children: [
           SlidableAction(
             onPressed: (ctx) => _star(context),
-            backgroundColor: const Color.fromRGBO(250, 220, 0, 1),
+            backgroundColor: const Color.fromARGB(255, 255, 187, 0),
             foregroundColor: Colors.white,
             icon: Icons.star,
             label: 'Star',

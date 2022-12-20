@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/utils/shared_preferences_helper.dart';
 
+import '../models/product.dart';
 import '../screens/tabs/all_receipts/animated_dropdown_button.dart';
 
 class ReceiptsProvider with ChangeNotifier {
@@ -72,7 +73,7 @@ class ReceiptsProvider with ChangeNotifier {
   }
 
   void setFilterValue(value) {
-    _filterValue = value;
+    _filterValue = value.trim();
     _updateSource();
   }
 
@@ -126,7 +127,7 @@ class ReceiptsProvider with ChangeNotifier {
   Future<dynamic> fetchAndSetReceipts() async {
     List<Receipt> newList = [];
 
-    return Future.delayed(const Duration(milliseconds: 500)).then((value) {
+    return Future.delayed(const Duration(milliseconds: 250)).then((value) {
       newList.addAll(_generateData(n: 8));
       _receipts = newList;
 
@@ -136,28 +137,55 @@ class ReceiptsProvider with ChangeNotifier {
   }
 
   void selectAll() {
-    _receipts.forEach((e) {
+    for (var e in _receipts) {
       _selecteds.add(e.uid.value);
-    });
+    }
+    notifyListeners();
+  }
+
+  void clearSelecteds({bool notify = false}) {
+    _selecteds.clear();
+    if (notify) {
+      notifyListeners();
+    }
   }
 
   List<Receipt> _generateData({required int n}) {
+    List<String> storeNames = [
+      'H&M',
+      'Zara',
+      'McDonald\'s',
+      'Lidl',
+      'Gant',
+      'Nike',
+      'Dell',
+      'Deli Store'
+    ];
+
     final List<Receipt> generated = [];
     for (int i = 1; i <= n; i++) {
-      generated.add(Receipt(
-          storeName: 'Store $i',
-          amount: (i * 10.00) - 0.01,
-          purchaseDate: DateTime.now()
-              .subtract(Duration(days: Random().nextInt(2 * 365))),
-          storeLocation: 'London, UK',
-          category: 'Fashion',
-          expiration: DateTime.now()
-              .subtract(Duration(days: i))
-              .add(const Duration(days: 365)),
-          sku: '${i}000$i',
-          uid: '$i',
-          status: ReceiptStatus
-              .values[Random().nextInt(ReceiptStatus.values.length)]));
+      final List<Product> items = [];
+      for (int x = 1; x <= Random().nextInt(10); x++) {
+        items.add(Product(itemName: 'Item $x'));
+      }
+
+      generated.add(
+        Receipt(
+            storeName: storeNames[Random().nextInt(storeNames.length)],
+            amount: (i * 10.00) - 0.01,
+            purchaseDate: DateTime.now()
+                .subtract(Duration(days: Random().nextInt(2 * 365))),
+            storeLocation: 'London, UK',
+            category: 'Fashion',
+            expiration: DateTime.now()
+                .subtract(Duration(days: i))
+                .add(const Duration(days: 365)),
+            sku: '${i}000$i',
+            uid: '$i',
+            status: ReceiptStatus
+                .values[Random().nextInt(ReceiptStatus.values.length)],
+            items: items),
+      );
     }
     generated.shuffle();
     return generated;
@@ -186,13 +214,6 @@ class ReceiptsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearSelecteds({bool notify = false}) {
-    _selecteds.clear();
-    if (notify) {
-      notifyListeners();
-    }
-  }
-
   bool selectedContains(String uid) {
     return _selecteds.contains(uid);
   }
@@ -205,26 +226,24 @@ class ReceiptsProvider with ChangeNotifier {
     return [..._favorites];
   }
 
-  void flipFavorite(String uid) {
+  void flipFavorite(String uid, [bool notify = true]) {
     if (_favorites.contains(uid)) {
       _favorites.remove(uid);
     } else {
       _favorites.add(uid);
     }
 
-    SharedPreferencesHelper.saveFavorites(_favorites.toList()).then((value) {
+    SharedPreferencesHelper.saveFavorites(_favorites.toList());
+    if (notify) {
       notifyListeners();
-    });
+    }
   }
 
   void flipFavorites(List<String> list) {
     for (final uid in list) {
-      flipFavorite(uid);
+      flipFavorite(uid, false);
     }
-
-    SharedPreferencesHelper.saveFavorites(_favorites.toList()).then((value) {
-      notifyListeners();
-    });
+    notifyListeners();
   }
 
   bool isFavorite(String uid) {

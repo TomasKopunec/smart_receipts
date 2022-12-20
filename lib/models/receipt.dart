@@ -1,5 +1,7 @@
 import 'package:smart_receipts/models/json_attribute.dart';
 
+import 'product.dart';
+
 enum ReceiptStatus {
   active,
   expired,
@@ -19,7 +21,8 @@ enum ReceiptAttribute {
   expiration('Expiration'),
   sku('SKU'),
   uid('UID'),
-  status('Status');
+  status('Status'),
+  items('Items');
 
   const ReceiptAttribute(this.colName);
   final String colName;
@@ -44,6 +47,11 @@ class Receipt {
   final JsonAttribute sku;
   final JsonAttribute uid;
   final JsonAttribute status;
+  final JsonAttribute items;
+
+  int getItemsCount() {
+    return (items.value as List<Product>).length;
+  }
 
   Receipt(
       {required String storeName,
@@ -54,7 +62,8 @@ class Receipt {
       required DateTime expiration,
       required String sku,
       required String uid,
-      required ReceiptStatus status})
+      required ReceiptStatus status,
+      required List<Product> items})
       : storeName = JsonAttribute(ReceiptAttribute.storeName.name, storeName),
         amount = JsonAttribute(ReceiptAttribute.amount.name, amount),
         purchaseDate = JsonAttribute(
@@ -66,7 +75,8 @@ class Receipt {
             ReceiptAttribute.expiration.name, expiration.toIso8601String()),
         sku = JsonAttribute(ReceiptAttribute.sku.name, sku),
         uid = JsonAttribute(ReceiptAttribute.uid.name, uid),
-        status = JsonAttribute(ReceiptAttribute.status.name, status);
+        status = JsonAttribute(ReceiptAttribute.status.name, status),
+        items = JsonAttribute(ReceiptAttribute.items.name, items);
 
   Map<String, dynamic> asJson() {
     return {
@@ -79,6 +89,8 @@ class Receipt {
       sku.attribute: sku.value,
       uid.attribute: uid.value,
       status.attribute: (status.value as ReceiptStatus).name.toUpperCase(),
+      items.attribute:
+          (items.value as List<Product>).map((e) => e.asJson()).toList()
     };
   }
 }

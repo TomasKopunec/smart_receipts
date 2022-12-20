@@ -36,47 +36,23 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ReceiptsProvider>(
-      builder: (context, provider, child) {
-        final bool isSelecting = provider.isSelecting;
-
-        return Stack(alignment: AlignmentDirectional.bottomEnd, children: [
-          child!,
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 1800),
-            height: isSelecting ? SizeHelper.getScreenHeight(context) * 0.2 : 0,
-            width: SizeHelper.getScreenWidth(context) * 0.375,
-            // width: double.infinity,
-            curve: Curves.fastLinearToSlowEaseIn,
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 600),
-              curve: Curves.fastLinearToSlowEaseIn,
-              opacity: isSelecting ? 1 : 0,
-              child: const SelectionWidget(
-                color: ColorHelper.APP_COLOR,
-              ),
-            ),
+    return Container(
+      color: Colors.black.withOpacity(0.07),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ControlHeader(color: widget.getColor(context)),
+          Container(
+            height: 3,
           ),
-        ]);
-      },
-      child: Container(
-        color: Colors.black.withOpacity(0.07),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ControlHeader(color: widget.getColor(context)),
-            Container(
-              height: 3,
-            ),
-            Expanded(
-                child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
-              child: ReceiptTable(),
-            ))
-          ],
-        ),
+          Expanded(
+              child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
+            child: ReceiptTable(),
+          ))
+        ],
       ),
     );
   }

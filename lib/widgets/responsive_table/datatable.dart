@@ -10,7 +10,6 @@ import 'data_entry_widget_mobile.dart';
 class ResponsiveDatatable extends StatefulWidget {
   final List<ReceiptAttribute> headers;
   final List<Map<String, dynamic>> source;
-  final List<Widget> footers;
   // Added
   final bool isSelecting;
   final Widget noDataWidget;
@@ -31,7 +30,6 @@ class ResponsiveDatatable extends StatefulWidget {
       required this.isSortingByDate,
       required this.headers,
       required this.source,
-      required this.footers,
       required this.isSelecting,
       required this.noDataWidget,
       required this.total,
@@ -175,7 +173,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
         ),
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.center,
-          children: widget.footers,
         ),
       ));
     } else {
@@ -194,7 +191,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
       // Add the footers
       children.add(Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: widget.footers,
       ));
     }
 
