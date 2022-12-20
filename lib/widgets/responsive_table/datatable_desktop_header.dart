@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
-import 'package:smart_receipts/models/receipt.dart';
+import 'package:smart_receipts/models/receipt/receipt.dart';
 
 class DatatableDesktopHeader extends StatelessWidget {
   final Color color;
-  final List<ReceiptAttribute> headers;
+  final List<ReceiptField> headers;
   final BoxDecoration decoration;
   final bool isSelecting;
 

@@ -6,12 +6,12 @@ import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/widgets/dialogs/confirm_dialog.dart';
 
 class EntryDismissible extends StatelessWidget {
-  final String uid;
+  final int id;
   final Widget child;
   final Color color;
 
   const EntryDismissible(
-      {required this.child, required this.color, required this.uid});
+      {required this.child, required this.color, required this.id});
 
   void _delete(BuildContext context) async {
     final result = await showDialog(
@@ -29,13 +29,13 @@ class EntryDismissible extends StatelessWidget {
   }
 
   void _star(BuildContext context) {
-    Provider.of<ReceiptsProvider>(context, listen: false).flipFavorite(uid);
+    Provider.of<ReceiptsProvider>(context, listen: false).flipFavorite(id);
   }
 
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      key: ValueKey(uid),
+      key: ValueKey(id),
       enabled: true,
       direction: Axis.horizontal,
       endActionPane: ActionPane(

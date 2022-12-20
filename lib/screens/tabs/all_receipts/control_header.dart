@@ -59,7 +59,10 @@ class ControlHeader extends StatelessWidget {
                 },
                 child: Text(
                   provider.isSelecting ? 'Cancel' : 'Select',
-                  style: TextStyle(color: color),
+                  style: TextStyle(
+                      color: color,
+                      fontSize: SizeHelper.getFontSize(context,
+                          size: FontSize.regularLarge)),
                 ))
         ],
       ),
@@ -108,7 +111,7 @@ class ControlHeader extends StatelessWidget {
                     width: 16,
                   ),
                   AnimatedDropdownButton(
-                    width: SizeHelper.getScreenWidth(context) * 0.475,
+                    width: SizeHelper.getScreenWidth(context) * 0.525,
                     color: color,
                   ),
                 ],
@@ -137,8 +140,22 @@ class ControlHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ReceiptsProvider>(builder: (ctx, provider, child) {
-      return Column(
-        children: [getTitle(context, provider), getControls(context, provider)],
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(0)),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: 1.5,
+                offset: Offset(0, 1.5)),
+          ],
+        ),
+        child: Column(
+          children: [
+            getTitle(context, provider),
+            getControls(context, provider)
+          ],
+        ),
       );
     });
   }

@@ -4,12 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/widgets/receipt_status_label.dart';
-import '../../../models/receipt.dart';
+import '../../models/receipt/receipt.dart';
 
 class DataEntryWidgetDesktop extends StatefulWidget {
   final Color color;
   final Map<String, dynamic> data;
-  final List<ReceiptAttribute> headers;
+  final List<ReceiptField> headers;
   final bool isSelecting;
   final bool isOdd;
 
@@ -19,13 +19,13 @@ class DataEntryWidgetDesktop extends StatefulWidget {
       required this.data,
       required this.headers,
       required this.isOdd})
-      : super(key: ValueKey(data[ReceiptAttribute.uid.name]));
+      : super(key: ValueKey(data['id']));
 
   @override
   State<DataEntryWidgetDesktop> createState() => _DataEntryWidgetDesktopState();
 
-  String get uid {
-    return data[ReceiptAttribute.uid.name];
+  int get id {
+    return data['id'];
   }
 }
 
@@ -37,11 +37,11 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
     super.initState();
 
     _isFavorite = Provider.of<ReceiptsProvider>(context, listen: false)
-        .isFavorite(widget.uid);
+        .isFavorite(widget.id);
   }
 
   bool get selected {
-    return Provider.of<ReceiptsProvider>(context).selectedContains(widget.uid);
+    return Provider.of<ReceiptsProvider>(context).selectedContains(widget.id);
   }
 
   Widget get selectionIcon {
@@ -50,7 +50,7 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
     final provider = Provider.of<ReceiptsProvider>(context);
 
     icon = widget.isSelecting
-        ? provider.selectedContains(widget.uid)
+        ? provider.selectedContains(widget.id)
             ? Icon(Icons.radio_button_checked,
                 color: widget.color, size: SizeHelper.getIconSize(context))
             : Icon(Icons.radio_button_unchecked,
@@ -60,10 +60,10 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
     final Widget view = InkWell(
         onTap: () {
           setState(() {
-            if (provider.selectedContains(widget.uid)) {
-              provider.removeSelectedByUID(widget.uid);
+            if (provider.selectedContains(widget.id)) {
+              provider.removeSelectedByID(widget.id);
             } else {
-              provider.addSelectedByUID(widget.uid);
+              provider.addSelectedByID(widget.id);
             }
           });
         },
@@ -106,7 +106,7 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
               children: [
                 selectionIcon,
                 ...widget.headers
-                    .map((e) => Expanded(child: getEntry(e.name)))
+                    .map((e) => Expanded(child: getEntry(e)))
                     .toList()
               ]),
         ),
@@ -145,9 +145,9 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
     final provider = Provider.of<ReceiptsProvider>(context);
     provider.addListener(
       () {
-        if (provider.isFavorite(widget.uid) != _isFavorite) {
+        if (provider.isFavorite(widget.id) != _isFavorite) {
           setState(() {
-            _isFavorite = provider.isFavorite(widget.uid);
+            _isFavorite = provider.isFavorite(widget.id);
           });
         }
       },
@@ -185,22 +185,21 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
     );
   }
 
-  Widget getEntry(String header) {
-    final ReceiptAttribute attribute = ReceiptAttribute.from(header);
-    final value = widget.data[attribute.name];
+  Widget getEntry(ReceiptField header) {
+    final String attribute = header.name;
+    final value = widget.data[attribute];
 
-    if (attribute == ReceiptAttribute.status) {
+    if (attribute == 'status') {
       return getStatusWidget(ReceiptStatus.from(value));
     }
 
     String formattedString = '$value';
 
-    if (attribute == ReceiptAttribute.expiration ||
-        attribute == ReceiptAttribute.purchaseDate) {
+    if (attribute == 'expiration' || attribute == 'purchaseDateTime') {
       formattedString = DateFormat.yMMMMd().format(DateTime.parse(value));
     }
 
-    if (attribute == ReceiptAttribute.amount) {
+    if (attribute == 'price') {
       formattedString = '$value\$';
     }
 

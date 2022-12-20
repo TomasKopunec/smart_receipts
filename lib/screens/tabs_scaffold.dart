@@ -28,7 +28,6 @@ class _TabsScaffoldState extends State<TabsScaffold> {
   final List<AbstractTabScreen> _screens = [
     HomeScreen(),
     AllReceiptsScreen(),
-    // AddReceiptScreen(),
     GroupsScreen(),
     SettingsScreen(),
     AddReceiptScreen()

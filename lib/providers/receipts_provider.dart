@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:smart_receipts/models/receipt.dart';
+import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/utils/shared_preferences_helper.dart';
 
-import '../models/product.dart';
+import '../models/product/product.dart';
 import '../screens/tabs/all_receipts/animated_dropdown_button.dart';
 
 class ReceiptsProvider with ChangeNotifier {
@@ -14,8 +14,8 @@ class ReceiptsProvider with ChangeNotifier {
 
   bool _isSelecting = false;
 
-  final Set<String> _selecteds = {}; // List of selected receipts (uid)
-  final Set<String> _favorites = {}; // List of favorite receipts (uid)
+  final Set<int> _selecteds = {}; // List of selected receipts (id)
+  final Set<int> _favorites = {}; // List of favorite receipts (id)
 
   int get receiptSize {
     return _receipts.length;
@@ -23,12 +23,13 @@ class ReceiptsProvider with ChangeNotifier {
 
   bool _isShowingFavorites = false;
   String _filterValue = '';
-  ReceiptAttribute _searchKey = ReceiptAttribute.purchaseDate;
+  ReceiptField _searchKey =
+      ReceiptField.purchase_date_time; // Refer to Receipt class
   SortStatus _sortStatus = SortStatus.desc;
 
   void resetState() {
     _filterValue = '';
-    _searchKey = ReceiptAttribute.purchaseDate;
+    _searchKey = ReceiptField.purchase_date_time;
     _sortStatus = SortStatus.desc;
     _selecteds.clear();
     _isSelecting = false;
@@ -77,37 +78,39 @@ class ReceiptsProvider with ChangeNotifier {
     _updateSource();
   }
 
-  ReceiptAttribute get searchKey {
+  ReceiptField get searchKey {
     return _searchKey;
   }
 
-  void setSearchKey(ReceiptAttribute key) {
-    if (key == _searchKey) {
+  void setSearchKey(String key) {
+    if (key == _searchKey.name) {
       toggleSorting();
     }
-    _searchKey = key;
+    _searchKey = ReceiptField.from(key);
     _updateSource();
   }
 
   // Other
-  Receipt getReceiptByUid(String uid) {
-    return _receipts.firstWhere((element) => element.uid.value == uid);
+  Receipt getReceiptById(int id) {
+    return _receipts.firstWhere((e) => e.id == id);
   }
 
   void _updateSource() {
     List<Map<String, dynamic>> newSource = [];
 
     newSource = [..._receipts]
-        .map((e) => e.asJson()) // Change to JSON
-        .where((e) {
-          // Filter our favourites
+        // Change to JSON
+        .map((receipt) => receipt.toJson())
+        // Filter our favourites
+        .where((receipt) {
           if (_isShowingFavorites) {
-            return _favorites.contains(e[ReceiptAttribute.uid.name]);
+            return _favorites.contains(receipt['id']);
           } else {
             return true;
           }
         })
-        .where((e) => e[_searchKey.name] // Filter according to search value
+        // Filter according to search key
+        .where((receipt) => receipt[_searchKey]
             .toString()
             .toLowerCase()
             .contains(_filterValue.toString().toLowerCase()))
@@ -138,7 +141,7 @@ class ReceiptsProvider with ChangeNotifier {
 
   void selectAll() {
     for (var e in _receipts) {
-      _selecteds.add(e.uid.value);
+      _selecteds.add(e.id);
     }
     notifyListeners();
   }
@@ -164,28 +167,36 @@ class ReceiptsProvider with ChangeNotifier {
 
     final List<Receipt> generated = [];
     for (int i = 1; i <= n; i++) {
-      final List<Product> items = [];
-      for (int x = 1; x <= Random().nextInt(10); x++) {
-        items.add(Product(itemName: 'Item $x'));
+      final List<Product> products = [];
+
+      for (int x = 0; x <= Random().nextInt(10) + 1; x++) {
+        products.add(Product(
+            id: x,
+            name: 'Item $x',
+            price: x * 10,
+            sku: '$x',
+            category: 'Default Category'));
       }
 
-      generated.add(
-        Receipt(
-            storeName: storeNames[Random().nextInt(storeNames.length)],
-            amount: (i * 10.00) - 0.01,
-            purchaseDate: DateTime.now()
-                .subtract(Duration(days: Random().nextInt(2 * 365))),
-            storeLocation: 'London, UK',
-            category: 'Fashion',
-            expiration: DateTime.now()
-                .subtract(Duration(days: i))
-                .add(const Duration(days: 365)),
-            sku: '${i}000$i',
-            uid: '$i',
-            status: ReceiptStatus
-                .values[Random().nextInt(ReceiptStatus.values.length)],
-            items: items),
-      );
+      generated.add(Receipt(
+          id: i,
+          auto_delete_date_time: DateTime.now().add(Duration(days: 365)),
+          retailer_receipt_id: i,
+          retailer_id: i,
+          retailer_name: storeNames[Random().nextInt(storeNames.length)],
+          customer_id: i,
+          purchase_date_time: DateTime.now()
+              .subtract(Duration(days: Random().nextInt(365 * 2))),
+          purchase_location: 'London, UK',
+          status: ReceiptStatus
+              .values[Random().nextInt(ReceiptStatus.values.length)],
+          expiration: DateTime.now()
+              .subtract(Duration(days: i))
+              .add(const Duration(days: 365)),
+          price: (Random().nextDouble() * 200),
+          currency: 'GBP',
+          payment: 'Card',
+          products: products));
     }
     generated.shuffle();
     return generated;
@@ -204,33 +215,33 @@ class ReceiptsProvider with ChangeNotifier {
     return _isSelecting;
   }
 
-  void addSelectedByUID(String uid) {
-    _selecteds.add(uid);
+  void addSelectedByID(int id) {
+    _selecteds.add(id);
     notifyListeners();
   }
 
-  void removeSelectedByUID(String uid) {
-    _selecteds.remove(uid);
+  void removeSelectedByID(int id) {
+    _selecteds.remove(id);
     notifyListeners();
   }
 
-  bool selectedContains(String uid) {
-    return _selecteds.contains(uid);
+  bool selectedContains(int id) {
+    return _selecteds.contains(id);
   }
 
-  List<String> get selecteds {
+  List<int> get selecteds {
     return [..._selecteds];
   }
 
-  List<String> get favorites {
+  List<int> get favorites {
     return [..._favorites];
   }
 
-  void flipFavorite(String uid, [bool notify = true]) {
-    if (_favorites.contains(uid)) {
-      _favorites.remove(uid);
+  void flipFavorite(int id, [bool notify = true]) {
+    if (_favorites.contains(id)) {
+      _favorites.remove(id);
     } else {
-      _favorites.add(uid);
+      _favorites.add(id);
     }
 
     SharedPreferencesHelper.saveFavorites(_favorites.toList());
@@ -239,15 +250,15 @@ class ReceiptsProvider with ChangeNotifier {
     }
   }
 
-  void flipFavorites(List<String> list) {
-    for (final uid in list) {
-      flipFavorite(uid, false);
+  void flipFavorites(List<int> list) {
+    for (final id in list) {
+      flipFavorite(id, false);
     }
     notifyListeners();
   }
 
-  bool isFavorite(String uid) {
-    return _favorites.contains(uid);
+  bool isFavorite(int id) {
+    return _favorites.contains(id);
   }
 
   void fetchAndSetFavorites() async {
@@ -258,9 +269,7 @@ class ReceiptsProvider with ChangeNotifier {
     }
 
     _favorites.addAll(fetched);
-
     print('Successfully fetched favorites: $_favorites');
-
     notifyListeners();
   }
 }

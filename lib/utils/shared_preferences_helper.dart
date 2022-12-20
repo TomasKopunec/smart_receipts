@@ -14,12 +14,17 @@ class SharedPreferencesHelper {
     return res;
   }
 
-  static Future<bool> saveFavorites(List<String> favorites) async {
-    return await setStringList(key: FAVORITES_LIST, value: favorites);
+  static Future<bool> saveFavorites(List<int> favorites) async {
+    return await setStringList(
+        key: FAVORITES_LIST,
+        value: favorites.map((e) => e.toString()).toList());
   }
 
-  static Future<List<String>?> getFavorites() async {
+  static Future<List<int>?> getFavorites() async {
     final prefs = await _instance;
-    return prefs.getStringList(FAVORITES_LIST);
+    return prefs
+        .getStringList(FAVORITES_LIST)!
+        .map((e) => int.parse(e))
+        .toList();
   }
 }

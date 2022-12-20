@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/screens/tabs_scaffold.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
-import 'package:smart_receipts/providers/nav_bar_provider.dart';
 import 'package:smart_receipts/providers/settings_provider.dart';
 import 'package:smart_receipts/screens/playgroundScreen.dart';
 
@@ -20,7 +19,6 @@ class Main extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: ReceiptsProvider()),
-        ChangeNotifierProvider.value(value: NavBarProvider()),
         ChangeNotifierProvider.value(value: SettingsProvider()),
       ],
       child: MaterialApp(

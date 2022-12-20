@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppSnackBar {
   static void show(BuildContext context, AppSnackBarBuilder builder) {
-    ScaffoldMessenger.of(context)
-        .hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(builder.build());
   }
 }
@@ -34,6 +33,7 @@ class AppSnackBarBuilder {
 
   SnackBar build() {
     return SnackBar(
+      behavior: SnackBarBehavior.floating,
       duration: _duration,
       action: _hasAction
           ? SnackBarAction(

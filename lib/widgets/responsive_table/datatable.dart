@@ -2,13 +2,13 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:smart_receipts/models/receipt.dart';
+import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/widgets/responsive_table/datatable_desktop_header.dart';
 import 'data_entry_widget_desktop.dart';
 import 'data_entry_widget_mobile.dart';
 
 class ResponsiveDatatable extends StatefulWidget {
-  final List<ReceiptAttribute> headers;
+  final List<ReceiptField> headers;
   final List<Map<String, dynamic>> source;
   // Added
   final bool isSelecting;
@@ -54,7 +54,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
       // Group by month-year
       for (final Map<String, dynamic> entry in widget.source) {
         final parsedDate =
-            DateTime.parse(entry[ReceiptAttribute.purchaseDate.name]);
+            DateTime.parse(entry[ReceiptField.purchase_date_time.name]);
         final String key =
             "${DateFormat.MMMM().format(DateTime(0, parsedDate.month))}, ${parsedDate.year}";
 

@@ -3,10 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/color_helper.dart';
 
 import 'package:smart_receipts/helpers/size_helper.dart';
-import 'package:smart_receipts/models/receipt.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/widgets/no_data_found_widget.dart';
 import 'package:smart_receipts/widgets/responsive_table/datatable.dart';
+
+import '../../models/receipt/receipt.dart';
 
 class ReceiptTable extends StatefulWidget {
   final Color headerColor = ColorHelper.APP_COLOR;
@@ -148,12 +149,9 @@ class _ReceiptTableState extends State<ReceiptTable> {
         ? 'Please check the spelling or search for another receipt.'
         : 'Please check your internet connection or add your first receipt.';
 
-    bool isSortingByDate =
-        _receiptsProvider.searchKey == ReceiptAttribute.expiration ||
-            _receiptsProvider.searchKey == ReceiptAttribute.purchaseDate;
-
     return ResponsiveDatatable(
-      isSortingByDate: isSortingByDate,
+      isSortingByDate:
+          _receiptsProvider.searchKey == ReceiptField.purchase_date_time,
       isSelecting: _receiptsProvider.isSelecting,
       noDataWidget: NoDataFoundWidget(
           color: widget.headerColor,
@@ -162,7 +160,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
           subtitle: subtitle),
       prefferedColor: widget.headerColor,
       total: _receiptsProvider.receiptSize,
-      headers: ReceiptAttribute.values,
+      headers: Receipt.getSearchableKeys(),
       source: _receiptsProvider.source,
     );
   }

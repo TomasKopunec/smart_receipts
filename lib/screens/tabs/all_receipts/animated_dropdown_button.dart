@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_receipts/models/receipt.dart';
+import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 
 enum SortStatus { asc, desc }
@@ -8,9 +8,9 @@ enum SortStatus { asc, desc }
 class AnimatedDropdownButton extends StatefulWidget {
   final double width;
   final Color color;
-  final List<ReceiptAttribute> items = ReceiptAttribute.values;
+  final List<ReceiptField> items = Receipt.getSearchableKeys();
 
-  const AnimatedDropdownButton({required this.color, required this.width});
+  AnimatedDropdownButton({required this.color, required this.width});
 
   @override
   State<AnimatedDropdownButton> createState() => _AnimatedDropdownButtonState();
@@ -33,7 +33,7 @@ class _AnimatedDropdownButtonState extends State<AnimatedDropdownButton> {
                   borderRadius: BorderRadius.circular(8)),
               initialValue: provider.searchKey,
               itemBuilder: (_) {
-                List<PopupMenuEntry<ReceiptAttribute>> widgets = [];
+                List<PopupMenuEntry<ReceiptField>> widgets = [];
 
                 for (final item in widget.items) {
                   widgets.add(PopupMenuItem(
@@ -54,9 +54,9 @@ class _AnimatedDropdownButtonState extends State<AnimatedDropdownButton> {
 
                 return widgets;
               },
-              onSelected: (ReceiptAttribute value) {
+              onSelected: (ReceiptField value) {
                 setState(() {
-                  provider.setSearchKey(value);
+                  provider.setSearchKey(value.name);
                 });
               },
               child: SizedBox(

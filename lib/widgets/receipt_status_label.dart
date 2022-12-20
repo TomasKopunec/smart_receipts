@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../helpers/size_helper.dart';
-import '../models/receipt.dart';
+import '../models/receipt/receipt.dart';
 
 class ReceiptStatusLabel extends StatelessWidget {
   final ReceiptStatus status;

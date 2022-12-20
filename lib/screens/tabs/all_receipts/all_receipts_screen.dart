@@ -43,7 +43,7 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ControlHeader(color: widget.getColor(context)),
-          Container(
+          SizedBox(
             height: 3,
           ),
           Expanded(
@@ -51,7 +51,7 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
             child: ReceiptTable(),
-          ))
+          )),
         ],
       ),
     );

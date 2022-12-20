@@ -17,13 +17,13 @@ dependencies:
   shared_preferences: ^2.0.15
   # convex_bottom_bar: ^3.1.0+1
   persistent_bottom_nav_bar: ^5.0.2
+  json_serializable: ^6.5.4
+  build_runner: ^2.3.3
+  json_annotation: ^4.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  flutter_lints: ^2.0.0
-
 
 flutter:
 

@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/screens/show_receipt_screen.dart';
-import '../../../models/receipt.dart';
+import '../../models/receipt/receipt.dart';
 
-import '../../../models/product.dart';
+import '../../models/product/product.dart';
 
 import '../receipt_status_label.dart';
 import 'entry_dismissible.dart';
@@ -14,7 +14,7 @@ import 'entry_dismissible.dart';
 class DataEntryWidgetMobile extends StatefulWidget {
   final Color color;
   final Map<String, dynamic> data;
-  final List<ReceiptAttribute> headers;
+  final List<ReceiptField> headers;
   final bool isSelecting;
 
   late double iconSize;
@@ -24,13 +24,13 @@ class DataEntryWidgetMobile extends StatefulWidget {
     required this.color,
     required this.data,
     required this.headers,
-  }) : super(key: ValueKey(data[ReceiptAttribute.uid.name]));
+  }) : super(key: ValueKey(data['id']));
 
   @override
   State<DataEntryWidgetMobile> createState() => _DataEntryWidgetMobileState();
 
-  String get uid {
-    return data[ReceiptAttribute.uid.name];
+  int get id {
+    return data['id'];
   }
 }
 
@@ -73,7 +73,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     Widget icon;
 
     icon = widget.isSelecting
-        ? _provider.selectedContains(widget.uid)
+        ? _provider.selectedContains(widget.id)
             ? Icon(Icons.radio_button_checked,
                 color: widget.color, size: SizeHelper.getIconSize(context))
             : Icon(Icons.radio_button_unchecked,
@@ -83,10 +83,10 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     final Widget view = InkWell(
         onTap: () {
           setState(() {
-            if (_provider.selectedContains(widget.uid)) {
-              _provider.removeSelectedByUID(widget.uid);
+            if (_provider.selectedContains(widget.id)) {
+              _provider.removeSelectedByID(widget.id);
             } else {
-              _provider.addSelectedByUID(widget.uid);
+              _provider.addSelectedByID(widget.id);
             }
           });
         },
@@ -96,11 +96,11 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
   }
 
   bool get _isSelected {
-    return _provider.selectedContains(widget.uid);
+    return _provider.selectedContains(widget.id);
   }
 
   bool get _isFavourite {
-    return _provider.isFavorite(widget.uid);
+    return _provider.isFavorite(widget.id);
   }
 
   Widget get favoriteLabel {
@@ -112,7 +112,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
   }
 
   String get numberOfItems {
-    final int count = widget.data[ReceiptAttribute.items.name].length;
+    final int count = widget.data[ReceiptField.products.name].length;
     return count == 1 ? '(1 product)' : '($count products)';
   }
 
@@ -136,7 +136,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: EntryDismissible(
-          uid: widget.uid,
+          id: widget.id,
           color: widget.color,
           child: ExpansionTile(
             leading: leading,
@@ -146,13 +146,13 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
             }),
             childrenPadding:
                 const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            key: ValueKey(widget.uid),
+            key: ValueKey(widget.id),
             tilePadding: const EdgeInsets.only(left: 10, right: 20),
             controlAffinity: ListTileControlAffinity.leading,
             title: Row(
               children: [
                 Text(
-                  widget.data[ReceiptAttribute.storeName.name],
+                  widget.data[ReceiptField.retailer_name.name],
                   style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(
@@ -165,7 +165,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(DateFormat.yMMMMd().format(DateTime.parse(
-                    widget.data[ReceiptAttribute.purchaseDate.name]))),
+                    widget.data[ReceiptField.purchase_date_time.name]))),
               ],
             ),
             trailing: Row(
@@ -173,7 +173,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '£${widget.data[ReceiptAttribute.amount.name].toString()}',
+                  '£${widget.data[ReceiptField.price.name].toStringAsFixed(2)}',
                   style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: SizeHelper.getFontSize(context,
@@ -194,12 +194,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...widget.headers
-                      .where(
-                        (e) => e.name != 'items',
-                      )
-                      .map((e) => getEntry(e.name))
-                      .toList(),
+                  ...widget.headers.map((e) => getEntry(e)).toList(),
                   Theme(
                     data: Theme.of(context)
                         .copyWith(dividerColor: Colors.black.withOpacity(0.2)),
@@ -210,22 +205,21 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
+                            children: [
                               Text(
-                                'Products:',
+                                'Number of Products',
                                 overflow: TextOverflow.clip,
                               ),
+                              const Spacer(),
+                              getValueWidget(
+                                  ReceiptField.products,
+                                  widget
+                                      .data[ReceiptField.products.name].length)
                             ],
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  products,
-                  Theme(
-                    data: Theme.of(context)
-                        .copyWith(dividerColor: Colors.black.withOpacity(0.2)),
-                    child: const Divider(thickness: 0.5),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
@@ -246,57 +240,17 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     );
   }
 
-  Container get products {
-    List<Widget> widgets = [];
-
-    (widget.data[ReceiptAttribute.items.name] as List<Map<String, dynamic>>)
-        .forEach((map) {
-      map.entries.forEach((entry) {
-        widgets.add(Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                ProductAttribute.from(entry.key).toString(),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                entry.value,
-              )
-            ],
-          ),
-        ));
-      });
-    });
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Column(children: widgets),
-    );
-  }
-
   void _showReceipt() {
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => const ShowReceiptScreen(),
-          settings: RouteSettings(arguments: widget.uid),
+          settings: RouteSettings(arguments: widget.id),
         ));
   }
 
-  Widget getEntry(String header) {
-    final ReceiptAttribute attribute = ReceiptAttribute.from(header);
-    final value = widget.data[attribute.name];
-
-    String stringOutput = '$value';
-    if (attribute == ReceiptAttribute.purchaseDate ||
-        attribute == ReceiptAttribute.expiration) {
-      stringOutput = DateFormat.yMMMMd().format(DateTime.parse(stringOutput));
-    }
-    if (attribute == ReceiptAttribute.amount) {
-      stringOutput = '$stringOutput\$';
-    }
+  Widget getEntry(ReceiptField header) {
+    final value = widget.data[header];
 
     return Theme(
       data: Theme.of(context)
@@ -310,19 +264,34 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  attribute.toString(),
+                  header.toString(),
                   overflow: TextOverflow.clip,
                 ),
                 const Spacer(),
-                attribute == ReceiptAttribute.status
-                    ? ReceiptStatusLabel(status: ReceiptStatus.from(value))
-                    : Text(stringOutput)
+                getValueWidget(header, widget.data[header.name])
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget getValueWidget(ReceiptField header, dynamic value) {
+    if (header == ReceiptField.status) {
+      return ReceiptStatusLabel(status: ReceiptStatus.from(value));
+    }
+
+    String stringOutput = '$value';
+    if (header == ReceiptField.purchase_date_time ||
+        header == ReceiptField.expiration) {
+      stringOutput = DateFormat.yMMMMd().format(DateTime.parse(stringOutput));
+    } else if (header == ReceiptField.price) {
+      stringOutput = ('${value.toStringAsFixed(2)}\$');
+    } else if (header == ReceiptField.products) {
+      stringOutput = '${widget.data[ReceiptField.products.name].length}';
+    }
+    return Text(stringOutput);
   }
 
   @override
