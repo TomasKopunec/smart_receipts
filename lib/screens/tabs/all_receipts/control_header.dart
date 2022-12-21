@@ -126,7 +126,7 @@ class ControlHeader extends StatelessWidget {
   Widget getSelectionControls(context, provider) {
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.only(bottom: 12, top: 8),
+      padding: const EdgeInsets.only(bottom: 0, top: 8),
       child: const SelectionWidget(),
     );
   }

@@ -7,7 +7,7 @@ import 'package:smart_receipts/screens/tabs/all_receipts/control_header.dart';
 import 'package:smart_receipts/widgets/responsive_table/receipt_table.dart';
 import 'package:smart_receipts/widgets/selection_widget.dart';
 
-import '../abstract_tab_screen.dart';
+import '../../tab_control/abstract_tab_screen.dart';
 
 class AllReceiptsScreen extends AbstractTabScreen {
   @override

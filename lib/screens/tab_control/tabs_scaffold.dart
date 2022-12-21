@@ -10,7 +10,7 @@ import 'package:smart_receipts/screens/tabs/groups_screen.dart';
 import 'package:smart_receipts/screens/tabs/home_screen.dart';
 import 'package:smart_receipts/screens/tabs/settings_screen.dart';
 
-import 'tabs/abstract_tab_screen.dart';
+import 'abstract_tab_screen.dart';
 
 class TabsScaffold extends StatefulWidget {
   static const route = '/';
@@ -22,8 +22,8 @@ class TabsScaffold extends StatefulWidget {
 }
 
 class _TabsScaffoldState extends State<TabsScaffold> {
-  final PageController _myPage = PageController(initialPage: 1);
-  int _selectedIndex = 1;
+  final PageController _myPage = PageController(initialPage: 0);
+  int _selectedIndex = 0;
 
   final List<AbstractTabScreen> _screens = [
     HomeScreen(),

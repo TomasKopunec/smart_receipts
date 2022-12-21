@@ -10,8 +10,6 @@ class SearchBar extends StatefulWidget {
 }
 
 class _SearchBarState extends State<SearchBar> {
-  final color = ColorHelper.APP_COLOR;
-
   final _controller = TextEditingController();
 
   bool get isEmpty {
@@ -20,6 +18,7 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).primaryColor;
     return Consumer<ReceiptsProvider>(
       builder: (_, provider, child) {
         return TextFormField(

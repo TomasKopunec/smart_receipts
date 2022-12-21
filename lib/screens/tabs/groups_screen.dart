@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'abstract_tab_screen.dart';
+import '../tab_control/abstract_tab_screen.dart';
 
 class GroupsScreen extends AbstractTabScreen {
   @override
@@ -20,8 +20,6 @@ class GroupsScreen extends AbstractTabScreen {
 class _GroupsScreenState extends State<GroupsScreen> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(widget.getTitle()),
-    );
+    return widget.getScreen();
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'abstract_tab_screen.dart';
+import '../tab_control/abstract_tab_screen.dart';
 
 class AddReceiptScreen extends AbstractTabScreen {
   @override

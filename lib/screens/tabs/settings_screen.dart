@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/settings_provider.dart';
 
-import 'abstract_tab_screen.dart';
+import '../tab_control/abstract_tab_screen.dart';
 
 class SettingsScreen extends AbstractTabScreen {
   @override
@@ -24,7 +24,7 @@ class _SettingsState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
       builder: (ctx, provider, child) {
-        return widget.getTitleWidget(context);
+        return widget.getScreen();
       },
     );
   }

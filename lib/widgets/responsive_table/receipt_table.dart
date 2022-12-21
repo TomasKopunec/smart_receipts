@@ -10,7 +10,7 @@ import 'package:smart_receipts/widgets/responsive_table/datatable.dart';
 import '../../models/receipt/receipt.dart';
 
 class ReceiptTable extends StatefulWidget {
-  final Color headerColor = ColorHelper.APP_COLOR;
+  // final Color headerColor = ColorHelper.APP_COLOR;
 
   @override
   State<ReceiptTable> createState() => _ReceiptTableState();
@@ -137,6 +137,8 @@ class _ReceiptTableState extends State<ReceiptTable> {
 
   @override
   Widget build(BuildContext context) {
+    final Color headerColor = Theme.of(context).primaryColor;
+
     print('Rebuilding receipt table!');
 
     final title = (_receiptsProvider.filterValue.isNotEmpty &&
@@ -154,11 +156,11 @@ class _ReceiptTableState extends State<ReceiptTable> {
           _receiptsProvider.searchKey == ReceiptField.purchase_date_time,
       isSelecting: _receiptsProvider.isSelecting,
       noDataWidget: NoDataFoundWidget(
-          color: widget.headerColor,
+          color: headerColor,
           height: SizeHelper.getScreenHeight(context) * 0.5,
           title: title,
           subtitle: subtitle),
-      prefferedColor: widget.headerColor,
+      prefferedColor: headerColor,
       total: _receiptsProvider.receiptSize,
       headers: Receipt.getSearchableKeys(),
       source: _receiptsProvider.source,
@@ -175,7 +177,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
         if (_perPages.isNotEmpty)
           DropdownButton<int>(
             borderRadius: BorderRadius.circular(8),
-            iconEnabledColor: widget.headerColor,
+            iconEnabledColor: Theme.of(context).primaryColor,
             value: _currentPerPage,
             items: _perPages
                 .map((e) => DropdownMenuItem<int>(
@@ -263,16 +265,17 @@ class _ReceiptTableState extends State<ReceiptTable> {
   Icon _getIcon(IconData icon, bool isActive, {double? size}) {
     return Icon(
       icon,
-      color:
-          isActive ? widget.headerColor : widget.headerColor.withOpacity(0.5),
+      color: isActive
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).primaryColor.withOpacity(0.5),
       size: size,
     );
   }
 
   LinearProgressIndicator get loadingIndicator {
     return LinearProgressIndicator(
-      backgroundColor: widget.headerColor.withOpacity(0.5),
-      color: widget.headerColor,
+      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.5),
+      color: Theme.of(context).primaryColor,
     );
   }
 }

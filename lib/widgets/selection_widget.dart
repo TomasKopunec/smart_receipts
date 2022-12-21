@@ -27,15 +27,7 @@ class _SelectionWidgetState extends State<SelectionWidget> {
 
         return Container(
           decoration: BoxDecoration(
-            color: ColorHelper.APP_COLOR,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 3,
-                offset: const Offset(0, 2), // changes position of shadow
-              ),
-            ],
+            color: Theme.of(context).primaryColor,
             borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           ),
