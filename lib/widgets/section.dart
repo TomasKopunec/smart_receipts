@@ -11,13 +11,10 @@ class Section extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Container(
-        // DEBUG color: Colors.red.withOpacity(0.1),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [getTitle(context), body ?? const Text('Section content')],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [getTitle(context), body ?? const Text('Section content')],
       ),
     );
   }
@@ -26,31 +23,34 @@ class Section extends StatelessWidget {
     Widget? titleWidget;
 
     if (titleAction == null) {
-      return Text(
+      titleWidget = Text(
         title,
         style: TextStyle(
             fontSize: SizeHelper.getFontSize(context, size: FontSize.larger),
             fontWeight: FontWeight.w600),
       );
     } else {
-      titleWidget = Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-                fontSize:
-                    SizeHelper.getFontSize(context, size: FontSize.larger),
-                fontWeight: FontWeight.w600),
-          ),
-          titleAction!
-        ],
+      titleWidget = Container(
+        // color: Colors.blue.withOpacity(0.5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                  fontSize:
+                      SizeHelper.getFontSize(context, size: FontSize.larger),
+                  fontWeight: FontWeight.w600),
+            ),
+            titleAction!
+          ],
+        ),
       );
     }
 
     return Container(
-      padding: const EdgeInsets.only(bottom: 4, left: 8),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: titleWidget,
     );
   }

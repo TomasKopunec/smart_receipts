@@ -20,11 +20,10 @@ class SharedPreferencesHelper {
         value: favorites.map((e) => e.toString()).toList());
   }
 
-  static Future<List<int>?> getFavorites() async {
+  static Future<List<int>> getFavorites() async {
     final prefs = await _instance;
-    return prefs
-        .getStringList(FAVORITES_LIST)!
-        .map((e) => int.parse(e))
-        .toList();
+
+    final List<String>? favs = prefs.getStringList(FAVORITES_LIST);
+    return favs == null ? [] : favs.map((e) => int.parse(e)).toList();
   }
 }

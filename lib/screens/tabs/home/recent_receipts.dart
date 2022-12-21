@@ -16,12 +16,22 @@ class RecentReceipts extends StatelessWidget {
   Widget build(BuildContext context) {
     return Section(
         title: 'Recent Receipts',
-        titleAction: TextButton(
-            onPressed: () {
-              Provider.of<ScreenProvider>(context, listen: false)
-                  .setSelectedIndex(1);
-            },
-            child: Text('View All')),
+        titleAction: Ink(
+          child: InkWell(
+            onTap: () => Provider.of<ScreenProvider>(context, listen: false)
+                .setSelectedIndex(1),
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Text(
+                'View All',
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: SizeHelper.getFontSize(context,
+                        size: FontSize.regularLarge)),
+              ),
+            ),
+          ),
+        ),
         body: Consumer<ReceiptsProvider>(
           builder: (_, provider, __) {
             return Column(

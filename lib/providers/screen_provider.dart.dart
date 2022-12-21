@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../screens/tab_control/abstract_tab_screen.dart';
 import '../screens/tabs/add_receipt_screen.dart';
 import '../screens/tabs/all_receipts/all_receipts_screen.dart';
-import '../screens/tabs/groups_screen.dart';
+import '../screens/tabs/returns_screen.dart';
 import '../screens/tabs/home/home_screen.dart';
 import '../screens/tabs/settings_screen.dart';
 
@@ -11,7 +11,7 @@ class ScreenProvider with ChangeNotifier {
   final List<AbstractTabScreen> _screens = [
     HomeScreen(),
     AllReceiptsScreen(),
-    GroupsScreen(),
+    ReturnsScreen(),
     SettingsScreen(),
     AddReceiptScreen()
   ];

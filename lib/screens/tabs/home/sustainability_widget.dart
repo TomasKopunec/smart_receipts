@@ -44,7 +44,7 @@ class _SustainabilityWidgetState extends State<SustainabilityWidget> {
     return const GridCard(
       icon: Icons.eco_rounded,
       number: 165,
-      title: 'CO2 Reduced',
+      title: 'CO2 Saved',
       unit: 'g',
     );
   }

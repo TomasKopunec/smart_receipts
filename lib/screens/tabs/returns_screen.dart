@@ -2,27 +2,27 @@ import 'package:flutter/material.dart';
 
 import '../tab_control/abstract_tab_screen.dart';
 
-class GroupsScreen extends AbstractTabScreen {
+class ReturnsScreen extends AbstractTabScreen {
   @override
   String getTitle() {
-    return 'Groups';
+    return 'Returns';
   }
 
   @override
   IconData getIcon() {
-    return Icons.shopping_bag_outlined;
+    return Icons.keyboard_return_rounded;
   }
 
   @override
-  State<StatefulWidget> createState() => _GroupsScreenState();
+  State<StatefulWidget> createState() => _ReturnsScreenState();
 
   @override
   String getIconTitle() {
-    return 'Groups';
+    return 'Returns';
   }
 }
 
-class _GroupsScreenState extends State<GroupsScreen> {
+class _ReturnsScreenState extends State<ReturnsScreen> {
   @override
   Widget build(BuildContext context) {
     return widget.getScreen();

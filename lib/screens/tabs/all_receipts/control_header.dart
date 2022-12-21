@@ -28,7 +28,7 @@ class ControlHeader extends StatelessWidget {
           FavouriteToggle(
             width: SizeHelper.getScreenWidth(context),
             animDuration: const Duration(milliseconds: 750),
-            values: const ['ALL', 'STARRED'],
+            values: const ['ALL', 'FAVOURITE'],
             buttonColor: color,
             backgroundColor: Colors.black.withOpacity(0.1),
             textColor: Colors.white,
