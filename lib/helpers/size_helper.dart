@@ -20,6 +20,14 @@ enum IconSize {
 }
 
 class SizeHelper {
+  static double getMenuIconSize(BuildContext context) {
+    if (MediaQuery.of(context).orientation == Orientation.portrait) {
+      return SizeHelper.getScreenWidth(context) * 0.065;
+    }
+
+    return SizeHelper.getScreenWidth(context) * 0.03;
+  }
+
   static double getScreenWidth(BuildContext context) {
     return MediaQuery.of(context).size.width;
   }

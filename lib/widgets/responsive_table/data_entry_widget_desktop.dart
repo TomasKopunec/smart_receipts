@@ -186,21 +186,22 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
   }
 
   Widget getEntry(ReceiptField header) {
-    final String attribute = header.name;
-    final value = widget.data[attribute];
+    // final String attribute = header.name;
+    final value = widget.data[header.name];
 
-    if (attribute == 'status') {
+    if (header == ReceiptField.status) {
       return getStatusWidget(ReceiptStatus.from(value));
     }
 
     String formattedString = '$value';
 
-    if (attribute == 'expiration' || attribute == 'purchaseDateTime') {
+    if (header == ReceiptField.expiration ||
+        header == ReceiptField.purchase_date_time) {
       formattedString = DateFormat.yMMMMd().format(DateTime.parse(value));
     }
 
-    if (attribute == 'price') {
-      formattedString = '$value\$';
+    if (header == ReceiptField.price) {
+      formattedString = '${value.toStringAsFixed(2)}';
     }
 
     return Container(

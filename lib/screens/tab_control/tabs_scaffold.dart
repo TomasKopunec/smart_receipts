@@ -130,8 +130,12 @@ class _TabsScaffoldState extends State<TabsScaffold> {
         children: screenProvider.screens,
       ),
       floatingActionButton: SizedBox(
-        width: SizeHelper.getScreenWidth(context) * 0.19,
-        height: SizeHelper.getScreenWidth(context) * 0.19,
+        width: MediaQuery.of(context).orientation == Orientation.portrait
+            ? SizeHelper.getScreenWidth(context) * 0.19
+            : SizeHelper.getScreenWidth(context) * 0.08,
+        height: MediaQuery.of(context).orientation == Orientation.portrait
+            ? SizeHelper.getScreenWidth(context) * 0.19
+            : SizeHelper.getScreenWidth(context) * 0.08,
         child: FittedBox(
           child: FloatingActionButton(
             backgroundColor: (screenProvider.selectedIndex ==
@@ -146,7 +150,7 @@ class _TabsScaffoldState extends State<TabsScaffold> {
             child: Icon(
               Icons.camera_alt,
               color: Colors.white.withOpacity(0.925),
-              size: SizeHelper.getScreenWidth(context) * 0.065,
+              size: SizeHelper.getMenuIconSize(context),
             ),
           ),
         ),
@@ -223,7 +227,7 @@ class MenuItem extends StatelessWidget {
                 children: [
                   Icon(icon,
                       color: Theme.of(context).primaryColor,
-                      size: SizeHelper.getScreenWidth(context) * 0.075),
+                      size: SizeHelper.getMenuIconSize(context)),
                   Text(
                     label,
                     style: const TextStyle(color: Colors.black),

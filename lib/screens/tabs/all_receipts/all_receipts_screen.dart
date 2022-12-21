@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/color_helper.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
@@ -38,6 +39,20 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
         .clearSelecteds(notify: false);
 
     super.initState();
+
+    // Allow landscape in this screen
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft
+    ]);
+  }
+
+  @override
+  void dispose() {
+    // Handle disposal properly
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    super.dispose();
   }
 
   @override

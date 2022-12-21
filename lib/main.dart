@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/screen_provider.dart.dart';
 import 'package:smart_receipts/screens/tab_control/tabs_scaffold.dart';
@@ -8,7 +9,10 @@ import 'package:smart_receipts/screens/playgroundScreen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(Main());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(Main());
+  });
 }
 
 /// The starting point of the app
