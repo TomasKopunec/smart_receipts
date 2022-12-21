@@ -161,13 +161,8 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                 Text(numberOfItems),
               ],
             ),
-            subtitle: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(DateFormat.yMMMMd().format(DateTime.parse(
-                    widget.data[ReceiptField.purchase_date_time.name]))),
-              ],
-            ),
+            subtitle: Text(DateFormat.yMMMMd().format(DateTime.parse(
+                widget.data[ReceiptField.purchase_date_time.name]))),
             trailing: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,

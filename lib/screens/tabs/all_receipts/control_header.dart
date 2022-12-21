@@ -5,71 +5,15 @@ import 'package:smart_receipts/screens/tabs/all_receipts/search_bar.dart';
 import 'package:smart_receipts/widgets/selection_widget.dart';
 
 import '../../../helpers/size_helper.dart';
-import '../../../utils/snackbar_builder.dart';
 import 'favourite_toggle.dart';
 import 'animated_dropdown_button.dart';
 
 class ControlHeader extends StatelessWidget {
-  final Color color;
-  const ControlHeader({required this.color});
-
-  Widget getTitle(context, provider) {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.only(
-          top: SizeHelper.getTopPadding(context), right: 16, left: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Icon(Icons.receipt, color: color),
-          Padding(
-            padding: const EdgeInsets.only(left: 18),
-            child: Text(
-              'All receipts',
-              style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.bold,
-                  fontSize:
-                      SizeHelper.getFontSize(context, size: FontSize.large)),
-            ),
-          ),
-
-          // Select Button
-          if (MediaQuery.of(context).orientation == Orientation.portrait)
-            TextButton(
-                style: ButtonStyle(
-                  overlayColor:
-                      MaterialStateProperty.all(color.withOpacity(0.2)),
-                ),
-                onPressed: () {
-                  if (provider.receiptSize == 0) {
-                    AppSnackBar.show(
-                        context,
-                        AppSnackBarBuilder()
-                            .withText('No receipts available.')
-                            .withDuration(const Duration(seconds: 3)));
-                    return;
-                  }
-
-                  if (provider.isSelecting) {
-                    provider.clearSelecteds(notify: true);
-                  }
-
-                  provider.toggleSelecting();
-                },
-                child: Text(
-                  provider.isSelecting ? 'Cancel' : 'Select',
-                  style: TextStyle(
-                      color: color,
-                      fontSize: SizeHelper.getFontSize(context,
-                          size: FontSize.regularLarge)),
-                ))
-        ],
-      ),
-    );
-  }
+  const ControlHeader({super.key});
 
   Widget getSearchControls(context, provider) {
+    final color = Theme.of(context).primaryColor;
+
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
@@ -112,7 +56,7 @@ class ControlHeader extends StatelessWidget {
                   ),
                   AnimatedDropdownButton(
                     width: SizeHelper.getScreenWidth(context) * 0.525,
-                    color: color,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ],
               ),
@@ -147,15 +91,10 @@ class ControlHeader extends StatelessWidget {
             BoxShadow(
                 color: Colors.black.withOpacity(0.25),
                 blurRadius: 1.5,
-                offset: Offset(0, 1.5)),
+                offset: const Offset(0, 1.5)),
           ],
         ),
-        child: Column(
-          children: [
-            getTitle(context, provider),
-            getControls(context, provider)
-          ],
-        ),
+        child: getControls(context, provider),
       );
     });
   }

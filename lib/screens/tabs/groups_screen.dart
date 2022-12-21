@@ -15,6 +15,11 @@ class GroupsScreen extends AbstractTabScreen {
 
   @override
   State<StatefulWidget> createState() => _GroupsScreenState();
+
+  @override
+  String getIconTitle() {
+    return 'Groups';
+  }
 }
 
 class _GroupsScreenState extends State<GroupsScreen> {

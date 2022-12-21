@@ -36,5 +36,7 @@ abstract class AbstractTabScreen extends StatefulWidget {
 
   String getTitle();
 
+  String getIconTitle();
+
   IconData getIcon();
 }

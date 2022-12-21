@@ -9,7 +9,8 @@ enum FontSize {
   regularLarge,
   large,
   larger,
-  largest
+  largest,
+  cardSize,
 }
 
 enum IconSize {
@@ -65,6 +66,9 @@ class SizeHelper {
         return regularSize * 1.4;
       case FontSize.largest:
         return regularSize * 1.65;
+      case FontSize.cardSize:
+        return regularSize * 2;
+        break;
     }
   }
 

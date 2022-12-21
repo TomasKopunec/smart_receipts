@@ -7,21 +7,27 @@ import 'package:smart_receipts/screens/tabs/all_receipts/control_header.dart';
 import 'package:smart_receipts/widgets/responsive_table/receipt_table.dart';
 import 'package:smart_receipts/widgets/selection_widget.dart';
 
+import '../../../utils/snackbar_builder.dart';
 import '../../tab_control/abstract_tab_screen.dart';
 
 class AllReceiptsScreen extends AbstractTabScreen {
   @override
   String getTitle() {
-    return 'All';
+    return 'All Receipts';
   }
 
   @override
   IconData getIcon() {
-    return Icons.manage_search;
+    return Icons.receipt;
   }
 
   @override
   State<StatefulWidget> createState() => _AllReceiptsState();
+
+  @override
+  String getIconTitle() {
+    return 'All';
+  }
 }
 
 class _AllReceiptsState extends State<AllReceiptsScreen> {
@@ -36,24 +42,48 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black.withOpacity(0.07),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ControlHeader(color: widget.getColor(context)),
-          SizedBox(
-            height: 3,
-          ),
-          Expanded(
-              child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
-            child: ReceiptTable(),
-          )),
-        ],
-      ),
+    return widget.getScreen(
+        action: action,
+        headerBody: const ControlHeader(),
+        screenBody: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics()),
+          child: ReceiptTable(),
+        ));
+  }
+
+  Widget get action {
+    return Consumer<ReceiptsProvider>(
+      builder: (_, provider, __) {
+        return TextButton(
+            style: ButtonStyle(
+              overlayColor: MaterialStateProperty.all(
+                  Theme.of(context).primaryColor.withOpacity(0.2)),
+            ),
+            onPressed: () {
+              if (provider.receiptSize == 0) {
+                AppSnackBar.show(
+                    context,
+                    AppSnackBarBuilder()
+                        .withText('No receipts available.')
+                        .withDuration(const Duration(seconds: 3)));
+                return;
+              }
+
+              if (provider.isSelecting) {
+                provider.clearSelecteds(notify: true);
+              }
+
+              provider.toggleSelecting();
+            },
+            child: Text(
+              provider.isSelecting ? 'Cancel' : 'Select',
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: SizeHelper.getFontSize(context,
+                      size: FontSize.regularLarge)),
+            ));
+      },
     );
   }
 }

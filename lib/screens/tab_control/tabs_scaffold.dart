@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
+import 'package:smart_receipts/providers/screen_provider.dart.dart';
 import 'package:smart_receipts/screens/tabs/add_receipt_screen.dart';
 import 'package:smart_receipts/screens/tabs/all_receipts/all_receipts_screen.dart';
 import 'package:smart_receipts/screens/tabs/groups_screen.dart';
-import 'package:smart_receipts/screens/tabs/home_screen.dart';
+import 'package:smart_receipts/screens/tabs/home/home_screen.dart';
 import 'package:smart_receipts/screens/tabs/settings_screen.dart';
 
 import 'abstract_tab_screen.dart';
@@ -22,30 +23,35 @@ class TabsScaffold extends StatefulWidget {
 }
 
 class _TabsScaffoldState extends State<TabsScaffold> {
-  final PageController _myPage = PageController(initialPage: 0);
-  int _selectedIndex = 0;
-
-  final List<AbstractTabScreen> _screens = [
-    HomeScreen(),
-    AllReceiptsScreen(),
-    GroupsScreen(),
-    SettingsScreen(),
-    AddReceiptScreen()
-  ];
+  late final ReceiptsProvider receiptsProvider;
+  late final ScreenProvider screenProvider;
+  late final PageController _myPage;
 
   @override
   void initState() {
     // 1. Fetch all receipts
-    final receiptsProvider =
-        Provider.of<ReceiptsProvider>(context, listen: false);
+    receiptsProvider = Provider.of<ReceiptsProvider>(context, listen: false);
     receiptsProvider.fetchAndSetReceipts();
 
     // 2. Fetch all favorites from local memory
     receiptsProvider.fetchAndSetFavorites();
 
+    // 3. Initialize screen provider
+    screenProvider = Provider.of<ScreenProvider>(context, listen: false);
+
+    // 4. Initialize page controller
+    _myPage = PageController(initialPage: screenProvider.selectedIndex);
+
+    screenProvider.addListener(() {
+      safeSetState(() {
+        _myPage.jumpToPage(screenProvider.selectedIndex);
+      });
+    });
+
     super.initState();
   }
 
+  @override
   double getSelectedHeight(BuildContext context) {
     final double screenHeight = SizeHelper.getScreenHeight(context);
     return MediaQuery.of(context).orientation == Orientation.portrait
@@ -65,19 +71,27 @@ class _TabsScaffoldState extends State<TabsScaffold> {
     }
   }
 
+  void changePage(int value) {
+    safeSetState(() {
+      _myPage.jumpToPage(value);
+      screenProvider.setSelectedIndex(value);
+
+      if (value == 4) {}
+    });
+  }
+
   List<Widget> getMenuItems() {
     List<Widget> widgets = [];
     for (int i = 0; i < 2; i++) {
-      AbstractTabScreen screen = _screens[i];
+      AbstractTabScreen screen = screenProvider.screens[i];
       widgets.add(MenuItem(
           icon: screen.getIcon(),
-          label: screen.getTitle(),
-          isSelected: _selectedIndex == i,
+          label: screen.getIconTitle(),
+          isSelected: screenProvider.selectedIndex == i,
           isDummy: false,
-          changePage: () => safeSetState(() {
-                _myPage.jumpToPage(i);
-                _selectedIndex = i;
-              })));
+          changePage: () {
+            changePage(i);
+          }));
     }
 
     widgets.add(MenuItem(
@@ -85,19 +99,20 @@ class _TabsScaffoldState extends State<TabsScaffold> {
         label: '',
         isSelected: false,
         isDummy: true,
-        changePage: () {}));
+        changePage: () {
+          // Ignore
+        }));
 
     for (int i = 2; i < 4; i++) {
-      AbstractTabScreen screen = _screens[i];
+      AbstractTabScreen screen = screenProvider.screens[i];
       widgets.add(MenuItem(
           icon: screen.getIcon(),
           label: screen.getTitle(),
-          isSelected: _selectedIndex == i,
+          isSelected: screenProvider.selectedIndex == i,
           isDummy: false,
-          changePage: () => safeSetState(() {
-                _myPage.jumpToPage(i);
-                _selectedIndex = i;
-              })));
+          changePage: () {
+            changePage(i);
+          }));
     }
 
     return widgets;
@@ -112,18 +127,22 @@ class _TabsScaffoldState extends State<TabsScaffold> {
           print('Page changes to index $value');
         },
         physics: const NeverScrollableScrollPhysics(),
-        children: _screens,
+        children: screenProvider.screens,
       ),
       floatingActionButton: SizedBox(
         width: SizeHelper.getScreenWidth(context) * 0.19,
         height: SizeHelper.getScreenWidth(context) * 0.19,
         child: FittedBox(
           child: FloatingActionButton(
-            splashColor: Theme.of(context).primaryColor,
+            backgroundColor: (screenProvider.selectedIndex ==
+                    (screenProvider.screens.length - 1))
+                ? Theme.of(context).primaryColorDark
+                : Theme.of(context).primaryColor,
+            splashColor: Theme.of(context).primaryColorDark,
             elevation: 3,
-            onPressed: (() {
-              _myPage.jumpToPage(_screens.length - 1);
-            }),
+            onPressed: () {
+              changePage(screenProvider.screens.length - 1);
+            },
             child: Icon(
               Icons.camera_alt,
               color: Colors.white.withOpacity(0.925),
@@ -134,7 +153,7 @@ class _TabsScaffoldState extends State<TabsScaffold> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-          //bottom navigation bar on scaffold
+          // Bottom navigation bar on scaffold
           color: Colors.white,
           shape: const CircularNotchedRectangle(),
           notchMargin:

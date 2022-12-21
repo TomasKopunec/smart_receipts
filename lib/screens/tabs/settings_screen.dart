@@ -17,6 +17,11 @@ class SettingsScreen extends AbstractTabScreen {
 
   @override
   State<StatefulWidget> createState() => _SettingsState();
+
+  @override
+  String getIconTitle() {
+    return 'Settings';
+  }
 }
 
 class _SettingsState extends State<SettingsScreen> {

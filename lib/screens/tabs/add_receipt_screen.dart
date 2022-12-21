@@ -9,18 +9,21 @@ class AddReceiptScreen extends AbstractTabScreen {
 
   @override
   IconData getIcon() {
-    return Icons.add;
+    return Icons.qr_code_scanner_rounded;
   }
 
   @override
   State<StatefulWidget> createState() => _AddReceiptScreenState();
+
+  @override
+  String getIconTitle() {
+    return 'Add';
+  }
 }
 
 class _AddReceiptScreenState extends State<AddReceiptScreen> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(widget.getTitle()),
-    );
+    return widget.getScreen();
   }
 }

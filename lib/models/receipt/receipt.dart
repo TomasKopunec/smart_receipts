@@ -87,4 +87,35 @@ class Receipt {
       ReceiptField.status
     ];
   }
+
+  int getProductsCount() {
+    return products.length;
+  }
+
+  dynamic getField(ReceiptField field) {
+    switch (field) {
+      case ReceiptField.id:
+        return id;
+      case ReceiptField.retailer_name:
+        return retailer_name;
+      case ReceiptField.purchase_date_time:
+        return purchase_date_time;
+      case ReceiptField.purchase_location:
+        return purchase_location;
+      case ReceiptField.status:
+        return status;
+      case ReceiptField.expiration:
+        return expiration;
+      case ReceiptField.price:
+        return price;
+      case ReceiptField.currency:
+        return currency;
+      case ReceiptField.payment:
+        return payment;
+      case ReceiptField.products:
+        return products;
+      default:
+        throw Exception('Undefined ${field.toString()}');
+    }
+  }
 }

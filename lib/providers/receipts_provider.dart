@@ -272,4 +272,12 @@ class ReceiptsProvider with ChangeNotifier {
     print('Successfully fetched favorites: $_favorites');
     notifyListeners();
   }
+
+  List<Receipt> getMostRecent([int n = 2]) {
+    List<Receipt> copy = [..._receipts];
+    copy.sort((a, b) => (a.getField(ReceiptField.purchase_date_time)
+            as DateTime)
+        .compareTo(b.getField(ReceiptField.purchase_date_time) as DateTime));
+    return copy.take(n).toList();
+  }
 }

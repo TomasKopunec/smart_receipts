@@ -26,16 +26,15 @@ class ScreenWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.symmetric(vertical: 4),
       color: Colors.black.withOpacity(0.07), // Screen background
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _getTitleWidget(context, action),
-          if (headerBody != null) headerBody!,
-          SizedBox(
-            height: 3,
-          ),
+          if (headerBody != null) _getHeaderActionsWrapper(headerBody!),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 4)),
           Expanded(
             child: screenBody,
           ),
@@ -69,6 +68,22 @@ class ScreenWrapper extends StatelessWidget {
               : TextButton(onPressed: () {}, child: Text(''))
         ],
       ),
+    );
+  }
+
+  Widget _getHeaderActionsWrapper(Widget body) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(0)),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 1.5,
+              offset: Offset(0, 1.5)),
+        ],
+      ),
+      child: body,
     );
   }
 }
