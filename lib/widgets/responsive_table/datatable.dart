@@ -80,7 +80,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
           margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).canvasColor,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.25),
@@ -93,6 +93,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
           child: Text(
             text,
             textAlign: TextAlign.start,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ));
 
@@ -156,7 +157,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
         color: widget.backgroundColor,
         child: Column(
           children: [
-            const SizedBox(height: 10),
+            const SizedBox(height: 1),
             ...mobileList,
           ],
         ),

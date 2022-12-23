@@ -19,17 +19,14 @@ class _SustainabilityWidgetState extends State<SustainabilityWidget> {
   }
 
   Widget getGrid() {
-    return Container(
-      // DEBUG color: Colors.green.withOpacity(0.2),
-      child: GridView.count(
-        shrinkWrap: true,
-        crossAxisSpacing: 5,
-        mainAxisSpacing: 5,
-        padding: EdgeInsets.zero,
-        childAspectRatio: 4 / 3,
-        crossAxisCount: 2,
-        children: [paper, co2, trees, water],
-      ),
+    return GridView.count(
+      shrinkWrap: true,
+      crossAxisSpacing: 5,
+      mainAxisSpacing: 5,
+      padding: EdgeInsets.zero,
+      childAspectRatio: 4 / 3,
+      crossAxisCount: 2,
+      children: [paper, co2, trees, water],
     );
   }
 

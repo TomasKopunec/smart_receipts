@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ConfirmDialog extends StatelessWidget {
-  final bckgColor = const Color.fromRGBO(240, 240, 240, 1);
+  // final bckgColor = const Color.fromRGBO(240, 240, 240, 1);
 
   final String title;
   final String subtitle;
@@ -31,8 +31,7 @@ class ConfirmDialog extends StatelessWidget {
       content: Container(
           width: width,
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-              color: bckgColor, borderRadius: BorderRadius.circular(8)),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

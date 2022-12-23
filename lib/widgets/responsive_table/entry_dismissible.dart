@@ -24,7 +24,7 @@ class EntryDismissible extends StatelessWidget {
     );
 
     if (result) {
-      print('Removing receipt with uid: 1001');
+      print('Removing receipt with id: ${id}');
     }
   }
 
@@ -42,6 +42,7 @@ class EntryDismissible extends StatelessWidget {
         motion: const ScrollMotion(),
         children: [
           SlidableAction(
+            borderRadius: BorderRadius.circular(8),
             autoClose: true,
             onPressed: (ctx) => _delete(context),
             backgroundColor: Colors.red,
@@ -55,6 +56,7 @@ class EntryDismissible extends StatelessWidget {
         motion: const ScrollMotion(),
         children: [
           SlidableAction(
+            borderRadius: BorderRadius.circular(8),
             onPressed: (ctx) => _star(context),
             backgroundColor: const Color.fromARGB(255, 255, 187, 0),
             foregroundColor: Colors.white,

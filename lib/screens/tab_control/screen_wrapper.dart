@@ -19,10 +19,6 @@ class ScreenWrapper extends StatelessWidget {
     Widget? screenBody,
   }) : this.screenBody = screenBody ?? Center(child: Text(title));
 
-  Color getScreenColor(BuildContext context) {
-    return Theme.of(context).primaryColor;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(

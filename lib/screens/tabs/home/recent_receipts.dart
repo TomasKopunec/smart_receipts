@@ -63,8 +63,6 @@ class RecentReceipts extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
-                tileColor: Colors.white,
-                textColor: Colors.black,
                 title: Text(
                     '${receipt.getField(ReceiptField.retailer_name)} (${receipt.getProductsCount()} products)'),
                 subtitle: Text(DateFormat(settings.dateTimeFormat.format)
@@ -72,10 +70,7 @@ class RecentReceipts extends StatelessWidget {
                 trailing: Text(
                   CurrencyHelper.getFormatted(
                       receipt.getField(ReceiptField.price), settings.currency),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: SizeHelper.getFontSize(context,
-                          size: FontSize.regularLarge)),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ));
           },
         ),

@@ -100,10 +100,6 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     return view;
   }
 
-  bool get _isSelected {
-    return _receiptProvider.selectedContains(widget.id);
-  }
-
   bool get _isFavourite {
     return _receiptProvider.isFavorite(widget.id);
   }
@@ -123,34 +119,22 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
 
   @override
   Widget build(BuildContext context) {
-    final decoration = BoxDecoration(
-      color: _isSelected ? widget.color.withOpacity(0.4) : Colors.white,
-      borderRadius: const BorderRadius.all(Radius.circular(8)),
-      boxShadow: [
-        BoxShadow(
-            color: _isSelected ? Colors.white : Colors.black.withOpacity(0.35),
-            blurRadius: _isSelected ? 0 : 1.5,
-            offset: Offset(0, _isSelected ? 0 : 1.5)),
-      ],
-    );
-
     return Container(
-      clipBehavior: Clip.antiAlias,
-      margin: const EdgeInsets.only(bottom: 12, left: 8, right: 8),
-      decoration: decoration,
-      child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      margin: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        margin: EdgeInsets.zero,
+        elevation: 3,
         child: EntryDismissible(
           id: widget.id,
           color: widget.color,
           child: ExpansionTile(
             leading: leading,
-            backgroundColor: widget.color.withOpacity(0.1),
             onExpansionChanged: (value) => setState(() {
               _isExpanded = value;
             }),
-            childrenPadding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             key: ValueKey(widget.id),
             tilePadding: const EdgeInsets.only(left: 10, right: 20),
             controlAffinity: ListTileControlAffinity.leading,
@@ -158,7 +142,6 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
               children: [
                 Text(
                   widget.data[ReceiptField.retailer_name.name],
-                  style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(
                   width: 4,
@@ -166,9 +149,18 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                 Text(numberOfItems),
               ],
             ),
-            subtitle: Text(DateFormat(_settingsProvider.dateTimeFormat.format)
-                .format(DateTime.parse(
-                    widget.data[ReceiptField.purchase_date_time.name]))),
+            subtitle: Opacity(
+              opacity: 0.75,
+              child: Text(
+                DateFormat(_settingsProvider.dateTimeFormat.format).format(
+                    DateTime.parse(
+                        widget.data[ReceiptField.purchase_date_time.name])),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(fontWeight: FontWeight.w400),
+              ),
+            ),
             trailing: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -177,10 +169,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                   CurrencyHelper.getFormatted(
                       widget.data[ReceiptField.price.name],
                       _settingsProvider.currency),
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: SizeHelper.getFontSize(context,
-                          size: FontSize.regularLarge)),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 if (_isFavourite)
                   Row(
@@ -191,7 +180,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                   )
               ],
             ),
-            textColor: widget.color,
+            //  textColor: widget.color,
             iconColor: widget.color,
             children: [
               Column(
@@ -209,7 +198,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
+                              const Text(
                                 'Number of Products',
                                 overflow: TextOverflow.clip,
                               ),
@@ -225,7 +214,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: 8, bottom: 4),
                     child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: widget.color,
@@ -253,8 +242,6 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
   }
 
   Widget getEntry(ReceiptField header) {
-    final value = widget.data[header];
-
     return Theme(
       data: Theme.of(context)
           .copyWith(dividerColor: Colors.black.withOpacity(0.2)),

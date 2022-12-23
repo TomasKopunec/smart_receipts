@@ -40,7 +40,7 @@ class GridCard extends StatelessWidget {
                     ),
                     Icon(
                       icon,
-                      color: Theme.of(context).hintColor,
+                      color: Theme.of(context).indicatorColor,
                       size:
                           SizeHelper.getIconSize(context, size: IconSize.large),
                     )
@@ -50,10 +50,10 @@ class GridCard extends StatelessWidget {
               Text(title,
                   textAlign: TextAlign.center,
                   softWrap: true,
-                  style: TextStyle(
-                      color: Colors.black.withOpacity(0.85),
-                      fontSize: SizeHelper.getFontSize(context,
-                          size: FontSize.larger)))
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontWeight: FontWeight.w300))
             ],
           ),
         ),

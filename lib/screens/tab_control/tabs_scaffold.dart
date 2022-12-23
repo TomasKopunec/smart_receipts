@@ -158,7 +158,7 @@ class _TabsScaffoldState extends State<TabsScaffold> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
           // Bottom navigation bar on scaffold
-          color: Colors.white,
+          color: Theme.of(context).canvasColor,
           shape: const CircularNotchedRectangle(),
           notchMargin:
               6, //notche margin between floating button and bottom appbar
@@ -198,42 +198,35 @@ class MenuItem extends StatelessWidget {
       flex: isDummy ? 27 : 20,
       child: Opacity(
         opacity: opacity,
-        child: Container(
-          child: InkWell(
-            customBorder:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            onTap: isDummy
-                ? null
-                : () {
-                    changePage();
-                  },
-            child: Container(
-              padding: const EdgeInsets.only(top: 4, bottom: 6),
-              decoration: BoxDecoration(
-                  color: isSelected
-                      ? Colors.black.withOpacity(0.04)
-                      : Colors.white,
-                  //  borderRadius: BorderRadius.circular(8),
-                  border: isSelected
-                      ? Border(
-                          top: BorderSide(
-                              width: 3, color: Theme.of(context).primaryColor))
-                      : const Border(
-                          top:
-                              BorderSide(width: 3, color: Colors.transparent))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon,
-                      color: Theme.of(context).primaryColor,
-                      size: SizeHelper.getMenuIconSize(context)),
-                  Text(
-                    label,
-                    style: const TextStyle(color: Colors.black),
-                  )
-                ],
-              ),
+        child: InkWell(
+          customBorder:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          onTap: isDummy
+              ? null
+              : () {
+                  changePage();
+                },
+          child: Container(
+            padding: const EdgeInsets.only(top: 4, bottom: 6),
+            decoration: BoxDecoration(
+                color: isSelected
+                    ? Theme.of(context).scaffoldBackgroundColor
+                    : Theme.of(context).canvasColor,
+                border: isSelected
+                    ? Border(
+                        top: BorderSide(
+                            width: 3, color: Theme.of(context).primaryColor))
+                    : const Border(
+                        top: BorderSide(width: 3, color: Colors.transparent))),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon,
+                    color: Theme.of(context).primaryColor,
+                    size: SizeHelper.getMenuIconSize(context)),
+                Text(label)
+              ],
             ),
           ),
         ),

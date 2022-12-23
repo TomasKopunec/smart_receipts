@@ -38,12 +38,14 @@ class Main extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.teal,
               visualDensity: VisualDensity.adaptivePlatformDensity,
-              scaffoldBackgroundColor: Color.fromARGB(255, 236, 236, 236),
+              scaffoldBackgroundColor: const Color.fromARGB(255, 236, 236, 236),
+              indicatorColor: const Color.fromARGB(255, 46, 46, 46),
             ),
             darkTheme: ThemeData.dark().copyWith(
               primaryColor: Colors.teal,
               visualDensity: VisualDensity.adaptivePlatformDensity,
-              scaffoldBackgroundColor: Color.fromARGB(255, 34, 34, 34),
+              scaffoldBackgroundColor: const Color.fromARGB(255, 34, 34, 34),
+              indicatorColor: const Color.fromARGB(255, 236, 236, 236),
             ),
             home: const TabsScaffold(),
             routes: getRoutes(),
