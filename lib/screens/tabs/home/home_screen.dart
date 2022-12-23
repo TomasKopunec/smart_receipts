@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/screens/tabs/home/recent_receipts.dart';
 import 'package:smart_receipts/screens/tabs/home/sustainability_widget.dart';

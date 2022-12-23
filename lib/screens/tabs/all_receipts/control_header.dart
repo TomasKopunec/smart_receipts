@@ -5,8 +5,8 @@ import 'package:smart_receipts/screens/tabs/all_receipts/search_bar.dart';
 import 'package:smart_receipts/widgets/selection_widget.dart';
 
 import '../../../helpers/size_helper.dart';
-import 'favourite_toggle.dart';
-import 'animated_dropdown_button.dart';
+import '../../../widgets/favourite_toggle.dart';
+import '../../../widgets/receipt_dropdown_button.dart';
 
 class ControlHeader extends StatelessWidget {
   const ControlHeader({super.key});
@@ -54,9 +54,9 @@ class ControlHeader extends StatelessWidget {
                   const SizedBox(
                     width: 16,
                   ),
-                  AnimatedDropdownButton(
+                  ReceiptDropdownButton(
                     width: SizeHelper.getScreenWidth(context) * 0.525,
-                    color: Theme.of(context).primaryColor,
+                    textColor: Theme.of(context).primaryColor,
                   ),
                 ],
               ),

@@ -5,18 +5,22 @@ import 'package:smart_receipts/providers/receipts_provider.dart';
 
 enum SortStatus { asc, desc }
 
-class AnimatedDropdownButton extends StatefulWidget {
+class ReceiptDropdownButton extends StatefulWidget {
   final double width;
-  final Color color;
+  final Color backgroundColor;
+  final Color textColor;
   final List<ReceiptField> items = Receipt.getSearchableKeys();
 
-  AnimatedDropdownButton({required this.color, required this.width});
+  ReceiptDropdownButton(
+      {required this.width,
+      required this.textColor,
+      this.backgroundColor = const Color(0xFFe7e7e8)});
 
   @override
-  State<AnimatedDropdownButton> createState() => _AnimatedDropdownButtonState();
+  State<ReceiptDropdownButton> createState() => _ReceiptDropdownButtonState();
 }
 
-class _AnimatedDropdownButtonState extends State<AnimatedDropdownButton> {
+class _ReceiptDropdownButtonState extends State<ReceiptDropdownButton> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ReceiptsProvider>(
@@ -24,7 +28,7 @@ class _AnimatedDropdownButtonState extends State<AnimatedDropdownButton> {
         return Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
-                color: const Color.fromRGBO(230, 230, 230, 1)),
+                color: widget.backgroundColor),
             child: PopupMenuButton(
               constraints: BoxConstraints(
                   maxWidth: widget.width, minWidth: widget.width),
@@ -73,9 +77,9 @@ class _AnimatedDropdownButtonState extends State<AnimatedDropdownButton> {
                           child: getSortStatusIcon(provider.sortStatus)),
                       Text(
                         provider.searchKey.toString(),
-                        style: TextStyle(color: widget.color),
+                        style: TextStyle(color: widget.textColor),
                       ),
-                      Icon(Icons.arrow_drop_down, color: widget.color)
+                      Icon(Icons.arrow_drop_down, color: widget.textColor)
                     ],
                   )),
                 ),
@@ -88,9 +92,9 @@ class _AnimatedDropdownButtonState extends State<AnimatedDropdownButton> {
   Icon getSortStatusIcon(SortStatus sortStatus) {
     switch (sortStatus) {
       case SortStatus.asc:
-        return Icon(Icons.arrow_upward, color: widget.color);
+        return Icon(Icons.arrow_upward, color: widget.textColor);
       case SortStatus.desc:
-        return Icon(Icons.arrow_downward, color: widget.color);
+        return Icon(Icons.arrow_downward, color: widget.textColor);
     }
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
+import 'package:smart_receipts/providers/settings_provider.dart';
+import 'package:smart_receipts/widgets/toggle_switch.dart';
 import '../tab_control/abstract_tab_screen.dart';
 
 class AddReceiptScreen extends AbstractTabScreen {
@@ -23,24 +26,25 @@ class AddReceiptScreen extends AbstractTabScreen {
 }
 
 class _AddReceiptScreenState extends State<AddReceiptScreen> {
-  bool _isDigitalOnly = true;
-
   @override
   Widget build(BuildContext context) {
-    return widget.getScreen(
-        screenBody: Center(
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            getQRCodeView(context),
-            const SizedBox(height: 8),
-            getSwitchWidget(context)
-          ]),
+    return widget.getScreen(screenBody: Center(
+      child: Consumer<SettingsProvider>(
+        builder: (ctx, provider, _) {
+          return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                getQRCodeView(context, provider),
+                const SizedBox(height: 8),
+                getSwitchWidget(context, provider)
+              ]);
+        },
+      ),
     ));
   }
 
-  Widget getQRCodeView(context) {
+  Widget getQRCodeView(context, SettingsProvider provider) {
     final double qrCodeSize = SizeHelper.getScreenWidth(context) * 0.9;
     final double padding =
         (SizeHelper.getScreenWidth(context) - qrCodeSize) * 0.5;
@@ -57,7 +61,9 @@ class _AddReceiptScreenState extends State<AddReceiptScreen> {
           children: [
             Center(
               child: Container(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  color: provider.digitalOnly
+                      ? Theme.of(context).primaryColor.withOpacity(0.2)
+                      : Colors.transparent,
                   height: qrCodeSize,
                   width: qrCodeSize,
                   child: Icon(Icons.qr_code_2, size: qrCodeSize)),
@@ -94,7 +100,7 @@ class _AddReceiptScreenState extends State<AddReceiptScreen> {
     );
   }
 
-  Widget getSwitchWidget(context) {
+  Widget getSwitchWidget(context, SettingsProvider provider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -106,16 +112,12 @@ class _AddReceiptScreenState extends State<AddReceiptScreen> {
               fontWeight: FontWeight.w600),
         ),
         const SizedBox(width: 2),
-        Transform.scale(
-          scale: 1.25,
-          child: Switch(
-              activeColor: Theme.of(context).primaryColor,
-              value: _isDigitalOnly,
-              onChanged: (val) {
-                setState(() {
-                  _isDigitalOnly = val;
-                });
-              }),
+        ToggleSelection(
+          defaultState: true,
+          onToggle: (value) {
+            provider.setDigitalOnly(value);
+            print('Digital receipt only ${value ? "enabled" : "disabled"}');
+          },
         )
       ],
     );

@@ -51,7 +51,7 @@ class RecentReceipts extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
-        elevation: 6,
+        elevation: 3,
         child: ListTile(
             onTap: () {
               _showReceipt(context, receipt.getField(ReceiptField.id));

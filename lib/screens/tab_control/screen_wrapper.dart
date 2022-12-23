@@ -34,7 +34,7 @@ class ScreenWrapper extends StatelessWidget {
         children: [
           _getTitleWidget(context, action),
           if (headerBody != null) _getHeaderActionsWrapper(headerBody!),
-          const Padding(padding: EdgeInsets.symmetric(vertical: 4)),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
           Expanded(
             child: screenBody,
           ),

@@ -5,7 +5,7 @@ import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/utils/shared_preferences_helper.dart';
 
 import '../models/product/product.dart';
-import '../screens/tabs/all_receipts/animated_dropdown_button.dart';
+import '../widgets/receipt_dropdown_button.dart';
 
 class ReceiptsProvider with ChangeNotifier {
   List<Receipt> _receipts = [];
