@@ -5,7 +5,7 @@ import '../screens/tabs/add_receipt_screen.dart';
 import '../screens/tabs/all_receipts/all_receipts_screen.dart';
 import '../screens/tabs/returns_screen.dart';
 import '../screens/tabs/home/home_screen.dart';
-import '../screens/tabs/setttings_screen/settings_screen.dart';
+import '../screens/tabs/settings_screen/settings_screen.dart';
 
 class ScreenProvider with ChangeNotifier {
   final List<AbstractTabScreen> _screens = [

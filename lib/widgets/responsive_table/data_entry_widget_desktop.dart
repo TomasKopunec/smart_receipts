@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/widgets/receipt_status_label.dart';
+import '../../helpers/currency_helper.dart';
 import '../../models/receipt/receipt.dart';
+import '../../providers/settings_provider.dart';
 
 class DataEntryWidgetDesktop extends StatefulWidget {
   final Color color;
@@ -31,6 +33,7 @@ class DataEntryWidgetDesktop extends StatefulWidget {
 
 class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
   late bool _isFavorite;
+  late final SettingsProvider _settingsProvider;
 
   @override
   void initState() {
@@ -38,6 +41,12 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
 
     _isFavorite = Provider.of<ReceiptsProvider>(context, listen: false)
         .isFavorite(widget.id);
+
+    _settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+
+    _settingsProvider.addListener(() {
+      setState(() {});
+    });
   }
 
   bool get selected {
@@ -193,21 +202,21 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
       return getStatusWidget(ReceiptStatus.from(value));
     }
 
-    String formattedString = '$value';
+    String stringOutput = '$value';
 
-    if (header == ReceiptField.expiration ||
-        header == ReceiptField.purchase_date_time) {
-      formattedString = DateFormat.yMMMMd().format(DateTime.parse(value));
-    }
-
-    if (header == ReceiptField.price) {
-      formattedString = '${value.toStringAsFixed(2)}';
+    if (header == ReceiptField.purchase_date_time ||
+        header == ReceiptField.expiration) {
+      stringOutput = DateFormat(_settingsProvider.dateTimeFormat.format)
+          .format(DateTime.parse(stringOutput));
+    } else if (header == ReceiptField.price) {
+      stringOutput =
+          CurrencyHelper.getFormatted(value, _settingsProvider.currency);
     }
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
       child: Text(
-        formattedString,
+        stringOutput,
         textAlign: TextAlign.center,
       ),
     );

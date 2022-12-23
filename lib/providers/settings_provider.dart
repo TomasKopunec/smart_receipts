@@ -8,8 +8,7 @@ enum Currency {
   australian_dollar('Australian Dollar', '\$', 'aud'),
   canadian_dollar('Canada Dollar', '\$', 'cad'),
   swiss_frank('Switzerland Franc', 'chf', 'chf'),
-  hkd('Hong Kong Dollar', '\$', 'hkd'),
-  ;
+  hkd('Hong Kong Dollar', '\$', 'hkd');
 
   const Currency(this.name, this.currency, this.code);
   final String name;
@@ -18,9 +17,9 @@ enum Currency {
 }
 
 enum DateTimeFormat {
-  standard('Standard Format', 'July 16, 2022', 'MMMMMMMMMM d, y'),
+  standard('Standard Format', 'July 16, 2022', 'yMMMMd'),
   short('Short Format', '7/16/2022', 'yMd'),
-  long('Long Format', '6:30 PM, July 16, 2022', 'K:m a, MMMM d y');
+  long('Long Format', '6:30 PM, July 16, 2022', 'K:m a, MMMM d, y');
 
   const DateTimeFormat(this.name, this.example, this.format);
   final String name;
@@ -28,10 +27,25 @@ enum DateTimeFormat {
   final String format;
 }
 
+enum ThemeSetting {
+  light('Light'),
+  dark('Dark');
+
+  const ThemeSetting(this.name);
+  final String name;
+
+  static ThemeSetting from(String name) {
+    return ThemeSetting.values
+        .firstWhere((e) => e.name.toLowerCase() == name.toLowerCase());
+  }
+}
+
 class SettingsProvider with ChangeNotifier {
   Currency _selectedCurrency = Currency.pound;
 
   DateTimeFormat _selectedDateTimeFormat = DateTimeFormat.standard;
+
+  ThemeSetting _selectedTheme = ThemeSetting.light;
 
   bool _digitalOnly = true;
 
@@ -62,5 +76,14 @@ class SettingsProvider with ChangeNotifier {
 
   DateTimeFormat get dateTimeFormat {
     return _selectedDateTimeFormat;
+  }
+
+  void selectTheme(ThemeSetting theme) {
+    _selectedTheme = theme;
+    notifyListeners();
+  }
+
+  ThemeSetting get theme {
+    return _selectedTheme;
   }
 }

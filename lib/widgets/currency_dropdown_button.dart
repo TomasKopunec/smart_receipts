@@ -26,7 +26,7 @@ class _CurrencyDropdownButtonState extends State<CurrencyDropdownButton> {
 
   @override
   void initState() {
-    _selected = Currency.pound;
+    _selected = Provider.of<SettingsProvider>(context, listen: false).currency;
     super.initState();
   }
 
@@ -65,6 +65,8 @@ class _CurrencyDropdownButtonState extends State<CurrencyDropdownButton> {
 
               Provider.of<SettingsProvider>(context, listen: false)
                   .selectCurrency(_selected);
+
+              print('Changing currency to: ${value.code}');
             },
             child: SizedBox(
               width: widget.width,

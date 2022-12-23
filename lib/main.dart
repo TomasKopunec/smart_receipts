@@ -27,16 +27,22 @@ class Main extends StatelessWidget {
         ChangeNotifierProvider.value(value: ReceiptsProvider()),
         ChangeNotifierProvider.value(value: SettingsProvider()),
       ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.teal,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          // dividerColor: Colors.transparent,
-        ),
-        home: const TabsScaffold(), // PlaygroundScreen(),
-        routes: getRoutes(),
+      child: Consumer<SettingsProvider>(
+        builder: (_, settings, child) {
+          return MaterialApp(
+            title: 'Flutter Demo',
+            debugShowCheckedModeBanner: false,
+            themeMode: settings.theme == ThemeSetting.dark
+                ? ThemeMode.dark
+                : ThemeMode.light,
+            theme: ThemeData(
+              primarySwatch: Colors.teal,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+            ),
+            home: const TabsScaffold(),
+            routes: getRoutes(),
+          );
+        },
       ),
     );
   }

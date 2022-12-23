@@ -5,7 +5,7 @@ import 'package:smart_receipts/providers/settings_provider.dart';
 import 'package:smart_receipts/widgets/currency_dropdown_button.dart';
 import 'package:smart_receipts/widgets/datetime_dropdown_button.dart';
 import 'package:smart_receipts/widgets/receipt_dropdown_button.dart';
-import 'package:smart_receipts/widgets/favourite_toggle.dart';
+import 'package:smart_receipts/widgets/animated_toggle.dart';
 import 'package:smart_receipts/widgets/settings_dropdown_button.dart';
 import 'package:smart_receipts/widgets/toggle_switch.dart';
 
@@ -45,7 +45,7 @@ class _SettingsState extends State<SettingsScreen> {
     return Column(
       children: [
         getDigitalOnlySettings(provider),
-        getThemeSettings(),
+        getThemeSettings(provider),
         getCurrencySettings(),
         getDateTimeSettings(),
         getAccountSettings(),
@@ -53,22 +53,26 @@ class _SettingsState extends State<SettingsScreen> {
     );
   }
 
-  Widget getDigitalOnlySettings(provider) {
+  Widget getDigitalOnlySettings(SettingsProvider provider) {
     return getSettingsSection('Digital receipt only',
         ToggleSelection(defaultState: provider.digitalOnly));
   }
 
-  Widget getThemeSettings() {
+  Widget getThemeSettings(SettingsProvider provider) {
     return getSettingsSection(
         'Theme',
         Padding(
           padding: const EdgeInsets.all(12),
-          child: FavouriteToggle(
+          child: AnimatedToggle(
             width: SizeHelper.getScreenWidth(context),
-            values: const ['Dark', 'Light'],
+            values: ThemeSetting.values.map((e) => e.name).toList(),
             backgroundColor: Colors.black.withOpacity(0.25),
             textColor: Colors.white,
             buttonColor: Colors.black.withOpacity(0.75),
+            onValueChange: (value) {
+              provider.selectTheme(ThemeSetting.from(value));
+              print('Theme changing to: ${value}');
+            },
           ),
         ));
   }

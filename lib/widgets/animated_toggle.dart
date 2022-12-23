@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 
-class FavouriteToggle extends StatefulWidget {
+class AnimatedToggle extends StatefulWidget {
   final List<String> values;
   final Color backgroundColor;
   final Color buttonColor;
@@ -11,10 +11,12 @@ class FavouriteToggle extends StatefulWidget {
   final List<BoxShadow> shadows;
   final double width;
   final Duration animDuration;
+  final Function(String value) onValueChange;
 
-  const FavouriteToggle({
+  const AnimatedToggle({
     required this.width,
     required this.values,
+    required this.onValueChange,
     this.backgroundColor = const Color(0xFFe7e7e8),
     this.buttonColor = const Color(0xFFFFFFFF),
     this.textColor = Colors.white,
@@ -29,10 +31,10 @@ class FavouriteToggle extends StatefulWidget {
   }) : assert(values.length <= 2);
 
   @override
-  _FavouriteToggleState createState() => _FavouriteToggleState();
+  _AnimatedToggleState createState() => _AnimatedToggleState();
 }
 
-class _FavouriteToggleState extends State<FavouriteToggle> {
+class _AnimatedToggleState extends State<AnimatedToggle> {
   bool initialPosition = true;
 
   @override
@@ -46,7 +48,10 @@ class _FavouriteToggleState extends State<FavouriteToggle> {
               GestureDetector(
                 onTap: () {
                   initialPosition = !initialPosition;
-                  provider.toggleFavourites();
+                  widget.onValueChange(
+                      initialPosition ? widget.values[0] : widget.values[1]);
+
+                  // Rebuild
                   setState(() {});
                 },
                 child: Container(

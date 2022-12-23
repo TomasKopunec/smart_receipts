@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
+import 'package:smart_receipts/providers/settings_provider.dart';
 import 'package:smart_receipts/screens/show_receipt_screen.dart';
+import '../../helpers/currency_helper.dart';
 import '../../models/receipt/receipt.dart';
 
 import '../../models/product/product.dart';
@@ -35,7 +37,8 @@ class DataEntryWidgetMobile extends StatefulWidget {
 }
 
 class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
-  late ReceiptsProvider _provider;
+  late final ReceiptsProvider _receiptProvider;
+  late final SettingsProvider _settingsProvider;
   bool _isExpanded = false;
   // late bool _isFavourite;
 
@@ -43,18 +46,20 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
   void initState() {
     super.initState();
 
-    _provider = Provider.of<ReceiptsProvider>(context, listen: false);
+    _receiptProvider = Provider.of<ReceiptsProvider>(context, listen: false);
+    _settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
 
     // Listen to changes
-    _provider.addListener(() {
-      setState(() {
-        // Rebuild
-      });
+    _receiptProvider.addListener(() {
+      setState(() {});
+    });
+    _settingsProvider.addListener(() {
+      setState(() {});
     });
   }
 
   Widget get leading {
-    return _provider.isSelecting ? selectionIcon : _expansionIcon;
+    return _receiptProvider.isSelecting ? selectionIcon : _expansionIcon;
   }
 
   Widget get _expansionIcon {
@@ -73,7 +78,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     Widget icon;
 
     icon = widget.isSelecting
-        ? _provider.selectedContains(widget.id)
+        ? _receiptProvider.selectedContains(widget.id)
             ? Icon(Icons.radio_button_checked,
                 color: widget.color, size: SizeHelper.getIconSize(context))
             : Icon(Icons.radio_button_unchecked,
@@ -83,10 +88,10 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     final Widget view = InkWell(
         onTap: () {
           setState(() {
-            if (_provider.selectedContains(widget.id)) {
-              _provider.removeSelectedByID(widget.id);
+            if (_receiptProvider.selectedContains(widget.id)) {
+              _receiptProvider.removeSelectedByID(widget.id);
             } else {
-              _provider.addSelectedByID(widget.id);
+              _receiptProvider.addSelectedByID(widget.id);
             }
           });
         },
@@ -96,11 +101,11 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
   }
 
   bool get _isSelected {
-    return _provider.selectedContains(widget.id);
+    return _receiptProvider.selectedContains(widget.id);
   }
 
   bool get _isFavourite {
-    return _provider.isFavorite(widget.id);
+    return _receiptProvider.isFavorite(widget.id);
   }
 
   Widget get favoriteLabel {
@@ -161,14 +166,17 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                 Text(numberOfItems),
               ],
             ),
-            subtitle: Text(DateFormat.yMMMMd().format(DateTime.parse(
-                widget.data[ReceiptField.purchase_date_time.name]))),
+            subtitle: Text(DateFormat(_settingsProvider.dateTimeFormat.format)
+                .format(DateTime.parse(
+                    widget.data[ReceiptField.purchase_date_time.name]))),
             trailing: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '£${widget.data[ReceiptField.price.name].toStringAsFixed(2)}',
+                  CurrencyHelper.getFormatted(
+                      widget.data[ReceiptField.price.name],
+                      _settingsProvider.currency),
                   style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: SizeHelper.getFontSize(context,
@@ -280,9 +288,11 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     String stringOutput = '$value';
     if (header == ReceiptField.purchase_date_time ||
         header == ReceiptField.expiration) {
-      stringOutput = DateFormat.yMMMMd().format(DateTime.parse(stringOutput));
+      stringOutput = DateFormat(_settingsProvider.dateTimeFormat.format)
+          .format(DateTime.parse(stringOutput));
     } else if (header == ReceiptField.price) {
-      stringOutput = ('${value.toStringAsFixed(2)}\$');
+      stringOutput =
+          CurrencyHelper.getFormatted(value, _settingsProvider.currency);
     } else if (header == ReceiptField.products) {
       stringOutput = '${widget.data[ReceiptField.products.name].length}';
     }

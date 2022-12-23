@@ -26,7 +26,8 @@ class _DateTimeDropdownButtonState extends State<DateTimeDropdownButton> {
 
   @override
   void initState() {
-    _selected = DateTimeFormat.standard;
+    _selected =
+        Provider.of<SettingsProvider>(context, listen: false).dateTimeFormat;
     super.initState();
   }
 
@@ -65,6 +66,8 @@ class _DateTimeDropdownButtonState extends State<DateTimeDropdownButton> {
 
               Provider.of<SettingsProvider>(context, listen: false)
                   .selectDateTimeFormat(_selected);
+
+              print('Changing datetime format to: ${value.format}');
             },
             child: SizedBox(
               width: widget.width,

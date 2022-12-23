@@ -9,7 +9,7 @@ import 'package:smart_receipts/screens/tabs/add_receipt_screen.dart';
 import 'package:smart_receipts/screens/tabs/all_receipts/all_receipts_screen.dart';
 import 'package:smart_receipts/screens/tabs/returns_screen.dart';
 import 'package:smart_receipts/screens/tabs/home/home_screen.dart';
-import 'package:smart_receipts/screens/tabs/setttings_screen/settings_screen.dart';
+import 'package:smart_receipts/screens/tabs/settings_screen/settings_screen.dart';
 
 import 'abstract_tab_screen.dart';
 

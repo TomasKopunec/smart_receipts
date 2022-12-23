@@ -5,13 +5,13 @@ import 'package:smart_receipts/screens/tabs/all_receipts/search_bar.dart';
 import 'package:smart_receipts/widgets/selection_widget.dart';
 
 import '../../../helpers/size_helper.dart';
-import '../../../widgets/favourite_toggle.dart';
+import '../../../widgets/animated_toggle.dart';
 import '../../../widgets/receipt_dropdown_button.dart';
 
 class ControlHeader extends StatelessWidget {
   const ControlHeader({super.key});
 
-  Widget getSearchControls(context, provider) {
+  Widget getSearchControls(context, ReceiptsProvider provider) {
     final color = Theme.of(context).primaryColor;
 
     return Container(
@@ -25,13 +25,16 @@ class ControlHeader extends StatelessWidget {
           const SizedBox(height: 10),
 
           // Toggle Switch
-          FavouriteToggle(
+          AnimatedToggle(
             width: SizeHelper.getScreenWidth(context),
             animDuration: const Duration(milliseconds: 750),
             values: const ['ALL', 'FAVOURITE'],
             buttonColor: color,
             backgroundColor: Colors.black.withOpacity(0.1),
             textColor: Colors.white,
+            onValueChange: (value) {
+              provider.toggleFavourites();
+            },
           ),
 
           const SizedBox(height: 10),
