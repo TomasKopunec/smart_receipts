@@ -25,27 +25,19 @@ class Section extends StatelessWidget {
     if (titleAction == null) {
       titleWidget = Text(
         title,
-        style: TextStyle(
-            fontSize: SizeHelper.getFontSize(context, size: FontSize.larger),
-            fontWeight: FontWeight.w600),
+        style: Theme.of(context).textTheme.headline6,
       );
     } else {
-      titleWidget = Container(
-        // color: Colors.blue.withOpacity(0.5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                  fontSize:
-                      SizeHelper.getFontSize(context, size: FontSize.larger),
-                  fontWeight: FontWeight.w600),
-            ),
-            titleAction!
-          ],
-        ),
+      titleWidget = Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          titleAction!
+        ],
       );
     }
 

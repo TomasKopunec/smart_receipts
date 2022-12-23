@@ -140,8 +140,8 @@ class _TabsScaffoldState extends State<TabsScaffold> {
           child: FloatingActionButton(
             backgroundColor: (screenProvider.selectedIndex ==
                     (screenProvider.screens.length - 1))
-                ? Theme.of(context).primaryColorDark
-                : Theme.of(context).primaryColor,
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).primaryColor.withOpacity(0.8),
             splashColor: Theme.of(context).primaryColorDark,
             elevation: 3,
             onPressed: () {
@@ -149,7 +149,7 @@ class _TabsScaffoldState extends State<TabsScaffold> {
             },
             child: Icon(
               Icons.camera_alt,
-              color: Colors.white.withOpacity(0.925),
+              color: Colors.white,
               size: SizeHelper.getMenuIconSize(context),
             ),
           ),

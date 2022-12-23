@@ -65,7 +65,7 @@ class _SearchBarState extends State<SearchBar> {
               ),
             ),
             hintText: 'Receipt\'s ${provider.searchKey.toString()}',
-            hintStyle: TextStyle(color: Colors.black.withOpacity(0.3)),
+            hintStyle: TextStyle(color: Theme.of(context).hintColor),
             enabledBorder: UnderlineInputBorder(
               borderSide:
                   BorderSide(color: color.withOpacity(0.5), width: 1.25),

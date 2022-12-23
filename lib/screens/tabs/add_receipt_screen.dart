@@ -53,20 +53,14 @@ class _AddReceiptScreenState extends State<AddReceiptScreen> {
       elevation: 3,
       margin: EdgeInsets.zero,
       child: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(8),
+        color: Theme.of(context).canvasColor,
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Container(
-                  color: provider.digitalOnly
-                      ? Theme.of(context).primaryColor.withOpacity(0.2)
-                      : Colors.transparent,
-                  height: qrCodeSize,
-                  width: qrCodeSize,
-                  child: Icon(Icons.qr_code_2, size: qrCodeSize)),
+              child: Icon(Icons.qr_code_2, size: qrCodeSize),
             ),
             const SizedBox(height: 8),
             Container(
@@ -77,19 +71,19 @@ class _AddReceiptScreenState extends State<AddReceiptScreen> {
                 children: [
                   Text(
                     'Tomas Kopunec',
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w500,
                         fontSize: SizeHelper.getFontSize(context,
-                            size: FontSize.largest),
-                        fontWeight: FontWeight.w600),
+                            size: FontSize.cardSize)),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     softWrap: true,
                     'vpke9ePEgAgySvFFwNsTc8/LZa03Ow==',
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w300,
                         fontSize: SizeHelper.getFontSize(context,
-                            size: FontSize.regularLarge),
-                        fontWeight: FontWeight.w300),
+                            size: FontSize.regularLarge)),
                   ),
                 ],
               ),

@@ -42,24 +42,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget get headerBody {
     return Container(
-      color: Colors.white,
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       child: Row(
         children: [
-          const CircleAvatar(
-            child: Icon(Icons.person),
+          CircleAvatar(
+            backgroundColor: Theme.of(context).primaryColor,
+            child: Icon(
+              Icons.person,
+              color: Theme.of(context).canvasColor,
+            ),
           ),
           SizedBox(width: 16),
           Text('Hello, ',
-              style: TextStyle(
-                  fontSize:
-                      SizeHelper.getFontSize(context, size: FontSize.large),
-                  fontWeight: FontWeight.w300)),
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall!
+                  .copyWith(fontWeight: FontWeight.w300)),
           Text('Tomas!',
-              style: TextStyle(
-                  fontSize:
-                      SizeHelper.getFontSize(context, size: FontSize.large),
-                  fontWeight: FontWeight.w600))
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall!
+                  .copyWith(fontWeight: FontWeight.w500))
         ],
       ),
     );

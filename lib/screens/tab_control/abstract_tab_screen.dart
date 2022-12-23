@@ -11,13 +11,12 @@ abstract class AbstractTabScreen extends StatefulWidget {
         icon: Icon(getIcon()),
         activeColorPrimary: getColor(context),
         inactiveColorPrimary: activeColor.withOpacity(0.4),
-        activeColorSecondary: activeColor,
-        inactiveColorSecondary: Colors.red);
+        activeColorSecondary: activeColor);
   }
 
   @nonVirtual
   Color getColor(BuildContext context) {
-    return Theme.of(context).primaryColor; // ColorHelper.APP_COLOR;
+    return Theme.of(context).primaryColor;
   }
 
   @nonVirtual

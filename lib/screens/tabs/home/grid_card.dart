@@ -40,7 +40,7 @@ class GridCard extends StatelessWidget {
                     ),
                     Icon(
                       icon,
-                      color: Colors.black.withOpacity(0.85),
+                      color: Theme.of(context).hintColor,
                       size:
                           SizeHelper.getIconSize(context, size: IconSize.large),
                     )

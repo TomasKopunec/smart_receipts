@@ -27,13 +27,14 @@ class ScreenWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 4),
-      color: Colors.black.withOpacity(0.07), // Screen background
+      color: Theme.of(context).scaffoldBackgroundColor, // Screen background
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _getTitleWidget(context, action),
-          if (headerBody != null) _getHeaderActionsWrapper(headerBody!),
+          if (headerBody != null)
+            _getHeaderActionsWrapper(context, headerBody!),
           const Padding(padding: EdgeInsets.symmetric(vertical: 1)),
           Expanded(
             child: screenBody,
@@ -45,42 +46,39 @@ class ScreenWrapper extends StatelessWidget {
 
   Widget _getTitleWidget(BuildContext context, Widget? action) {
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).canvasColor,
       padding: EdgeInsets.only(
           top: SizeHelper.getTopPadding(context), right: 16, left: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(icon, color: getScreenColor(context)),
+          Icon(icon, color: Theme.of(context).primaryColor),
           Padding(
             padding: const EdgeInsets.only(left: 18),
             child: Text(
               title,
-              style: TextStyle(
-                  color: getScreenColor(context),
-                  fontWeight: FontWeight.bold,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                   fontSize:
                       SizeHelper.getFontSize(context, size: FontSize.large)),
             ),
           ),
-          action != null
-              ? action
-              : TextButton(onPressed: () {}, child: Text(''))
+          action ?? TextButton(onPressed: () {}, child: const Text(''))
         ],
       ),
     );
   }
 
-  Widget _getHeaderActionsWrapper(Widget body) {
+  Widget _getHeaderActionsWrapper(context, Widget body) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
+        color: Theme.of(context).canvasColor,
         borderRadius: const BorderRadius.all(Radius.circular(0)),
         boxShadow: [
           BoxShadow(
               color: Colors.black.withOpacity(0.25),
               blurRadius: 1.5,
-              offset: Offset(0, 1.5)),
+              offset: const Offset(0, 1.5)),
         ],
       ),
       child: body,

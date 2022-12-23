@@ -14,7 +14,7 @@ class ReceiptDropdownButton extends StatefulWidget {
   ReceiptDropdownButton(
       {required this.width,
       required this.textColor,
-      this.backgroundColor = const Color(0xFFe7e7e8)});
+      required this.backgroundColor});
 
   @override
   State<ReceiptDropdownButton> createState() => _ReceiptDropdownButtonState();

@@ -15,7 +15,6 @@ class ControlHeader extends StatelessWidget {
     final color = Theme.of(context).primaryColor;
 
     return Container(
-      color: Colors.white,
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
       child: Column(
         children: [
@@ -32,6 +31,7 @@ class ControlHeader extends StatelessWidget {
             buttonColor: color,
             backgroundColor: Colors.black.withOpacity(0.1),
             textColor: Colors.white,
+            isInitialValue: true,
             onValueChange: (value) {
               provider.toggleFavourites();
             },
@@ -60,6 +60,7 @@ class ControlHeader extends StatelessWidget {
                   ReceiptDropdownButton(
                     width: SizeHelper.getScreenWidth(context) * 0.525,
                     textColor: Theme.of(context).primaryColor,
+                    backgroundColor: Theme.of(context).focusColor,
                   ),
                 ],
               ),
@@ -72,7 +73,6 @@ class ControlHeader extends StatelessWidget {
 
   Widget getSelectionControls(context, provider) {
     return Container(
-      color: Colors.white,
       padding: const EdgeInsets.only(bottom: 0, top: 8),
       child: const SelectionWidget(),
     );
@@ -87,18 +87,7 @@ class ControlHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ReceiptsProvider>(builder: (ctx, provider, child) {
-      return Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(0)),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.25),
-                blurRadius: 1.5,
-                offset: const Offset(0, 1.5)),
-          ],
-        ),
-        child: getControls(context, provider),
-      );
+      return getControls(context, provider);
     });
   }
 }

@@ -69,6 +69,7 @@ class _SettingsState extends State<SettingsScreen> {
             backgroundColor: Colors.black.withOpacity(0.25),
             textColor: Colors.white,
             buttonColor: Colors.black.withOpacity(0.75),
+            isInitialValue: provider.theme == ThemeSetting.light,
             onValueChange: (value) {
               provider.selectTheme(ThemeSetting.from(value));
               print('Theme changing to: ${value}');
@@ -82,7 +83,7 @@ class _SettingsState extends State<SettingsScreen> {
         'Currency',
         CurrencyDropdownButton(
             textColor: Theme.of(context).primaryColor,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).canvasColor,
             width: SizeHelper.getScreenWidth(context)));
   }
 
@@ -91,7 +92,7 @@ class _SettingsState extends State<SettingsScreen> {
         'Date and Time Format',
         DateTimeDropdownButton(
           textColor: Theme.of(context).primaryColor,
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).canvasColor,
           width: SizeHelper.getScreenWidth(context),
         ));
   }
@@ -147,7 +148,7 @@ class _SettingsState extends State<SettingsScreen> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).canvasColor,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.25),
@@ -160,6 +161,7 @@ class _SettingsState extends State<SettingsScreen> {
           child: Text(
             title,
             textAlign: TextAlign.start,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
         body

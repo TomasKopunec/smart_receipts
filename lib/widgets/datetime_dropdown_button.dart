@@ -73,7 +73,7 @@ class _DateTimeDropdownButtonState extends State<DateTimeDropdownButton> {
               width: widget.width,
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: InkWell(
                     child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,17 +93,14 @@ class _DateTimeDropdownButtonState extends State<DateTimeDropdownButton> {
                       children: [
                         Text(
                           _selected.name,
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(1),
-                              fontSize: SizeHelper.getFontSize(context,
-                                  size: FontSize.regular)),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Text(
                           _selected.example,
-                          style: TextStyle(
-                              color: Colors.black.withOpacity(0.6),
-                              fontSize: SizeHelper.getFontSize(context,
-                                  size: FontSize.regular)),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(fontWeight: FontWeight.w300),
                         )
                       ],
                     ),
