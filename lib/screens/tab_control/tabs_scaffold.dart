@@ -142,7 +142,7 @@ class _TabsScaffoldState extends State<TabsScaffold> {
                     (screenProvider.screens.length - 1))
                 ? Theme.of(context).primaryColor
                 : Theme.of(context).primaryColor.withOpacity(0.8),
-            splashColor: Theme.of(context).primaryColorDark,
+            splashColor: Theme.of(context).primaryColor,
             elevation: 3,
             onPressed: () {
               changePage(screenProvider.screens.length - 1);
