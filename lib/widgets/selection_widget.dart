@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_receipts/helpers/color_helper.dart';
 
 import '../helpers/size_helper.dart';
 import '../providers/receipts_provider.dart';

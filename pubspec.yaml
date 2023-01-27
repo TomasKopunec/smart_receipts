@@ -21,6 +21,7 @@ dependencies:
   build_runner: ^2.3.3
   json_annotation: ^4.7.0
   currency_icons: ^0.3.0
+  money_converter: ^2.0.2
 
 dev_dependencies:
   flutter_lints: ^2.0.1

@@ -42,13 +42,11 @@ enum ThemeSetting {
 
 class SettingsProvider with ChangeNotifier {
   Currency _selectedCurrency = Currency.pound;
-
   DateTimeFormat _selectedDateTimeFormat = DateTimeFormat.standard;
-
   ThemeSetting _selectedTheme = ThemeSetting.light;
-
   bool _digitalOnly = true;
 
+  /* Digital Only */
   bool get digitalOnly {
     return _digitalOnly;
   }
@@ -60,6 +58,7 @@ class SettingsProvider with ChangeNotifier {
     }
   }
 
+  /* Currency */
   void selectCurrency(Currency currency) {
     _selectedCurrency = currency;
     notifyListeners();
@@ -69,6 +68,7 @@ class SettingsProvider with ChangeNotifier {
     return _selectedCurrency;
   }
 
+  /* Date Time */
   void selectDateTimeFormat(DateTimeFormat format) {
     _selectedDateTimeFormat = format;
     notifyListeners();
@@ -78,6 +78,7 @@ class SettingsProvider with ChangeNotifier {
     return _selectedDateTimeFormat;
   }
 
+  /* Theme */
   void selectTheme(ThemeSetting theme) {
     _selectedTheme = theme;
     notifyListeners();

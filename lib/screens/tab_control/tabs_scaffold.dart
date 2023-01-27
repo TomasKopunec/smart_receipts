@@ -1,15 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/providers/screen_provider.dart.dart';
-import 'package:smart_receipts/screens/tabs/add_receipt_screen.dart';
-import 'package:smart_receipts/screens/tabs/all_receipts/all_receipts_screen.dart';
-import 'package:smart_receipts/screens/tabs/returns_screen.dart';
-import 'package:smart_receipts/screens/tabs/home/home_screen.dart';
-import 'package:smart_receipts/screens/tabs/settings_screen/settings_screen.dart';
 
 import 'abstract_tab_screen.dart';
 
@@ -120,6 +113,10 @@ class _TabsScaffoldState extends State<TabsScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final hsl = HSLColor.fromColor(Theme.of(context).primaryColor);
+    final selectedColor =
+        hsl.withLightness((hsl.lightness - 0.05).clamp(0.0, 1.0)).toColor();
+
     return Scaffold(
       body: PageView(
         controller: _myPage,
@@ -140,9 +137,9 @@ class _TabsScaffoldState extends State<TabsScaffold> {
           child: FloatingActionButton(
             backgroundColor: (screenProvider.selectedIndex ==
                     (screenProvider.screens.length - 1))
-                ? Theme.of(context).primaryColor
-                : Theme.of(context).primaryColor.withOpacity(0.8),
-            splashColor: Theme.of(context).primaryColor,
+                ? selectedColor
+                : Theme.of(context).primaryColor,
+            splashColor: selectedColor,
             elevation: 3,
             onPressed: () {
               changePage(screenProvider.screens.length - 1);

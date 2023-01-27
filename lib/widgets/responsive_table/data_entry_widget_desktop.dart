@@ -6,7 +6,7 @@ import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/widgets/receipt_status_label.dart';
 import '../../helpers/currency_helper.dart';
 import '../../models/receipt/receipt.dart';
-import '../../providers/settings_provider.dart';
+import '../../providers/settings/settings_provider.dart';
 
 class DataEntryWidgetDesktop extends StatefulWidget {
   final Color color;

@@ -1,7 +1,7 @@
-import 'package:smart_receipts/providers/settings_provider.dart';
+import '../providers/settings/settings_provider.dart';
 
 class CurrencyHelper {
-  static getFormatted(double price, Currency currency) {
+  static String getFormatted(double price, Currency currency) {
     String priceFormatted = price.toStringAsFixed(2);
 
     // TODO Convert according to rates

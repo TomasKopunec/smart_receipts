@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_receipts/helpers/color_helper.dart';
 
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
@@ -59,9 +58,9 @@ class _ReceiptTableState extends State<ReceiptTable> {
     _receiptsProvider = Provider.of<ReceiptsProvider>(context, listen: false);
 
     // Check if we have receipts already fetched
-    // if (_receiptsProvider.receiptSize == 0) {
-    //   _fetchData();
-    // }
+    if (_receiptsProvider.receiptSize == 0) {
+      _fetchData();
+    }
 
     // _updateExpanded();
 
@@ -82,57 +81,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  /*
-  void _updateTableFilter(
-      String searchValue, List<Map<String, dynamic>> newSource) {
-    _filterValue = searchValue;
-
-    _total = newSource.length;
-    _sourceFiltered = newSource;
-
-    // Get the upper range
-    final upperRange = _sourceFiltered.length < _currentPerPage
-        ? _sourceFiltered.length
-        : _currentPerPage;
-
-    _source = _sourceFiltered.getRange(0, upperRange).toList();
-
-    // Expanded
-    _updateExpanded();
-  }
-
-  void _updateTable({required List<Map<String, dynamic>> receipts}) {
-    // Update the total
-    _total = receipts.length;
-
-    // Get the upper range
-    final upperRange =
-        receipts.length < _currentPerPage ? receipts.length : _currentPerPage;
-
-    // Update the filtered source
-    _sourceFiltered = receipts;
-
-    // Update the source
-    _source = receipts.getRange(0, upperRange).toList();
-
-    // Filter and sort according to the current selection
-    // _sortData();
-    // _filterData(_filterValue);
-
-    // Update expanded
-    _updateExpanded();
-  }
-  
-  */
-
-  void _updateTableFooter({int start = 0}) {
-    setState(() {
-      // final int expandedLen = _updateExpanded(start: start);
-      // _source.clear();
-      // _source = _sourceFiltered.getRange(start, start + expandedLen).toList();
-    });
   }
 
   @override
@@ -189,7 +137,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
               setState(() {
                 _currentPerPage = value;
                 _currentPage = 1;
-                _updateTableFooter();
               });
             },
             isExpanded: false,
@@ -229,7 +176,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
                   var nextSet = _currentPage - _currentPerPage;
                   setState(() {
                     _currentPage = nextSet > 1 ? nextSet : 1;
-                    _updateTableFooter(start: _currentPage - 1);
                   });
                 },
         ),
@@ -246,19 +192,11 @@ class _ReceiptTableState extends State<ReceiptTable> {
                     _currentPage = nextSet < _receiptsProvider.receiptSize
                         ? nextSet
                         : _receiptsProvider.receiptSize - _currentPerPage;
-                    _updateTableFooter(start: _currentPage - 1);
                   });
                 },
         )
       ],
     );
-  }
-
-  List<Widget> _getFooters() {
-    return [
-      _getRowsPerPageSection(),
-      _getCurrentPageSection(),
-    ];
   }
 
   /// Helper methods

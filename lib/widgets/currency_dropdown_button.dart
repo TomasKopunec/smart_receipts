@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
-import 'package:smart_receipts/providers/settings_provider.dart';
+import 'package:smart_receipts/providers/settings/settings_provider.dart';
 
 class CurrencyDropdownButton extends StatefulWidget {
   final double width;

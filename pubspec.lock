@@ -240,6 +240,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.13.5"
   http_multi_server:
     dependency: transitive
     description:
@@ -331,6 +338,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  money_converter:
+    dependency: "direct main"
+    description:
+      name: money_converter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
   nested:
     dependency: transitive
     description:
