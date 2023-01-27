@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/screen_provider.dart.dart';
+import 'package:smart_receipts/screens/auth/authentication_screen.dart';
 import 'package:smart_receipts/screens/tab_control/tabs_scaffold.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
@@ -47,7 +48,7 @@ class Main extends StatelessWidget {
               scaffoldBackgroundColor: const Color.fromARGB(255, 34, 34, 34),
               indicatorColor: const Color.fromARGB(255, 236, 236, 236),
             ),
-            home: const TabsScaffold(),
+            home: AuthenticationScreen(), // const TabsScaffold(),
             routes: getRoutes(),
           );
         },
