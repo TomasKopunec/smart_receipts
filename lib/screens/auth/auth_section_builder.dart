@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-enum InputFieldType { email, password }
+enum InputFieldType { email, password, repPassword }
 
 class AuthSectionBuilder {
   final List<Widget> _widgets = [];
   Widget? _subsection;
 
   TextFormField getTextFormField({
+    required bool isRegistering,
     required InputFieldType type,
     required TextEditingController controller,
     required String hintText,
@@ -14,38 +15,47 @@ class AuthSectionBuilder {
     bool obscureText = false;
     Icon? prefixIcon;
     String? Function(String?)? validator = (val) => null;
+    String? helper;
 
     switch (type) {
       case InputFieldType.email:
         prefixIcon = const Icon(Icons.person);
         validator = ((val) {
-          if (val == null || val.isEmpty) {
-            return "Please enter your email";
-          }
-          if (!RegExp(
-                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-              .hasMatch(val)) {
-            return "Please enter a valid email";
-          }
+          // if (val == null || val.isEmpty) {
+          //   return "Please enter your email";
+          // }
+          // if (!RegExp(
+          //         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+          //     .hasMatch(val)) {
+          //   return "Please enter a valid email";
+          // }
           return null;
         });
+        if (isRegistering) {
+          helper = "Must be a valid email.";
+        }
         break;
       case InputFieldType.password:
+      case InputFieldType.repPassword:
         obscureText = true;
         prefixIcon = const Icon(Icons.key);
         validator = ((val) {
-          if (val == null || val.isEmpty) {
-            return "Please enter your password";
-          }
-          if (val.length < 8) {
-            return "Password must have at least 8 characters";
-          }
-          if (val.length > 24) {
-            return "The maximum password length is 24 characters";
-          }
+          // if (val == null || val.isEmpty) {
+          //   return "Please enter your password";
+          // }
+          // if (val.length < 8) {
+          //   return "Password must have at least 8 characters";
+          // }
           return null;
         });
+        if (isRegistering) {
+          helper = "Must be at least 8 characters.";
+        }
         break;
+    }
+
+    if (type == InputFieldType.repPassword) {
+      helper = "Both passwords must match.";
     }
 
     return TextFormField(
@@ -53,6 +63,7 @@ class AuthSectionBuilder {
       obscureText: obscureText,
       decoration: InputDecoration(
         prefixIcon: prefixIcon,
+        helperText: helper,
         border: const OutlineInputBorder(),
         hintText: hintText,
         contentPadding: const EdgeInsets.symmetric(horizontal: 10),
@@ -62,6 +73,7 @@ class AuthSectionBuilder {
   }
 
   AuthSectionBuilder withInput(
+      bool isRegistering,
       InputFieldType fieldType,
       TextEditingController controller,
       BuildContext context,
@@ -82,7 +94,10 @@ class AuthSectionBuilder {
           ),
           const SizedBox(height: 6),
           getTextFormField(
-              type: fieldType, controller: controller, hintText: hintText),
+              isRegistering: isRegistering,
+              type: fieldType,
+              controller: controller,
+              hintText: hintText),
         ],
       ),
     ));
@@ -95,14 +110,21 @@ class AuthSectionBuilder {
     return this;
   }
 
-  AuthSectionBuilder withButton(String title, Function func) {
+  AuthSectionBuilder withButton(bool isLoading, String title, Function func) {
     _widgets.add(SizedBox(
       width: double.infinity,
       child: ElevatedButton(
           onPressed: () {
             func();
           },
-          child: Text(title)),
+          child: isLoading
+              ? Transform.scale(
+                  scale: 0.675,
+                  child: const CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                )
+              : Text(title)),
     ));
     return this;
   }

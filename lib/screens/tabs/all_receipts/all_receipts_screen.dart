@@ -93,8 +93,8 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
               provider.isSelecting ? 'Cancel' : 'Select',
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
-                  fontSize: SizeHelper.getFontSize(context,
-                      size: FontSize.regularLarge)),
+                  fontSize:
+                      SizeHelper.getFontSize(context, size: FontSize.regular)),
             ));
       },
     );

@@ -32,25 +32,27 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-            padding: EdgeInsets.only(top: SizeHelper.getTopPadding(context)),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: SizeHelper.getScreenWidth(context) * 0.05),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  getHeader(),
-                  getScreen(_state),
-                ],
-              ),
-            )));
+        body: SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Padding(
+          padding: EdgeInsets.only(top: SizeHelper.getTopPadding(context)),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: SizeHelper.getScreenWidth(context) * 0.05),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                getHeader(),
+                getScreen(_state),
+              ],
+            ),
+          )),
+    ));
   }
 
   Widget getHeader() {
     final textWidget = Container(
-      //  color: Colors.blue.withOpacity(0.2),
       padding: EdgeInsets.only(
         top: SizeHelper.getScreenHeight(context) * 0.03,
         bottom: SizeHelper.getScreenHeight(context) * 0.03,
@@ -74,7 +76,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             onPressed: () => changeScreen(AuthState.login),
             icon: const Icon(Icons.arrow_back_ios_new),
             color: Theme.of(context).primaryColor),
-          const  SizedBox(width: 8),
+        const SizedBox(width: 8),
         textWidget,
       ],
     );

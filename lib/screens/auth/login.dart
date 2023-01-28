@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:smart_receipts/providers/auth/auth_provider.dart';
 
+import '../../utils/snackbar_builder.dart';
 import 'auth_section_builder.dart';
 import 'authentication_screen.dart';
 
@@ -13,6 +16,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  bool _isLoading = false;
   bool _rememberMe = false;
 
   final _formKey = GlobalKey<FormState>();
@@ -75,52 +79,72 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-        key: _formKey,
-        child: AuthSectionBuilder()
-            .withInput(
-              InputFieldType.email,
-              emailController,
-              context,
-              "Email",
-              "Enter your email",
-            )
-            .withInput(InputFieldType.password, passwordController, context,
-                "Password", "Enter your password")
-            .withWidget(rememberMeCheckbox)
-            .withButton("LOGIN", () {
-              if (!_formKey.currentState!.validate()) {
-                return;
-              }
+    return Consumer<AuthProvider>(
+      builder: (ctx, auth, _) {
+        return Form(
+            key: _formKey,
+            child: AuthSectionBuilder()
+                .withInput(
+                  false,
+                  InputFieldType.email,
+                  emailController,
+                  context,
+                  "Email",
+                  "Enter your email",
+                )
+                .withInput(false, InputFieldType.password, passwordController,
+                    context, "Password", "Enter your password")
+                .withWidget(rememberMeCheckbox)
+                .withButton(_isLoading, "LOGIN", () async {
+                  if (!_formKey.currentState!.validate()) {
+                    return;
+                  }
 
-              final email = emailController.text;
-              final pass = passwordController.text;
+                  final email = emailController.text;
+                  final pass = passwordController.text;
 
-              // TODO handle backend login
-              print("[API] Login ($email, $pass)");
-            })
-            .withWidget(forgotPasswordSection)
-            .withSubsection(Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Need an account?'),
-                TextButton(
-                    style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 6),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        minimumSize: Size.zero),
-                    onPressed: () {
-                      widget.func(AuthState.register);
-                    },
-                    child: const Text(
-                      'SIGN UP',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                      ),
-                    ))
-              ],
-            ))
-            .build());
+                  setState(() {
+                    _isLoading = true;
+                  });
+
+                  final result = await auth.signIn("username", "password");
+
+                  setState(() {
+                    _isLoading = false;
+                  });
+
+                  if (!result) {
+                    AppSnackBar.show(context,
+                        AppSnackBarBuilder().withText("Login failed!"));
+                  }
+
+                  // TODO handle backend login
+                  print("[API] Login ($email, $pass)");
+                })
+                .withWidget(forgotPasswordSection)
+                .withSubsection(Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Need an account?'),
+                    TextButton(
+                        style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 6),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            minimumSize: Size.zero),
+                        onPressed: () {
+                          widget.func(AuthState.register);
+                        },
+                        child: const Text(
+                          'SIGN UP',
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                          ),
+                        ))
+                  ],
+                ))
+                .build());
+      },
+    );
   }
 }
