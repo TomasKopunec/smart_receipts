@@ -10,7 +10,6 @@ enum AuthState {
   changePassword('Change Password');
 
   final String name;
-
   const AuthState(this.name);
 
   @override
@@ -28,6 +27,11 @@ class AuthenticationScreen extends StatefulWidget {
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
   AuthState _state = AuthState.register;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

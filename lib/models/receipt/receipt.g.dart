@@ -23,7 +23,8 @@ Receipt _$ReceiptFromJson(Map<String, dynamic> json) => Receipt(
           : DateTime.parse(json['expiration'] as String),
       price: (json['price'] as num).toDouble(),
       currency: json['currency'] as String,
-      payment: json['payment'] as String,
+      paymentMethod: json['paymentMethod'] as String,
+      cardNumber: json['cardNumber'] as String,
       products: (json['products'] as List<dynamic>)
           .map((e) => Product.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -43,7 +44,8 @@ Map<String, dynamic> _$ReceiptToJson(Receipt instance) => <String, dynamic>{
       'expiration': instance.expiration?.toIso8601String(),
       'price': instance.price,
       'currency': instance.currency,
-      'payment': instance.payment,
+      'paymentMethod': instance.paymentMethod,
+      'cardNumber': instance.cardNumber,
       'products': instance.products,
     };
 

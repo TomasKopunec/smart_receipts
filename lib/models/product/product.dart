@@ -42,6 +42,11 @@ class Product {
 
   Map<String, dynamic> toJson() => _$ProductToJson(this);
 
+  @override
+  bool operator ==(Object other) {
+    return (other is Product) && (other.sku == sku);
+  }
+
   dynamic getField(ProductField field) {
     switch (field) {
       case ProductField.id:

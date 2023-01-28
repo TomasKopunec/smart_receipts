@@ -22,7 +22,8 @@ enum ReceiptField {
   expiration('Expiration'),
   price('Price'),
   currency('Currency'),
-  payment('Payment'),
+  paymentMethod('Payment Type'),
+  cardNumber('Card Number'),
   products('Products');
 
   final String colName;
@@ -35,7 +36,7 @@ enum ReceiptField {
 
   @override
   String toString() {
-    return this.colName;
+    return colName;
   }
 }
 
@@ -53,7 +54,9 @@ class Receipt {
   final DateTime? expiration;
   final double price;
   final String currency;
-  final String payment;
+  final String paymentMethod;
+  final String? cardNumber;
+
   final List<Product> products;
 
   Receipt(
@@ -69,7 +72,8 @@ class Receipt {
       required this.expiration,
       required this.price,
       required this.currency,
-      required this.payment,
+      required this.paymentMethod,
+      this.cardNumber,
       required this.products});
 
   factory Receipt.fromJson(Map<String, dynamic> json) =>
@@ -110,8 +114,10 @@ class Receipt {
         return price;
       case ReceiptField.currency:
         return currency;
-      case ReceiptField.payment:
-        return payment;
+      case ReceiptField.paymentMethod:
+        return paymentMethod;
+      case ReceiptField.cardNumber:
+        return cardNumber;
       case ReceiptField.products:
         return products;
       default:

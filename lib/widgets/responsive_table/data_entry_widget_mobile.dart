@@ -214,14 +214,21 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 4),
-                    child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: widget.color,
-                        ),
-                        onPressed: _showReceipt,
-                        icon: const Icon(Icons.receipt),
-                        label: const Text("Show Receipt")),
+                    padding: const EdgeInsets.only(
+                        top: 8, bottom: 4, left: 10, right: 10),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: widget.color,
+                              ),
+                              onPressed: _showReceipt,
+                              icon: const Icon(Icons.receipt),
+                              label: const Text("Show Receipt")),
+                        )
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -236,7 +243,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const ShowReceiptScreen(),
+          builder: (context) => ShowReceiptScreen(),
           settings: RouteSettings(arguments: widget.id),
         ));
   }

@@ -85,7 +85,7 @@ class RecentReceipts extends StatelessWidget {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const ShowReceiptScreen(),
+          builder: (context) => ShowReceiptScreen(),
           settings: RouteSettings(arguments: id),
         ));
   }

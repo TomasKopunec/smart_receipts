@@ -169,7 +169,8 @@ class ReceiptsProvider with ChangeNotifier {
     for (int i = 1; i <= n; i++) {
       final List<Product> products = [];
 
-      for (int x = 0; x <= Random().nextInt(10) + 1; x++) {
+      final numberOfProducts = Random().nextInt(40) + 1;
+      for (int x = 0; x <= numberOfProducts; x++) {
         products.add(Product(
             id: x,
             name: 'Item $x',
@@ -180,7 +181,7 @@ class ReceiptsProvider with ChangeNotifier {
 
       generated.add(Receipt(
           id: i,
-          auto_delete_date_time: DateTime.now().add(Duration(days: 365)),
+          auto_delete_date_time: DateTime.now().add(const Duration(days: 365)),
           retailer_receipt_id: i,
           retailer_id: i,
           retailer_name: storeNames[Random().nextInt(storeNames.length)],
@@ -195,7 +196,8 @@ class ReceiptsProvider with ChangeNotifier {
               .add(const Duration(days: 365)),
           price: (Random().nextDouble() * 200),
           currency: 'GBP',
-          payment: 'Card',
+          paymentMethod: 'Card',
+          cardNumber: "1234 1234 1234 1234",
           products: products));
     }
     generated.shuffle();

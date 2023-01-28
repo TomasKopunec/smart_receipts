@@ -7,8 +7,8 @@ class PlaygroundScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ReturnableScreen(
+        receiptId: 1,
         title: 'Returnable Screen',
-        appbarColor: Color.fromRGBO(103, 125, 220, 1),
         body: Center(
           child: Text('Hello world'),
         ));

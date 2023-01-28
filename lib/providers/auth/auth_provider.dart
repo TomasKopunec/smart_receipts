@@ -9,7 +9,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<bool> signIn(String username, String password) {
-    return Future.delayed(Duration(milliseconds: 500)).then((value) {
+    return Future.delayed(const Duration(milliseconds: 500)).then((value) {
       _isSignedIn = true;
       notifyListeners();
       return true;
@@ -19,7 +19,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<bool> signOut() {
-    return Future.delayed(Duration(milliseconds: 500)).then((value) {
+    return Future.delayed(const Duration(milliseconds: 500)).then((value) {
       _isSignedIn = false;
       notifyListeners();
       return true;
@@ -29,7 +29,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<bool> changePassword(String email) {
-    return Future.delayed(Duration(seconds: 1)).then((value) {
+    return Future.delayed(const Duration(seconds: 1)).then((value) {
       return true;
     }).onError((error, stackTrace) => false);
   }

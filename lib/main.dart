@@ -51,7 +51,9 @@ class Main extends StatelessWidget {
                 scaffoldBackgroundColor: const Color.fromARGB(255, 34, 34, 34),
                 indicatorColor: const Color.fromARGB(255, 236, 236, 236),
               ),
-              home: auth.signedIn ? TabsScaffold() : AuthenticationScreen(),
+              home: auth.signedIn
+                  ? const TabsScaffold()
+                  : const AuthenticationScreen(),
               routes: getRoutes(),
             );
           },
