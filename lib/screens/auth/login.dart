@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'auth_section_builder.dart';
 import 'authentication_screen.dart';
 
 class Login extends StatefulWidget {
@@ -14,65 +15,112 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool _rememberMe = false;
 
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Widget get rememberMeCheckbox {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _rememberMe = !_rememberMe;
+        });
+      },
+      child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Checkbox(
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity(horizontal: -4),
+                value: _rememberMe,
+                onChanged: (val) => setState(() {
+                      _rememberMe = val!;
+                    })),
+            SizedBox(width: 6),
+            Text('Remember me?')
+          ]),
+    );
+  }
+
+  Row get forgotPasswordSection {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+            style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minimumSize: Size.zero),
+            onPressed: () {
+              widget.func(AuthState.changePassword);
+            },
+            child: const Text(
+              'Forgot password?',
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+              ),
+            ))
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black.withOpacity(0.1),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Email"),
-          TextField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter your email',
-                  contentPadding: EdgeInsets.symmetric(horizontal: 8))),
-          Text("Password"),
-          TextField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter your password',
-                  contentPadding: EdgeInsets.symmetric(horizontal: 8))),
-          Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
+    return Form(
+        key: _formKey,
+        child: AuthSectionBuilder()
+            .withInput(
+              InputFieldType.email,
+              emailController,
+              context,
+              "Email",
+              "Enter your email",
+            )
+            .withInput(InputFieldType.password, passwordController, context,
+                "Password", "Enter your password")
+            .withWidget(rememberMeCheckbox)
+            .withButton("LOGIN", () {
+              if (!_formKey.currentState!.validate()) {
+                return;
+              }
+
+              final email = emailController.text;
+              final pass = passwordController.text;
+
+              // TODO handle backend login
+              print("[API] Login ($email, $pass)");
+            })
+            .withWidget(forgotPasswordSection)
+            .withSubsection(Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Checkbox(
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity(horizontal: -4),
-                    value: _rememberMe,
-                    onChanged: (val) => setState(() {
-                          _rememberMe = val!;
-                        })),
-                SizedBox(width: 6),
-                Text('Remember me?')
-              ]),
-          ElevatedButton(onPressed: () {}, child: Text('LOGIN')),
-          Row(
-            children: [
-              TextButton(
-                  onPressed: () {
-                    widget.func(AuthState.changePassword);
-                  },
-                  child: Text('Forgot password?'))
-            ],
-          ),
-          Divider(
-            color: Colors.black,
-            thickness: 2,
-          ),
-          Row(
-            children: [
-              Text('Need an account?'),
-              TextButton(
-                  onPressed: () {
-                    widget.func(AuthState.register);
-                  },
-                  child: Text('SIGN UP'))
-            ],
-          )
-        ],
-      ),
-    );
+                const Text('Need an account?'),
+                TextButton(
+                    style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 6),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        minimumSize: Size.zero),
+                    onPressed: () {
+                      widget.func(AuthState.register);
+                    },
+                    child: const Text(
+                      'SIGN UP',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                      ),
+                    ))
+              ],
+            ))
+            .build());
   }
 }

@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/screens/auth/change_password.dart';
 import 'package:smart_receipts/screens/auth/login.dart';
@@ -41,45 +38,29 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               padding: EdgeInsets.symmetric(
                   horizontal: SizeHelper.getScreenWidth(context) * 0.05),
               child: Column(
-                children: [getHeader(), getScreen(_state)],
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  getHeader(),
+                  getScreen(_state),
+                ],
               ),
             )));
-
-    //    body: Center(
-    //       child: Column(
-    //     mainAxisAlignment: MainAxisAlignment.start,
-    //     children: [
-    //       getScreen(),
-    //       ElevatedButton(
-    //           onPressed: () => {
-    //                 setState(() {
-    //                   state = AuthState.register;
-    //                 })
-    //               },
-    //           child: Text('Register')),
-    //       ElevatedButton(
-    //           onPressed: () => {
-    //                 setState(() {
-    //                   state = AuthState.login;
-    //                 })
-    //               },
-    //           child: Text('Login')),
-    //       ElevatedButton(
-    //           onPressed: () => {
-    //                 setState(() {
-    //                   state = AuthState.changePassword;
-    //                 })
-    //               },
-    //           child: Text('Change Password')),
-    //     ],
-    //   )),
-    // );
   }
 
   Widget getHeader() {
-    final textWidget = Text(
-      _state.toString(),
-      style: Theme.of(context).textTheme.headlineMedium,
+    final textWidget = Container(
+      //  color: Colors.blue.withOpacity(0.2),
+      padding: EdgeInsets.only(
+        top: SizeHelper.getScreenHeight(context) * 0.03,
+        bottom: SizeHelper.getScreenHeight(context) * 0.03,
+      ),
+      child: Text(
+        _state.toString(),
+        style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+            color: Theme.of(context).indicatorColor,
+            fontWeight: FontWeight.w600),
+      ),
     );
 
     if (_state != AuthState.changePassword) {
@@ -88,13 +69,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         IconButton(
             onPressed: () => changeScreen(AuthState.login),
-            icon: Icon(Icons.arrow_back_ios_new),
+            icon: const Icon(Icons.arrow_back_ios_new),
             color: Theme.of(context).primaryColor),
-        textWidget
+          const  SizedBox(width: 8),
+        textWidget,
       ],
     );
   }
