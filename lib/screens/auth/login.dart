@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
+import 'package:smart_receipts/screens/tab_control/tabs_scaffold.dart';
 
 import '../../utils/snackbar_builder.dart';
 import 'auth_section_builder.dart';
@@ -49,8 +50,8 @@ class _LoginState extends State<Login> {
                 onChanged: (val) => setState(() {
                       _rememberMe = val!;
                     })),
-            SizedBox(width: 6),
-            Text('Remember me?')
+            const SizedBox(width: 6),
+            const Text('Remember me?')
           ]),
     );
   }
@@ -113,9 +114,17 @@ class _LoginState extends State<Login> {
                     _isLoading = false;
                   });
 
+                  if (!mounted) {
+                    return;
+                  }
+
                   if (!result) {
                     AppSnackBar.show(context,
                         AppSnackBarBuilder().withText("Login failed!"));
+                  } else {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const TabsScaffold(),
+                    ));
                   }
 
                   // TODO handle backend login

@@ -7,6 +7,7 @@ import 'package:smart_receipts/screens/auth/authentication_screen.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/screens/playgroundScreen.dart';
+import 'package:smart_receipts/screens/splash_screen.dart';
 import 'package:smart_receipts/screens/tab_control/tabs_scaffold.dart';
 
 void main() {
@@ -39,6 +40,10 @@ class Main extends StatelessWidget {
                   ? ThemeMode.dark
                   : ThemeMode.light,
               theme: ThemeData(
+                pageTransitionsTheme: const PageTransitionsTheme(builders: {
+                  TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                  TargetPlatform.iOS: CupertinoPageTransitionsBuilder()
+                }),
                 primarySwatch: Colors.teal,
                 visualDensity: VisualDensity.adaptivePlatformDensity,
                 scaffoldBackgroundColor:
@@ -46,14 +51,16 @@ class Main extends StatelessWidget {
                 indicatorColor: const Color.fromARGB(255, 46, 46, 46),
               ),
               darkTheme: ThemeData.dark().copyWith(
+                pageTransitionsTheme: const PageTransitionsTheme(builders: {
+                  TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                  TargetPlatform.iOS: CupertinoPageTransitionsBuilder()
+                }),
                 primaryColor: Colors.teal,
                 visualDensity: VisualDensity.adaptivePlatformDensity,
                 scaffoldBackgroundColor: const Color.fromARGB(255, 34, 34, 34),
                 indicatorColor: const Color.fromARGB(255, 236, 236, 236),
               ),
-              home: auth.signedIn
-                  ? const TabsScaffold()
-                  : const AuthenticationScreen(),
+              home: const SplashScreen(),
               routes: getRoutes(),
             );
           },

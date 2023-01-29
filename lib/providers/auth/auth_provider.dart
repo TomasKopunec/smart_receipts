@@ -8,6 +8,16 @@ class AuthProvider with ChangeNotifier {
     return _isSignedIn;
   }
 
+  Future<bool> register(String username, String password) {
+    return Future.delayed(const Duration(milliseconds: 500)).then((value) {
+      _isSignedIn = true;
+      notifyListeners();
+      return true;
+    }).onError((error, stackTrace) {
+      return false;
+    });
+  }
+
   Future<bool> signIn(String username, String password) {
     return Future.delayed(const Duration(milliseconds: 500)).then((value) {
       _isSignedIn = true;

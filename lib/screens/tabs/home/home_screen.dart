@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
+import 'package:smart_receipts/screens/auth/authentication_screen.dart';
 import 'package:smart_receipts/screens/tabs/home/recent_receipts.dart';
 import 'package:smart_receipts/screens/tabs/home/sustainability_widget.dart';
 
@@ -42,7 +42,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [const SustainabilityWidget(), const RecentReceipts()],
+      children: const [
+        SustainabilityWidget(),
+        RecentReceipts(),
+      ],
     );
   }
 
@@ -51,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (_, auth, __) {
         return _isSigningOut
             ? Padding(
-                padding: EdgeInsets.only(top: 8, right: 8),
+                padding: const EdgeInsets.only(top: 8, right: 8),
                 child: Transform.scale(
                   scale: 0.75,
                   child: CircularProgressIndicator(
@@ -74,10 +77,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     _isSigningOut = false;
                   });
 
+                  if (!mounted) {
+                    return;
+                  }
+
                   if (!result) {
                     AppSnackBar.show(context,
-                        AppSnackBarBuilder().withText("Login failed!"));
+                        AppSnackBarBuilder().withText("Sign Out failed!"));
+                  } else {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const AuthenticationScreen(),
+                    ));
                   }
+
+                  // TODO handle backend Sign Out
+                  print("[API] Sign Out");
                 },
                 child: Text(
                   'Sign Out',
@@ -102,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Theme.of(context).canvasColor,
             ),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Text('Hello, ',
               style: Theme.of(context)
                   .textTheme

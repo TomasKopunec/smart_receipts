@@ -5,6 +5,8 @@ import 'package:smart_receipts/screens/auth/auth_section_builder.dart';
 import 'package:smart_receipts/screens/auth/authentication_screen.dart';
 import 'package:smart_receipts/utils/snackbar_builder.dart';
 
+import '../tab_control/tabs_scaffold.dart';
+
 class Register extends StatefulWidget {
   final Function(AuthState state) func;
 
@@ -56,7 +58,7 @@ class _RegisterState extends State<Register> {
                     context,
                     "Confirm Password",
                     "Enter your password again")
-                .withButton(_isLoading, "SIGN UP", () {
+                .withButton(_isLoading, "SIGN UP", () async {
                   if (!_formKey.currentState!.validate()) {
                     return;
                   }
@@ -77,7 +79,24 @@ class _RegisterState extends State<Register> {
                     _isLoading = true;
                   });
 
-                  auth.signIn("name", "pass");
+                  final result = await auth.register("name", "pass");
+
+                  setState(() {
+                    _isLoading = false;
+                  });
+
+                  if (!mounted) {
+                    return;
+                  }
+
+                  if (!result) {
+                    AppSnackBar.show(context,
+                        AppSnackBarBuilder().withText("Login failed!"));
+                  } else {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const TabsScaffold(),
+                    ));
+                  }
 
                   // TODO handle backend register
                   print("[API] Register ($email, $pass)");
