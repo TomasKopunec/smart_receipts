@@ -136,6 +136,7 @@ class _LoginState extends State<Login> {
                       context, AppSnackBarBuilder().withText(result.message));
 
                   if (result.status) {
+                    auth.setToken(result.token!);
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => const TabsScaffold(),
                     ));

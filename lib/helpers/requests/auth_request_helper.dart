@@ -16,8 +16,15 @@ class AuthRequestHelper extends RequestHelper {
 
     bool success = response.code == 201;
     if (success) {
+      final Map<String, dynamic> parsed = json.decode(response.body);
       return AuthResponseDTO(
-          status: success, message: "Registered successfully.");
+          status: success,
+          message: "Registered successfully.",
+          token: Token(
+              accessToken: parsed['access_token'],
+              expiresAt: DateTime.parse(
+                parsed['expires_at'],
+              )));
     } else {
       return AuthResponseDTO(
           status: success, message: json.decode(response.body)['msg']);

@@ -109,7 +109,7 @@ class _RegisterState extends State<Register> {
                       context, AppSnackBarBuilder().withText(result.message));
 
                   if (result.status) {
-                    // TODO Set Auth token
+                    auth.setToken(result.token!);
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => const TabsScaffold(),
                     ));
