@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/widgets/toggle_switch.dart';
 import '../tab_control/abstract_tab_screen.dart';
 
-class AddReceiptScreen extends AbstractTabScreen {
+class ReceiveeceiptScreen extends AbstractTabScreen {
   @override
   String getTitle() {
     return 'Receive Receipt';
@@ -17,7 +18,7 @@ class AddReceiptScreen extends AbstractTabScreen {
   }
 
   @override
-  State<StatefulWidget> createState() => _AddReceiptScreenState();
+  State<StatefulWidget> createState() => _ReceiveeceiptScreenState();
 
   @override
   String getIconTitle() {
@@ -25,7 +26,7 @@ class AddReceiptScreen extends AbstractTabScreen {
   }
 }
 
-class _AddReceiptScreenState extends State<AddReceiptScreen> {
+class _ReceiveeceiptScreenState extends State<ReceiveeceiptScreen> {
   @override
   Widget build(BuildContext context) {
     return widget.getScreen(screenBody: Center(
@@ -44,6 +45,24 @@ class _AddReceiptScreenState extends State<AddReceiptScreen> {
     ));
   }
 
+  Widget get qrCode {
+    final double qrCodeSize = SizeHelper.getScreenWidth(context) * 0.8;
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: QrImage(
+        data: "vpke9ePEgAgySvFFwNsTc8/LZa03Ow==",
+        padding: EdgeInsets.zero,
+        version: QrVersions.auto,
+        constrainErrorBounds: true,
+        size: qrCodeSize,
+        foregroundColor: Theme.of(context).indicatorColor,
+        backgroundColor: Colors.transparent,
+        errorCorrectionLevel: QrErrorCorrectLevel.L,
+        gapless: false,
+      ),
+    );
+  }
+
   Widget getQRCodeView(context, SettingsProvider provider) {
     final double qrCodeSize = SizeHelper.getScreenWidth(context) * 0.9;
     final double padding =
@@ -60,11 +79,10 @@ class _AddReceiptScreenState extends State<AddReceiptScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Icon(Icons.qr_code_2, size: qrCodeSize),
+              child: qrCode,
             ),
-            const SizedBox(height: 8),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: padding),
+              padding: EdgeInsets.symmetric(horizontal: padding, vertical: 4),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,7 +125,7 @@ class _AddReceiptScreenState extends State<AddReceiptScreen> {
         ),
         const SizedBox(width: 2),
         ToggleSelection(
-          defaultState: true,
+          defaultState: provider.digitalOnly,
           onToggle: (value) {
             provider.setDigitalOnly(value);
             print('Digital receipt only ${value ? "enabled" : "disabled"}');

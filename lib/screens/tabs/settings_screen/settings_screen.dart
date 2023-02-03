@@ -4,9 +4,7 @@ import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/widgets/currency_dropdown_button.dart';
 import 'package:smart_receipts/widgets/datetime_dropdown_button.dart';
-import 'package:smart_receipts/widgets/receipt_dropdown_button.dart';
 import 'package:smart_receipts/widgets/animated_toggle.dart';
-import 'package:smart_receipts/widgets/settings_dropdown_button.dart';
 import 'package:smart_receipts/widgets/toggle_switch.dart';
 
 import '../../tab_control/abstract_tab_screen.dart';
@@ -54,8 +52,14 @@ class _SettingsState extends State<SettingsScreen> {
   }
 
   Widget getDigitalOnlySettings(SettingsProvider provider) {
-    return getSettingsSection('Digital receipt only',
-        ToggleSelection(defaultState: provider.digitalOnly));
+    return getSettingsSection(
+        'Digital receipt only',
+        ToggleSelection(
+          defaultState: provider.digitalOnly,
+          onToggle: (val) {
+            provider.setDigitalOnly(val);
+          },
+        ));
   }
 
   Widget getThemeSettings(SettingsProvider provider) {

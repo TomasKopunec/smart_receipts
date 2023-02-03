@@ -23,6 +23,7 @@ dependencies:
   currency_icons: ^0.3.0
   money_converter: ^2.0.2
   animated_splash_screen: ^1.3.0
+  qr_flutter: ^4.0.0
 
 dev_dependencies:
   flutter_lints: ^2.0.1
