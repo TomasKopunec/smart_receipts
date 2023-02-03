@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_receipts/helpers/requests/auth_request_helper.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/screens/auth/auth_section_builder.dart';
 import 'package:smart_receipts/screens/auth/authentication_screen.dart';
@@ -25,6 +26,15 @@ class _RegisterState extends State<Register> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController repeatPasswordController =
       TextEditingController();
+
+  @override
+  void initState() {
+    emailController.text = "email@email.com";
+    passwordController.text = "123456789";
+    repeatPasswordController.text = "123456789";
+
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -64,9 +74,9 @@ class _RegisterState extends State<Register> {
                   }
 
                   final email = emailController.text;
-                  final pass = passwordController.text;
+                  final password = passwordController.text;
 
-                  if (pass != repeatPasswordController.text) {
+                  if (password != repeatPasswordController.text) {
                     AppSnackBar.show(
                         context,
                         AppSnackBarBuilder()
@@ -79,7 +89,13 @@ class _RegisterState extends State<Register> {
                     _isLoading = true;
                   });
 
-                  final result = await auth.register("name", "pass");
+                  AuthResponseDTO? result;
+                  try {
+                    result = await auth.register(email, password);
+                  } catch (e) {
+                    result =
+                        AuthResponseDTO(status: false, message: e.toString());
+                  }
 
                   setState(() {
                     _isLoading = false;
@@ -89,17 +105,15 @@ class _RegisterState extends State<Register> {
                     return;
                   }
 
-                  if (!result) {
-                    AppSnackBar.show(context,
-                        AppSnackBarBuilder().withText("Login failed!"));
-                  } else {
+                  AppSnackBar.show(
+                      context, AppSnackBarBuilder().withText(result.message));
+
+                  if (result.status) {
+                    // TODO Set Auth token
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => const TabsScaffold(),
                     ));
                   }
-
-                  // TODO handle backend register
-                  print("[API] Register ($email, $pass)");
                 })
                 .withSubsection(Row(
                   mainAxisAlignment: MainAxisAlignment.center,

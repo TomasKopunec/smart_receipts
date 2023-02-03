@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   setState(() {
                     _isSigningOut = true;
                   });
-                  final result = await auth.signOut();
+                  final result = await auth.logOut();
 
                   setState(() {
                     _isSigningOut = false;

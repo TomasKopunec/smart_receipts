@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:smart_receipts/helpers/requests/auth_request_helper.dart';
+import 'package:smart_receipts/helpers/requests/response.dart';
 
 class AuthProvider with ChangeNotifier {
+  AuthRequestHelper authRequestHelper = AuthRequestHelper();
+
   bool _isSignedIn = false;
 
   /* Digital Only */
@@ -8,27 +12,15 @@ class AuthProvider with ChangeNotifier {
     return _isSignedIn;
   }
 
-  Future<bool> register(String username, String password) {
-    return Future.delayed(const Duration(milliseconds: 500)).then((value) {
-      _isSignedIn = true;
-      notifyListeners();
-      return true;
-    }).onError((error, stackTrace) {
-      return false;
-    });
+  Future<AuthResponseDTO> register(String email, String password) {
+    return authRequestHelper.register(email, password);
   }
 
-  Future<bool> signIn(String username, String password) {
-    return Future.delayed(const Duration(milliseconds: 500)).then((value) {
-      _isSignedIn = true;
-      notifyListeners();
-      return true;
-    }).onError((error, stackTrace) {
-      return false;
-    });
+  Future<AuthResponseDTO> login(String email, String password) {
+    return authRequestHelper.login(email, password);
   }
 
-  Future<bool> signOut() {
+  Future<bool> logOut() {
     return Future.delayed(const Duration(milliseconds: 500)).then((value) {
       _isSignedIn = false;
       notifyListeners();

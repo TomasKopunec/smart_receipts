@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/screens/tab_control/tabs_scaffold.dart';
 
+import '../../helpers/requests/auth_request_helper.dart';
 import '../../utils/snackbar_builder.dart';
 import 'auth_section_builder.dart';
 import 'authentication_screen.dart';
@@ -24,6 +25,13 @@ class _LoginState extends State<Login> {
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    emailController.text = "email@email.com";
+    passwordController.text = "123456789";
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -102,13 +110,19 @@ class _LoginState extends State<Login> {
                   }
 
                   final email = emailController.text;
-                  final pass = passwordController.text;
+                  final password = passwordController.text;
 
                   setState(() {
                     _isLoading = true;
                   });
 
-                  final result = await auth.signIn("username", "password");
+                  AuthResponseDTO? result;
+                  try {
+                    result = await auth.login(email, password);
+                  } catch (e) {
+                    result =
+                        AuthResponseDTO(status: false, message: e.toString());
+                  }
 
                   setState(() {
                     _isLoading = false;
@@ -118,17 +132,14 @@ class _LoginState extends State<Login> {
                     return;
                   }
 
-                  if (!result) {
-                    AppSnackBar.show(context,
-                        AppSnackBarBuilder().withText("Login failed!"));
-                  } else {
+                  AppSnackBar.show(
+                      context, AppSnackBarBuilder().withText(result.message));
+
+                  if (result.status) {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => const TabsScaffold(),
                     ));
                   }
-
-                  // TODO handle backend login
-                  print("[API] Login ($email, $pass)");
                 })
                 .withWidget(forgotPasswordSection)
                 .withSubsection(Row(
