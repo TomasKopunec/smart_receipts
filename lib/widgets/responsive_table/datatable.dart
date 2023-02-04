@@ -70,7 +70,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
       List<Widget> widgets = [];
       LinkedHashMap<String, List<dynamic>> groupping = LinkedHashMap();
 
-      // Group by month-year
+      // Group according to the arguments
       for (final Map<String, dynamic> entry in widget.source) {
         String key = "";
         if (widget.groupType == GroupType.retailerName) {
@@ -124,7 +124,10 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
           child: Text(
             text,
             textAlign: TextAlign.start,
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(fontWeight: FontWeight.w400),
           ),
         ));
 

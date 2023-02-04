@@ -5,9 +5,9 @@ import '../product/product.dart';
 part 'receipt.g.dart';
 
 enum ReceiptStatus {
-  active(Color.fromARGB(153, 133, 255, 88)),
-  expired(Color.fromARGB(202, 255, 81, 62)),
-  returned(Color.fromARGB(126, 108, 108, 108));
+  active(Colors.teal),
+  expired(Color.fromRGBO(227, 70, 73, 1)),
+  returned(Color.fromRGBO(174, 163, 176, 1));
 
   final Color color;
 
