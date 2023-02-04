@@ -54,11 +54,14 @@ class _SettingsState extends State<SettingsScreen> {
   Widget getDigitalOnlySettings(SettingsProvider provider) {
     return getSettingsSection(
         'Digital receipt only',
-        ToggleSelection(
-          defaultState: provider.digitalOnly,
-          onToggle: (val) {
-            provider.setDigitalOnly(val);
-          },
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: ToggleSelection(
+            defaultState: provider.digitalOnly,
+            onToggle: (val) {
+              provider.setDigitalOnly(val);
+            },
+          ),
         ));
   }
 

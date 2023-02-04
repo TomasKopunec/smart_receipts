@@ -263,16 +263,11 @@ class ReceiptsProvider with ChangeNotifier {
     return _favorites.contains(id);
   }
 
-  void fetchAndSetFavorites() async {
+  Future<Set<int>> fetchAndSetFavorites() async {
     final fetched = await SharedPreferencesHelper.getFavorites();
-
-    if (fetched == null) {
-      return;
-    }
-
     _favorites.addAll(fetched);
-    print('Successfully fetched favorites: $_favorites');
     notifyListeners();
+    return _favorites;
   }
 
   List<Receipt> getMostRecent([int n = 2]) {

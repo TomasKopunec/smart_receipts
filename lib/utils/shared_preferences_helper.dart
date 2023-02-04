@@ -3,9 +3,27 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/auth/token.dart';
+import '../providers/settings/settings_dto.dart';
 
 class SharedPreferencesHelper {
   static const String FAVORITES_LIST = '/FAVORITES_LIST';
+
+  static Future<SettingsDto> getSettings() async {
+    final prefs = await _instance;
+    final settings = prefs.getString("settings");
+
+    // If no settings found, return default settings
+    if (settings == null || settings.isEmpty) {
+      return const SettingsDto();
+    } else {
+      return SettingsDto.fromJson(json.decode(settings));
+    }
+  }
+
+  static Future<bool> saveSettings(SettingsDto settingsDto) async {
+    final prefs = await _instance;
+    return prefs.setString("settings", json.encode(settingsDto.toJson()));
+  }
 
   static Future<SharedPreferences> get _instance async {
     return SharedPreferences.getInstance();

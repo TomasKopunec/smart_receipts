@@ -26,13 +26,10 @@ class _TabsScaffoldState extends State<TabsScaffold> {
     receiptsProvider = Provider.of<ReceiptsProvider>(context, listen: false);
     receiptsProvider.fetchAndSetReceipts();
 
-    // 2. Fetch all favorites from local memory
-    receiptsProvider.fetchAndSetFavorites();
-
-    // 3. Initialize screen provider
+    // 2. Initialize screen provider
     screenProvider = Provider.of<ScreenProvider>(context, listen: false);
 
-    // 4. Initialize page controller
+    // 3. Initialize page controller
     _myPage = PageController(initialPage: screenProvider.selectedIndex);
 
     screenProvider.addListener(() {
@@ -44,7 +41,6 @@ class _TabsScaffoldState extends State<TabsScaffold> {
     super.initState();
   }
 
-  @override
   double getSelectedHeight(BuildContext context) {
     final double screenHeight = SizeHelper.getScreenHeight(context);
     return MediaQuery.of(context).orientation == Orientation.portrait

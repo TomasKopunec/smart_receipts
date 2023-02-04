@@ -3,13 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/constants/image_strings.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
-import 'package:smart_receipts/providers/auth/auth_provider.dart';
-import 'package:smart_receipts/providers/screen_provider.dart.dart';
-import 'package:smart_receipts/screens/auth/authentication_screen.dart';
-import 'package:smart_receipts/screens/tab_control/tabs_scaffold.dart';
-import 'package:smart_receipts/utils/shared_preferences_helper.dart';
-
-import '../main.dart';
+import 'package:smart_receipts/providers/settings/settings_provider.dart';
+import 'package:smart_receipts/utils/loader.dart';
 
 class SplashScreen extends StatefulWidget {
   final Function onFinish;
@@ -20,37 +15,60 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool _isLoaded = false;
+
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final auth = Provider.of<AuthProvider>(context, listen: false);
-      final token = await SharedPreferencesHelper.getToken();
-
-      if (token != null) {
-        print('Authenticated. Token: ${token.toJson()}');
-        auth.setToken(token);
-      } else {
-        print('Unauthenticated.');
-      }
+    /// Load all neccessary resources
+    Loader(context, () {
+      Future.delayed(const Duration(milliseconds: 500)).then((value) {
+        setState(() {
+          _isLoaded = true;
+        });
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSplashScreen.withScreenFunction(
-      animationDuration: const Duration(seconds: 2),
-      curve: Curves.fastLinearToSlowEaseIn,
-      splash: const Image(image: AssetImage(splash)),
-      splashIconSize: SizeHelper.getScreenHeight(context) * 0.45,
-      splashTransition: SplashTransition.scaleTransition,
-      duration: 2,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      screenFunction: () async {
-        widget.onFinish();
-        return Container();
-      },
-    );
+    return _isLoaded
+        ? AnimatedSplashScreen.withScreenFunction(
+            animationDuration: const Duration(seconds: 2),
+            curve: Curves.fastLinearToSlowEaseIn,
+            splash: Consumer<SettingsProvider>(
+              builder: (ctx, settings, _) {
+                return settings.theme == ThemeSetting.light
+                    ? const Image(image: AssetImage(splashLight))
+                    : const Image(image: AssetImage(splashDark));
+              },
+            ),
+            splashIconSize: SizeHelper.getScreenHeight(context) * 0.45,
+            splashTransition: SplashTransition.scaleTransition,
+            duration: 2,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            screenFunction: () async {
+              widget.onFinish();
+              return Container();
+            },
+          )
+        : Scaffold(
+            body: Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "Loading...",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                const SizedBox(height: 8),
+                LinearProgressIndicator(
+                  color: Theme.of(context).primaryColor,
+                ),
+              ],
+            )),
+          );
   }
 }

@@ -47,17 +47,26 @@ class Main extends StatelessWidget {
                 scaffoldBackgroundColor:
                     const Color.fromARGB(255, 236, 236, 236),
                 indicatorColor: const Color.fromARGB(255, 46, 46, 46),
+                primaryColor: Colors.teal,
               ),
               darkTheme: ThemeData.dark().copyWith(
-                pageTransitionsTheme: const PageTransitionsTheme(builders: {
-                  TargetPlatform.android: ZoomPageTransitionsBuilder(),
-                  TargetPlatform.iOS: CupertinoPageTransitionsBuilder()
-                }),
-                primaryColor: Colors.teal,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-                scaffoldBackgroundColor: const Color.fromARGB(255, 34, 34, 34),
-                indicatorColor: const Color.fromARGB(255, 236, 236, 236),
-              ),
+                  pageTransitionsTheme: const PageTransitionsTheme(builders: {
+                    TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                    TargetPlatform.iOS: CupertinoPageTransitionsBuilder()
+                  }),
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                  scaffoldBackgroundColor:
+                      const Color.fromARGB(255, 34, 34, 34),
+                  indicatorColor: const Color.fromARGB(255, 236, 236, 236),
+                  primaryColor: Colors.teal,
+                  elevatedButtonTheme: ElevatedButtonThemeData(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.teal))),
+                  textButtonTheme: TextButtonThemeData(
+                      style: ButtonStyle(
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.teal)))),
               home: const Home(),
               routes: getRoutes(),
             );

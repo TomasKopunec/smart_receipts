@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:smart_receipts/providers/settings/settings_dto.dart';
+import 'package:smart_receipts/utils/shared_preferences_helper.dart';
 
 enum Currency {
   pound('British Pound', '£', 'gbp'),
@@ -14,6 +15,11 @@ enum Currency {
   final String name;
   final String currency;
   final String code;
+
+  static Currency from(String code) {
+    return Currency.values
+        .firstWhere((e) => e.code.toLowerCase() == code.toLowerCase());
+  }
 }
 
 enum DateTimeFormat {
@@ -25,6 +31,15 @@ enum DateTimeFormat {
   final String name;
   final String example;
   final String format;
+
+  String getName() {
+    return name;
+  }
+
+  static DateTimeFormat from(String name) {
+    return DateTimeFormat.values
+        .firstWhere((e) => e.getName().toLowerCase() == name.toLowerCase());
+  }
 }
 
 enum ThemeSetting {
@@ -45,6 +60,41 @@ class SettingsProvider with ChangeNotifier {
   DateTimeFormat _selectedDateTimeFormat = DateTimeFormat.standard;
   ThemeSetting _selectedTheme = ThemeSetting.light;
   bool _digitalOnly = true;
+  bool _rememberMe = true;
+
+  /// Settings loading
+  bool loadSettingsFromDto(SettingsDto dto) {
+    try {
+      selectCurrency(Currency.from(dto.currency));
+      selectDateTimeFormat(DateTimeFormat.from(dto.dateFormat));
+      selectTheme(ThemeSetting.from(dto.theme));
+      setDigitalOnly(dto.digitalOnly);
+      setRememberMe(dto.rememberMe);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  SettingsDto getSettingsDto() {
+    return SettingsDto(
+      rememberMe: _rememberMe,
+      currency: _selectedCurrency.code,
+      dateFormat: _selectedDateTimeFormat.getName(),
+      digitalOnly: _digitalOnly,
+      theme: _selectedTheme.name,
+    );
+  }
+
+  ///
+
+  /// Upon every change in the settings, save into shared preferences
+  void save() async {
+    final result = await SharedPreferencesHelper.saveSettings(getSettingsDto());
+    if (result) {
+      print("Settings saved.");
+    }
+  }
 
   /* Digital Only */
   bool get digitalOnly {
@@ -54,6 +104,7 @@ class SettingsProvider with ChangeNotifier {
   void setDigitalOnly(bool val) {
     if (val != _digitalOnly) {
       _digitalOnly = val;
+      save();
       notifyListeners();
     }
   }
@@ -61,6 +112,7 @@ class SettingsProvider with ChangeNotifier {
   /* Currency */
   void selectCurrency(Currency currency) {
     _selectedCurrency = currency;
+    save();
     notifyListeners();
   }
 
@@ -70,8 +122,11 @@ class SettingsProvider with ChangeNotifier {
 
   /* Date Time */
   void selectDateTimeFormat(DateTimeFormat format) {
-    _selectedDateTimeFormat = format;
-    notifyListeners();
+    if (format != _selectedDateTimeFormat) {
+      _selectedDateTimeFormat = format;
+      save();
+      notifyListeners();
+    }
   }
 
   DateTimeFormat get dateTimeFormat {
@@ -80,11 +135,33 @@ class SettingsProvider with ChangeNotifier {
 
   /* Theme */
   void selectTheme(ThemeSetting theme) {
-    _selectedTheme = theme;
-    notifyListeners();
+    if (_selectedTheme != theme) {
+      _selectedTheme = theme;
+      save();
+      notifyListeners();
+    }
   }
 
   ThemeSetting get theme {
     return _selectedTheme;
+  }
+
+  /* Remember Me */
+  void setRememberMe(bool rememberMe) {
+    if (rememberMe != _rememberMe) {
+      _rememberMe = rememberMe;
+      save();
+      notifyListeners();
+    }
+  }
+
+  void toggleRememberMe() {
+    _rememberMe = !_rememberMe;
+    save();
+    notifyListeners();
+  }
+
+  bool get rememberMe {
+    return _rememberMe;
   }
 }

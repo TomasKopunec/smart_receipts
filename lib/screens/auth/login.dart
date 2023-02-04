@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import '../../helpers/requests/auth_request_helper.dart';
+import '../../providers/settings/settings_provider.dart';
 import '../../utils/snackbar_builder.dart';
 import 'auth_section_builder.dart';
 import 'authentication_screen.dart';
@@ -17,8 +18,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool _isLoading = false;
-  bool _rememberMe = false;
-
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController emailController = TextEditingController();
@@ -120,26 +119,30 @@ class _LoginState extends State<Login> {
   }
 
   Widget get rememberMeCheckbox {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _rememberMe = !_rememberMe;
-        });
+    return Consumer<SettingsProvider>(
+      builder: (_, settings, __) {
+        return InkWell(
+          onTap: () => settings.toggleRememberMe(),
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Consumer<SettingsProvider>(
+                  builder: (ctx, settings, _) {
+                    return Checkbox(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: const VisualDensity(horizontal: -4),
+                        checkColor: Theme.of(context).scaffoldBackgroundColor,
+                        activeColor: Theme.of(context).primaryColor,
+                        value: settings.rememberMe,
+                        onChanged: (val) => settings.setRememberMe(val!));
+                  },
+                ),
+                const SizedBox(width: 6),
+                const Text('Remember me?')
+              ]),
+        );
       },
-      child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Checkbox(
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                visualDensity: VisualDensity(horizontal: -4),
-                value: _rememberMe,
-                onChanged: (val) => setState(() {
-                      _rememberMe = val!;
-                    })),
-            const SizedBox(width: 6),
-            const Text('Remember me?')
-          ]),
     );
   }
 
