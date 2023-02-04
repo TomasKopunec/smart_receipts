@@ -1,12 +1,17 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import '../product/product.dart';
 
 part 'receipt.g.dart';
 
 enum ReceiptStatus {
-  active,
-  expired,
-  returned;
+  active(Color.fromARGB(153, 133, 255, 88)),
+  expired(Color.fromARGB(202, 255, 81, 62)),
+  returned(Color.fromARGB(126, 108, 108, 108));
+
+  final Color color;
+
+  const ReceiptStatus(this.color);
 
   static ReceiptStatus from(String name) {
     return ReceiptStatus.values.firstWhere((e) => e.name == name.toLowerCase());

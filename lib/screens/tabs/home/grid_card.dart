@@ -7,11 +7,12 @@ class GridCard extends StatelessWidget {
   final IconData icon;
   final String title;
 
-  const GridCard(
-      {required this.number,
-      this.unit = '',
-      required this.icon,
-      required this.title});
+  const GridCard({
+    required this.number,
+    this.unit = '',
+    required this.icon,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {

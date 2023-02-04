@@ -11,10 +11,11 @@ class ReceiptDropdownButton extends StatefulWidget {
   final Color textColor;
   final List<ReceiptField> items = Receipt.getSearchableKeys();
 
-  ReceiptDropdownButton(
-      {required this.width,
-      required this.textColor,
-      required this.backgroundColor});
+  ReceiptDropdownButton({
+    required this.width,
+    required this.textColor,
+    required this.backgroundColor,
+  });
 
   @override
   State<ReceiptDropdownButton> createState() => _ReceiptDropdownButtonState();

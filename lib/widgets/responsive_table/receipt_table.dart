@@ -100,8 +100,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
         : 'Please check your internet connection or add your first receipt.';
 
     return ResponsiveDatatable(
-      isSortingByDate:
-          _receiptsProvider.searchKey == ReceiptField.purchase_date_time,
+      groupType: groupType,
       isSelecting: _receiptsProvider.isSelecting,
       noDataWidget: NoDataFoundWidget(
           color: headerColor,
@@ -113,6 +112,20 @@ class _ReceiptTableState extends State<ReceiptTable> {
       headers: Receipt.getSearchableKeys(),
       source: _receiptsProvider.source,
     );
+  }
+
+  GroupType get groupType {
+    if (_receiptsProvider.searchKey == ReceiptField.purchase_date_time) {
+      return GroupType.purchaseTime;
+    } else if (_receiptsProvider.searchKey == ReceiptField.retailer_name) {
+      return GroupType.retailerName;
+    } else if (_receiptsProvider.searchKey == ReceiptField.status) {
+      return GroupType.status;
+    } else if (_receiptsProvider.searchKey == ReceiptField.purchase_location) {
+      return GroupType.location;
+    } else {
+      return GroupType.none;
+    }
   }
 
   /// Footer

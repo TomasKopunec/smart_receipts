@@ -87,6 +87,11 @@ class ReceiptsProvider with ChangeNotifier {
       toggleSorting();
     }
     _searchKey = ReceiptField.from(key);
+
+    if (_searchKey == ReceiptField.status) {
+      toggleSorting();
+    }
+
     _updateSource();
   }
 

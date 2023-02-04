@@ -46,7 +46,7 @@ class Main extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
                 scaffoldBackgroundColor:
                     const Color.fromARGB(255, 236, 236, 236),
-                indicatorColor: const Color.fromARGB(255, 46, 46, 46),
+                indicatorColor: const Color.fromARGB(255, 57, 57, 57),
                 primaryColor: Colors.teal,
               ),
               darkTheme: ThemeData.dark().copyWith(

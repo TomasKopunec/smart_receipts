@@ -7,6 +7,14 @@ import 'package:smart_receipts/widgets/responsive_table/datatable_desktop_header
 import 'data_entry_widget_desktop.dart';
 import 'data_entry_widget_mobile.dart';
 
+enum GroupType {
+  retailerName,
+  purchaseTime,
+  location,
+  status,
+  none,
+}
+
 class ResponsiveDatatable extends StatefulWidget {
   final List<ReceiptField> headers;
   final List<Map<String, dynamic>> source;
@@ -16,7 +24,7 @@ class ResponsiveDatatable extends StatefulWidget {
   final int total;
   final Color prefferedColor;
 
-  final bool isSortingByDate;
+  final GroupType groupType;
 
   final Color backgroundColor;
 
@@ -27,7 +35,7 @@ class ResponsiveDatatable extends StatefulWidget {
 
   ResponsiveDatatable(
       {super.key,
-      required this.isSortingByDate,
+      required this.groupType,
       required this.headers,
       required this.source,
       required this.isSelecting,
@@ -47,16 +55,37 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   }
 
   List<Widget> getList() {
-    if (widget.isSortingByDate) {
+    if (widget.groupType == GroupType.none) {
+      return [
+        const SizedBox(height: 6),
+        ...widget.source
+            .map((e) => DataEntryWidgetMobile(
+                isSelecting: widget.isSelecting,
+                color: widget.prefferedColor,
+                data: e,
+                headers: widget.headers))
+            .toList()
+      ];
+    } else {
       List<Widget> widgets = [];
       LinkedHashMap<String, List<dynamic>> groupping = LinkedHashMap();
 
       // Group by month-year
       for (final Map<String, dynamic> entry in widget.source) {
-        final parsedDate =
-            DateTime.parse(entry[ReceiptField.purchase_date_time.name]);
-        final String key =
-            "${DateFormat.MMMM().format(DateTime(0, parsedDate.month))}, ${parsedDate.year}";
+        String key = "";
+        if (widget.groupType == GroupType.retailerName) {
+          key = entry[ReceiptField.retailer_name.name];
+        } else if (widget.groupType == GroupType.purchaseTime) {
+          final parsedDate =
+              DateTime.parse(entry[ReceiptField.purchase_date_time.name]);
+          key =
+              "${DateFormat.MMMM().format(DateTime(0, parsedDate.month))}, ${parsedDate.year}";
+        } else if (widget.groupType == GroupType.location) {
+          key = entry[ReceiptField.purchase_location.name];
+        } else if (widget.groupType == GroupType.status) {
+          key = toBeginningOfSentenceCase(
+              entry[ReceiptField.status.name] as String)!;
+        }
 
         groupping.update(
           key,
@@ -80,7 +109,9 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
           margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
+            color: widget.groupType == GroupType.status
+                ? ReceiptStatus.from(value.key).color
+                : Theme.of(context).canvasColor,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.25),
@@ -106,14 +137,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
         });
       }
       return widgets;
-    } else {
-      return widget.source
-          .map((e) => DataEntryWidgetMobile(
-              isSelecting: widget.isSelecting,
-              color: widget.prefferedColor,
-              data: e,
-              headers: widget.headers))
-          .toList();
     }
   }
 
