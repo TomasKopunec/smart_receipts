@@ -24,6 +24,7 @@ class Loader {
     final settings = Provider.of<SettingsProvider>(context, listen: false);
     final loadedSettings = await SharedPreferencesHelper.getSettings();
     final result = settings.loadSettingsFromDto(loadedSettings);
+
     if (result) {
       _log("Settings",
           "Settings loaded successfully: ${loadedSettings.toJson()}");

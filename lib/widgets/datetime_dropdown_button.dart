@@ -8,10 +8,12 @@ class DateTimeDropdownButton extends StatefulWidget {
   final Color backgroundColor;
   final Color textColor;
 
-  DateTimeDropdownButton(
-      {required this.width,
-      required this.textColor,
-      required this.backgroundColor});
+  const DateTimeDropdownButton({
+    super.key,
+    required this.width,
+    required this.textColor,
+    required this.backgroundColor,
+  });
 
   @override
   State<DateTimeDropdownButton> createState() => _DateTimeDropdownButtonState();
@@ -41,6 +43,7 @@ class _DateTimeDropdownButtonState extends State<DateTimeDropdownButton> {
               borderRadius: BorderRadius.circular(4),
               color: widget.backgroundColor),
           child: PopupMenuButton(
+            color: widget.backgroundColor,
             constraints:
                 BoxConstraints(maxWidth: widget.width, minWidth: widget.width),
             padding: EdgeInsets.zero,
@@ -122,7 +125,7 @@ class _DateTimeDropdownButtonState extends State<DateTimeDropdownButton> {
   }
 
   Widget getFormatView(DateTimeFormat format) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       child: InkWell(
           child: Row(
@@ -133,7 +136,7 @@ class _DateTimeDropdownButtonState extends State<DateTimeDropdownButton> {
             color: widget.textColor,
           ),
           SizedBox(
-            width: SizeHelper.getScreenWidth(context) * 0.1,
+            width: SizeHelper.getScreenWidth(context) * 0.18,
           ),
           Expanded(
             child: Column(
@@ -142,17 +145,14 @@ class _DateTimeDropdownButtonState extends State<DateTimeDropdownButton> {
               children: [
                 Text(
                   format.name,
-                  style: TextStyle(
-                      color: Colors.black.withOpacity(1),
-                      fontSize: SizeHelper.getFontSize(context,
-                          size: FontSize.regular)),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
                   format.example,
-                  style: TextStyle(
-                      color: Colors.black.withOpacity(0.6),
-                      fontSize: SizeHelper.getFontSize(context,
-                          size: FontSize.regular)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(fontWeight: FontWeight.w300),
                 )
               ],
             ),

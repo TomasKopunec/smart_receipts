@@ -8,10 +8,12 @@ class CurrencyDropdownButton extends StatefulWidget {
   final Color backgroundColor;
   final Color textColor;
 
-  CurrencyDropdownButton(
-      {required this.width,
-      required this.textColor,
-      required this.backgroundColor});
+  const CurrencyDropdownButton({
+    super.key,
+    required this.width,
+    required this.textColor,
+    required this.backgroundColor,
+  });
 
   @override
   State<CurrencyDropdownButton> createState() => _CurrencyDropdownButtonState();
@@ -40,6 +42,7 @@ class _CurrencyDropdownButtonState extends State<CurrencyDropdownButton> {
               borderRadius: BorderRadius.circular(4),
               color: widget.backgroundColor),
           child: PopupMenuButton(
+            color: widget.backgroundColor,
             constraints:
                 BoxConstraints(maxWidth: widget.width, minWidth: widget.width),
             padding: EdgeInsets.zero,
@@ -120,30 +123,43 @@ class _CurrencyDropdownButtonState extends State<CurrencyDropdownButton> {
   }
 
   Widget getCurrencyView(Currency currency) {
-    return ListTile(
-      minVerticalPadding: 0,
-      visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-      leading: SizedBox(
-        width: iconSize,
-        height: iconSize,
-        child: Image.asset(
-          'icons/currency/${currency.code}.png',
-          package: 'currency_icons',
-        ),
-      ),
-      trailing: Text(
-        currency.currency.toUpperCase(),
-        style: TextStyle(
-            fontSize:
-                SizeHelper.getFontSize(context, size: FontSize.regularLarge)),
-      ),
-      title: Text(
-        currency.code.toUpperCase(),
-      ),
-      subtitle: Text(
-        currency.name,
-      ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      child: InkWell(
+          child: Row(
+        children: [
+          SizedBox(
+            width: iconSize,
+            height: iconSize,
+            child: Image.asset(
+              'icons/currency/${currency.code}.png',
+              package: 'currency_icons',
+            ),
+          ),
+          SizedBox(
+            width: SizeHelper.getScreenWidth(context) * 0.225,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  '${currency.code.toUpperCase()} (${currency.currency.toUpperCase()})',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Text(
+                  currency.name,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(fontWeight: FontWeight.w300),
+                )
+              ],
+            ),
+          ),
+        ],
+      )),
     );
   }
 }
