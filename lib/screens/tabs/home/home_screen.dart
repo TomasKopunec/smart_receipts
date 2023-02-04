@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_receipts/helpers/requests/request_helper.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/screens/auth/authentication_screen.dart';
 import 'package:smart_receipts/screens/tabs/home/recent_receipts.dart';
 import 'package:smart_receipts/screens/tabs/home/sustainability_widget.dart';
 
+import '../../../utils/shared_preferences_helper.dart';
 import '../../../utils/snackbar_builder.dart';
 import '../../tab_control/abstract_tab_screen.dart';
 
@@ -30,7 +32,7 @@ class HomeScreen extends AbstractTabScreen {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isSigningOut = false;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget get action {
     return Consumer<AuthProvider>(
       builder: (_, auth, __) {
-        return _isSigningOut
+        return _isLoading
             ? Padding(
                 padding: const EdgeInsets.only(top: 8, right: 8),
                 child: Transform.scale(
@@ -68,30 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Theme.of(context).primaryColor.withOpacity(0.2)),
                 ),
                 onPressed: () async {
-                  setState(() {
-                    _isSigningOut = true;
-                  });
-                  final result = await auth.logOut();
-
-                  setState(() {
-                    _isSigningOut = false;
-                  });
-
-                  if (!mounted) {
-                    return;
-                  }
-
-                  if (!result) {
-                    AppSnackBar.show(context,
-                        AppSnackBarBuilder().withText("Sign Out failed!"));
-                  } else {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const AuthenticationScreen(),
-                    ));
-                  }
-
-                  // TODO handle backend Sign Out
-                  print("[API] Sign Out");
+                  handleLogout(auth);
                 },
                 child: Text(
                   'Sign Out',
@@ -102,6 +81,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 ));
       },
     );
+  }
+
+  void handleLogout(AuthProvider auth) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Wait for response
+    final result = await auth.logout(auth.token!.accessToken);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (!result && mounted) {
+      RequestHelper.showErrorDialog(context, "Error occured during logout!");
+    } else {
+      auth.setToken(null);
+    }
   }
 
   Widget get headerBody {

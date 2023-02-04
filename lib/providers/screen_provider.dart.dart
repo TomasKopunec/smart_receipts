@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../screens/tab_control/abstract_tab_screen.dart';
 import '../screens/tabs/receive_receipt_screen.dart';
 import '../screens/tabs/all_receipts/all_receipts_screen.dart';

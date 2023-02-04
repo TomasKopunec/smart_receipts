@@ -13,7 +13,7 @@ class RequestHelper {
       "nDDhMcGI64BL0foQDGp8t-9D9URyyi1mlvEHvpK2rn1tAzFuA86DDw==";
 
   /// Sends any type of request
-  Future<Response> send(
+  Future<Response> _send(
     RequestType requestType,
     String path, {
     String? authToken,
@@ -50,13 +50,23 @@ class RequestHelper {
     return _getResponse(response);
   }
 
+  /// Sends a request and logs
+  Future<Response> send(String name, RequestType type, String path, Object body,
+      {String? authToken}) async {
+    log(name.toUpperCase(), body, true);
+    final Response response =
+        await _send(type, path, body: body, authToken: authToken);
+    log(name.toUpperCase(), response, false);
+    return response;
+  }
+
   Future<Response> get(
     String path, {
     String? authToken,
     Map<String, String>? headers,
     Object? body,
   }) {
-    return send(RequestType.get, path, body: body, authToken: authToken);
+    return _send(RequestType.get, path, body: body, authToken: authToken);
   }
 
   Future<Response> post(
@@ -65,7 +75,7 @@ class RequestHelper {
     Map<String, String>? headers,
     Object? body,
   }) {
-    return send(RequestType.post, path, body: body, authToken: authToken);
+    return _send(RequestType.post, path, body: body, authToken: authToken);
   }
 
   Future<Response> put(
@@ -74,7 +84,7 @@ class RequestHelper {
     Map<String, String>? headers,
     Object? body,
   }) {
-    return send(RequestType.put, path, body: body, authToken: authToken);
+    return _send(RequestType.put, path, body: body, authToken: authToken);
   }
 
   Future<Response> patch(
@@ -83,7 +93,7 @@ class RequestHelper {
     Map<String, String>? headers,
     Object? body,
   }) {
-    return send(RequestType.patch, path, body: body, authToken: authToken);
+    return _send(RequestType.patch, path, body: body, authToken: authToken);
   }
 
   Future<Response> delete(
@@ -92,7 +102,7 @@ class RequestHelper {
     Map<String, String>? headers,
     Object? body,
   }) {
-    return send(RequestType.delete, path, body: body, authToken: authToken);
+    return _send(RequestType.delete, path, body: body, authToken: authToken);
   }
 
   Response _getResponse(http.Response httpResponse) {
@@ -108,6 +118,10 @@ class RequestHelper {
     } else {
       throw HttpException(ExceptionType.serverError, response.exception!);
     }
+  }
+
+  void log(String methodName, Object body, bool isRequest) {
+    print("[API] $methodName ${isRequest ? 'request' : 'response'}: $body");
   }
 
   static void showErrorDialog(BuildContext context, Object err) {

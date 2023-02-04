@@ -6,8 +6,6 @@ import 'package:smart_receipts/screens/auth/auth_section_builder.dart';
 import 'package:smart_receipts/screens/auth/authentication_screen.dart';
 import 'package:smart_receipts/utils/snackbar_builder.dart';
 
-import '../tab_control/tabs_scaffold.dart';
-
 class Register extends StatefulWidget {
   final Function(AuthState state) func;
 
@@ -69,51 +67,7 @@ class _RegisterState extends State<Register> {
                     "Confirm Password",
                     "Enter your password again")
                 .withButton(_isLoading, "SIGN UP", () async {
-                  if (!_formKey.currentState!.validate()) {
-                    return;
-                  }
-
-                  final email = emailController.text;
-                  final password = passwordController.text;
-
-                  if (password != repeatPasswordController.text) {
-                    AppSnackBar.show(
-                        context,
-                        AppSnackBarBuilder()
-                            .withText("Passwords do not match!")
-                            .withDuration(const Duration(seconds: 4)));
-                    return;
-                  }
-
-                  setState(() {
-                    _isLoading = true;
-                  });
-
-                  AuthResponseDTO? result;
-                  try {
-                    result = await auth.register(email, password);
-                  } catch (e) {
-                    result =
-                        AuthResponseDTO(status: false, message: e.toString());
-                  }
-
-                  setState(() {
-                    _isLoading = false;
-                  });
-
-                  if (!mounted) {
-                    return;
-                  }
-
-                  AppSnackBar.show(
-                      context, AppSnackBarBuilder().withText(result.message));
-
-                  if (result.status) {
-                    auth.setToken(result.token!);
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const TabsScaffold(),
-                    ));
-                  }
+                  handleRegister(auth);
                 })
                 .withSubsection(Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -139,5 +93,47 @@ class _RegisterState extends State<Register> {
                 .build());
       },
     );
+  }
+
+  void handleRegister(AuthProvider auth) async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final email = emailController.text;
+    final password = passwordController.text;
+
+    if (password != repeatPasswordController.text) {
+      AppSnackBar.show(
+          context,
+          AppSnackBarBuilder()
+              .withText("Passwords do not match!")
+              .withDuration(const Duration(seconds: 4)));
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Wait for response
+    AuthResponseDTO? result;
+    try {
+      result = await auth.register(email, password);
+    } catch (e) {
+      result = AuthResponseDTO(status: false, message: e.toString());
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (mounted) {
+      AppSnackBar.show(context, AppSnackBarBuilder().withText(result.message));
+    }
+
+    if (result.status) {
+      auth.setToken(result.token!);
+    }
   }
 }

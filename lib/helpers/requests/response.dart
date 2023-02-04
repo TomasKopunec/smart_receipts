@@ -4,6 +4,11 @@ class Response {
   final String body;
   final String? exception;
 
+  @override
+  String toString() {
+    return "[code: $code; body: $body]";
+  }
+
   Response({
     required this.code,
     this.headers,

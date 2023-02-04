@@ -1,18 +1,24 @@
 import 'dart:convert';
 
 import 'package:smart_receipts/helpers/requests/request_helper.dart';
-import 'package:smart_receipts/helpers/requests/response.dart';
 import 'package:smart_receipts/providers/auth/token.dart';
 
-class AuthRequestHelper extends RequestHelper {
-  final String _registerPath = "auth/register";
-  final String _loginPath = "auth/login";
+enum AuthMethod {
+  register("auth/register", RequestType.post),
+  login("auth/login", RequestType.post),
+  logout("auth/logout", RequestType.post);
 
+  final String path;
+  final RequestType type;
+
+  const AuthMethod(this.path, this.type);
+}
+
+class AuthRequestHelper extends RequestHelper {
   Future<AuthResponseDTO> register(String email, String password) async {
-    print("[API] REGISTER: ($email, $password)");
-    final body = json.encode({'email': email, 'password': password});
-    final Response response =
-        await send(RequestType.post, _registerPath, body: body);
+    const method = AuthMethod.register;
+    final response = await send(method.name, method.type, method.path,
+        json.encode({'email': email, 'password': password}));
 
     bool success = response.code == 201;
     if (success) {
@@ -32,10 +38,9 @@ class AuthRequestHelper extends RequestHelper {
   }
 
   Future<AuthResponseDTO> login(String email, String password) async {
-    print("[API] LOGIN: ($email, $password)");
-    final body = json.encode({'email': email, 'password': password});
-    final Response response =
-        await send(RequestType.post, _loginPath, body: body);
+    const method = AuthMethod.login;
+    final response = await send(method.name, method.type, method.path,
+        json.encode({'email': email, 'password': password}));
 
     bool success = response.code == 200;
     final parsed = json.decode(response.body);
@@ -50,6 +55,13 @@ class AuthRequestHelper extends RequestHelper {
     } else {
       return AuthResponseDTO(status: success, message: parsed['msg']);
     }
+  }
+
+  Future<bool> logout(String tokenId) async {
+    const method = AuthMethod.logout;
+    final response = await send(method.name, method.type, method.path,
+        json.encode({'access_token': tokenId}));
+    return response.code == 200;
   }
 }
 

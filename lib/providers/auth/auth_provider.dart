@@ -13,7 +13,7 @@ class AuthProvider with ChangeNotifier {
     return token != null && (token!.expiresAt.isAfter(DateTime.now()));
   }
 
-  void setToken(Token token) {
+  void setToken(Token? token) {
     this.token = token;
     SharedPreferencesHelper.setToken(token);
     notifyListeners();
@@ -27,15 +27,8 @@ class AuthProvider with ChangeNotifier {
     return authRequestHelper.login(email, password);
   }
 
-  Future<bool> logOut() {
-    return Future.delayed(const Duration(milliseconds: 500)).then((value) {
-      SharedPreferencesHelper.setToken(null);
-      token = null;
-      notifyListeners();
-      return true;
-    }).onError((error, stackTrace) {
-      return false;
-    });
+  Future<bool> logout(String tokenId) async {
+    return authRequestHelper.logout(tokenId);
   }
 
   Future<bool> changePassword(String email) {

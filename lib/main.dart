@@ -3,12 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/screen_provider.dart.dart';
-import 'package:smart_receipts/screens/auth/authentication_screen.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/screens/playgroundScreen.dart';
-import 'package:smart_receipts/screens/splash_screen.dart';
-import 'package:smart_receipts/screens/tab_control/tabs_scaffold.dart';
+import 'screens/home.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,8 +29,8 @@ class Main extends StatelessWidget {
           ChangeNotifierProvider.value(value: ReceiptsProvider()),
           ChangeNotifierProvider.value(value: SettingsProvider()),
         ],
-        child: Consumer2<SettingsProvider, AuthProvider>(
-          builder: (context, settings, auth, child) {
+        child: Consumer<SettingsProvider>(
+          builder: (context, settings, child) {
             return MaterialApp(
               title: 'Flutter Demo',
               debugShowCheckedModeBanner: false,
@@ -60,7 +58,7 @@ class Main extends StatelessWidget {
                 scaffoldBackgroundColor: const Color.fromARGB(255, 34, 34, 34),
                 indicatorColor: const Color.fromARGB(255, 236, 236, 236),
               ),
-              home: const SplashScreen(),
+              home: const Home(),
               routes: getRoutes(),
             );
           },
