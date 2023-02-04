@@ -10,14 +10,16 @@ class ReceiptStatusLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       decoration: BoxDecoration(
           color: status.color, borderRadius: BorderRadius.circular(6)),
       child: Text(
         status.name.toUpperCase(),
         textAlign: TextAlign.center,
         style: TextStyle(
-            fontSize: SizeHelper.getFontSize(context, size: FontSize.small)),
+          color: Theme.of(context).scaffoldBackgroundColor,
+          fontSize: SizeHelper.getFontSize(context, size: FontSize.small),
+        ),
       ),
     );
   }

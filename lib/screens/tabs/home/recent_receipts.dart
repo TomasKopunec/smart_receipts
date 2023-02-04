@@ -18,11 +18,13 @@ class RecentReceipts extends StatelessWidget {
   Widget build(BuildContext context) {
     return Section(
         title: 'Recent Receipts',
-        titleAction: Ink(
+        titleAction: Material(
+          color: Colors.transparent,
           child: InkWell(
             onTap: () => Provider.of<ScreenProvider>(context, listen: false)
                 .setSelectedIndex(1),
-            child: Padding(
+            splashColor: Theme.of(context).primaryColor,
+            child: Container(
               padding: const EdgeInsets.all(4),
               child: Text(
                 'View All',

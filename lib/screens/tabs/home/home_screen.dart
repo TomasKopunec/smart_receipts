@@ -3,12 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/requests/request_helper.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
-import 'package:smart_receipts/screens/auth/authentication_screen.dart';
 import 'package:smart_receipts/screens/tabs/home/recent_receipts.dart';
 import 'package:smart_receipts/screens/tabs/home/sustainability_widget.dart';
 
-import '../../../utils/shared_preferences_helper.dart';
-import '../../../utils/snackbar_builder.dart';
 import '../../tab_control/abstract_tab_screen.dart';
 
 class HomeScreen extends AbstractTabScreen {
@@ -96,10 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     if (!result && mounted) {
-      RequestHelper.showErrorDialog(context, "Error occured during logout!");
-    } else {
-      auth.setToken(null);
+      RequestHelper.showErrorDialog(context, "Network Error");
     }
+    auth.setToken(null);
   }
 
   Widget get headerBody {

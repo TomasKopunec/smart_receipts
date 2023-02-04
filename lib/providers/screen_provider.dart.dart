@@ -12,7 +12,7 @@ class ScreenProvider with ChangeNotifier {
     AllReceiptsScreen(),
     ReturnsScreen(),
     SettingsScreen(),
-    ReceiveeceiptScreen()
+    ReceiveReceiptScreen()
   ];
 
   int _selectedIndex = 0;

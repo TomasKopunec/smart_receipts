@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:smart_receipts/helpers/qr_code_helper.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
+import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/widgets/toggle_switch.dart';
 import '../tab_control/abstract_tab_screen.dart';
 
-class ReceiveeceiptScreen extends AbstractTabScreen {
+class ReceiveReceiptScreen extends AbstractTabScreen {
   @override
   String getTitle() {
     return 'Receive Receipt';
@@ -18,7 +20,7 @@ class ReceiveeceiptScreen extends AbstractTabScreen {
   }
 
   @override
-  State<StatefulWidget> createState() => _ReceiveeceiptScreenState();
+  State<StatefulWidget> createState() => _ReceiveReceiptScreenState();
 
   @override
   String getIconTitle() {
@@ -26,31 +28,34 @@ class ReceiveeceiptScreen extends AbstractTabScreen {
   }
 }
 
-class _ReceiveeceiptScreenState extends State<ReceiveeceiptScreen> {
+class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
   @override
   Widget build(BuildContext context) {
     return widget.getScreen(screenBody: Center(
-      child: Consumer<SettingsProvider>(
-        builder: (ctx, provider, _) {
+      child: Consumer2<SettingsProvider, AuthProvider>(
+        builder: (ctx, settings, auth, _) {
           return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                getQRCodeView(context, provider),
+                getQRCodeView(context, settings, auth),
                 const SizedBox(height: 8),
-                getSwitchWidget(context, provider)
+                getSwitchWidget(context, settings)
               ]);
         },
       ),
     ));
   }
 
-  Widget get qrCode {
+  Widget getQrCode(SettingsProvider settings, AuthProvider auth) {
     final double qrCodeSize = SizeHelper.getScreenWidth(context) * 0.8;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: QrImage(
-        data: "vpke9ePEgAgySvFFwNsTc8/LZa03Ow==",
+        data: QrCodeHelper.getReceiveReceiptQrCode(
+          "---SAMPLE customer_id---",
+          settings.digitalOnly,
+        ),
         padding: EdgeInsets.zero,
         version: QrVersions.auto,
         constrainErrorBounds: true,
@@ -63,7 +68,7 @@ class _ReceiveeceiptScreenState extends State<ReceiveeceiptScreen> {
     );
   }
 
-  Widget getQRCodeView(context, SettingsProvider provider) {
+  Widget getQRCodeView(context, SettingsProvider settings, AuthProvider auth) {
     final double qrCodeSize = SizeHelper.getScreenWidth(context) * 0.9;
     final double padding =
         (SizeHelper.getScreenWidth(context) - qrCodeSize) * 0.5;
@@ -79,7 +84,7 @@ class _ReceiveeceiptScreenState extends State<ReceiveeceiptScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: qrCode,
+              child: getQrCode(settings, auth),
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: padding, vertical: 4),

@@ -35,10 +35,9 @@ class DatatableDesktopHeader extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                         color: color.withOpacity(1),
-                        border: Border(
-                            right: BorderSide(
-                                color: Colors.white.withOpacity(0.25),
-                                width: 0.4))),
+                        border: const Border(
+                            right:
+                                BorderSide(color: Colors.white24, width: 1))),
                     padding:
                         const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
                     alignment: Alignment.center,
