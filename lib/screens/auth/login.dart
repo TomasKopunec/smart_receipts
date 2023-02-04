@@ -134,12 +134,12 @@ class _LoginState extends State<Login> {
                         visualDensity: const VisualDensity(horizontal: -4),
                         checkColor: Theme.of(context).scaffoldBackgroundColor,
                         activeColor: Theme.of(context).primaryColor,
-                        value: settings.rememberMe,
-                        onChanged: (val) => settings.setRememberMe(val!));
+                        value: settings.staySignedIn,
+                        onChanged: (val) => settings.setStaySignedIn(val!));
                   },
                 ),
                 const SizedBox(width: 6),
-                const Text('Remember me?')
+                const Text('Stay Signed In?')
               ]),
         );
       },

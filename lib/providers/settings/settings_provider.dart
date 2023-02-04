@@ -60,7 +60,7 @@ class SettingsProvider with ChangeNotifier {
   DateTimeFormat _selectedDateTimeFormat = DateTimeFormat.standard;
   ThemeSetting _selectedTheme = ThemeSetting.light;
   bool _digitalOnly = true;
-  bool _rememberMe = true;
+  bool _staySignedIn = true;
 
   /// Settings loading
   bool loadSettingsFromDto(SettingsDto dto) {
@@ -69,7 +69,7 @@ class SettingsProvider with ChangeNotifier {
       selectDateTimeFormat(DateTimeFormat.from(dto.dateFormat));
       selectTheme(ThemeSetting.from(dto.theme));
       setDigitalOnly(dto.digitalOnly);
-      setRememberMe(dto.rememberMe);
+      setStaySignedIn(dto.staySignedIn);
       return true;
     } catch (e) {
       return false;
@@ -78,7 +78,7 @@ class SettingsProvider with ChangeNotifier {
 
   SettingsDto getSettingsDto() {
     return SettingsDto(
-      rememberMe: _rememberMe,
+      staySignedIn: _staySignedIn,
       currency: _selectedCurrency.code,
       dateFormat: _selectedDateTimeFormat.getName(),
       digitalOnly: _digitalOnly,
@@ -147,21 +147,21 @@ class SettingsProvider with ChangeNotifier {
   }
 
   /* Remember Me */
-  void setRememberMe(bool rememberMe) {
-    if (rememberMe != _rememberMe) {
-      _rememberMe = rememberMe;
+  void setStaySignedIn(bool staySignedIn) {
+    if (staySignedIn != _staySignedIn) {
+      _staySignedIn = staySignedIn;
       save();
       notifyListeners();
     }
   }
 
   void toggleRememberMe() {
-    _rememberMe = !_rememberMe;
+    _staySignedIn = !_staySignedIn;
     save();
     notifyListeners();
   }
 
-  bool get rememberMe {
-    return _rememberMe;
+  bool get staySignedIn {
+    return _staySignedIn;
   }
 }

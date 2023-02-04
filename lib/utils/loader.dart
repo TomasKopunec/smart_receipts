@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
+import 'package:smart_receipts/providers/settings/settings_dto.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/utils/shared_preferences_helper.dart';
 
@@ -40,6 +41,12 @@ class Loader {
   }
 
   void loadAuthentication() async {
+    if (!Provider.of<SettingsProvider>(context, listen: false).staySignedIn) {
+      _log("Authentication", "Stay signed is disabled.");
+
+      return;
+    }
+
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final token = await SharedPreferencesHelper.getToken();
 

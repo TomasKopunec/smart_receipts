@@ -3,14 +3,14 @@ class SettingsDto {
   final String theme;
   final String currency;
   final String dateFormat;
-  final bool rememberMe;
+  final bool staySignedIn;
 
   const SettingsDto({
     this.digitalOnly = true,
     this.theme = 'light',
     this.currency = 'gbp',
     this.dateFormat = 'standard',
-    this.rememberMe = true,
+    this.staySignedIn = true,
   });
 
   static SettingsDto fromJson(Map<String, dynamic> json) {
@@ -19,7 +19,7 @@ class SettingsDto {
       theme: json['theme'],
       currency: json['currency'],
       dateFormat: json['dateFormat'],
-      rememberMe: json['rememberMe'],
+      staySignedIn: json['staySignedIn'],
     );
   }
 
@@ -29,7 +29,7 @@ class SettingsDto {
       'theme': theme,
       'currency': currency,
       'dateFormat': dateFormat,
-      'rememberMe': rememberMe,
+      'staySignedIn': staySignedIn,
     };
   }
 }
