@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_receipts/helpers/requests/request_helper.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import '../../helpers/requests/auth_request_helper.dart';
 import '../../providers/settings/settings_provider.dart';
@@ -98,10 +99,12 @@ class _LoginState extends State<Login> {
     });
 
     // Wait for response
+    bool isException = false;
     AuthResponseDTO? result;
     try {
       result = await auth.login(email, password);
     } catch (e) {
+      isException = true;
       result = AuthResponseDTO(status: false, message: e.toString());
     }
 
@@ -110,7 +113,13 @@ class _LoginState extends State<Login> {
     });
 
     if (mounted) {
-      AppSnackBar.show(context, AppSnackBarBuilder().withText(result.message));
+      if (isException) {
+        RequestHelper.showErrorDialog(context,
+            err: result.message, title: "Network Exception");
+      } else {
+        AppSnackBar.show(
+            context, AppSnackBarBuilder().withText(result.message));
+      }
     }
 
     if (result.status) {

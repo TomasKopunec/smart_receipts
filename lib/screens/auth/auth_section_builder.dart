@@ -21,14 +21,14 @@ class AuthSectionBuilder {
       case InputFieldType.email:
         prefixIcon = const Icon(Icons.person);
         validator = ((val) {
-          // if (val == null || val.isEmpty) {
-          //   return "Please enter your email";
-          // }
-          // if (!RegExp(
-          //         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-          //     .hasMatch(val)) {
-          //   return "Please enter a valid email";
-          // }
+          if (val == null || val.isEmpty) {
+            return "Please enter your email";
+          }
+          if (!RegExp(
+                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+              .hasMatch(val)) {
+            return "Please enter a valid email";
+          }
           return null;
         });
         if (isRegistering) {
@@ -40,12 +40,12 @@ class AuthSectionBuilder {
         obscureText = true;
         prefixIcon = const Icon(Icons.key);
         validator = ((val) {
-          // if (val == null || val.isEmpty) {
-          //   return "Please enter your password";
-          // }
-          // if (val.length < 8) {
-          //   return "Password must have at least 8 characters";
-          // }
+          if (val == null || val.isEmpty) {
+            return "Please enter your password";
+          }
+          if (val.length < 8) {
+            return "Password must have at least 8 characters";
+          }
           return null;
         });
         if (isRegistering) {

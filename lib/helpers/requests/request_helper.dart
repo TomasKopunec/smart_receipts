@@ -20,7 +20,8 @@ class RequestHelper {
     Object? body,
   }) async {
     Future<http.Response>? future;
-    final Uri uri = Uri.https(host, "/api/$path");
+    // final Uri uri = Uri.https(host, "/api/$path");
+    final Uri uri = Uri(scheme: 'https', host: host, path: '/api/$path');
 
     final Map<String, String> headers = {
       'x-functions-key': functionKey,
@@ -28,23 +29,31 @@ class RequestHelper {
       'Content-Type': 'application/json'
     };
 
-    if (requestType == RequestType.post) {
-      future = http.post(uri, body: body, headers: headers);
-    } else if (requestType == RequestType.get) {
-      future = http.get(uri, headers: headers);
-    } else if (requestType == RequestType.patch) {
-      future = http.patch(uri, body: body, headers: headers);
-    } else if (requestType == RequestType.put) {
-      future = http.put(uri, body: body, headers: headers);
-    } else if (requestType == RequestType.delete) {
-      future = http.delete(uri, body: body, headers: headers);
+    switch (requestType) {
+      case RequestType.post:
+        future = http.post(uri, body: body, headers: headers);
+        break;
+      case RequestType.get:
+        future = http.get(uri, headers: headers);
+        break;
+      case RequestType.patch:
+        future = http.patch(uri, body: body, headers: headers);
+        break;
+      case RequestType.put:
+        future = http.put(uri, body: body, headers: headers);
+        break;
+      case RequestType.delete:
+        future = http.delete(uri, body: body, headers: headers);
+        break;
     }
 
-    final response = await future!
+    final response = await future
         .timeout(const Duration(seconds: 20)) // Default of 15s timeout
-        .onError((error, stackTrace) {
-      print("$error, stacktrace: $stackTrace");
-      throw Exception("$error, stacktrace: $stackTrace");
+        .onError((err, stackTrace) {
+      print('${err.runtimeType.toString()} occured sending a request!');
+      print('Message: $err');
+      throw Exception(
+          '${err.runtimeType.toString()} occured sending a request! \n Message: $err');
     });
 
     return _getResponse(response);
@@ -124,7 +133,8 @@ class RequestHelper {
     print("[API] $methodName ${isRequest ? 'request' : 'response'}: $body");
   }
 
-  static void showErrorDialog(BuildContext context, Object err) {
+  static void showErrorDialog(BuildContext context,
+      {String title = "Network Exception", Object err = ''}) {
     showDialog<void>(
       context: context,
       builder: (context) {

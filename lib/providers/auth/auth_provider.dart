@@ -4,7 +4,7 @@ import 'package:smart_receipts/providers/auth/token.dart';
 import 'package:smart_receipts/utils/shared_preferences_helper.dart';
 
 class AuthProvider with ChangeNotifier {
-  Token? token = Token(accessToken: "123234", expiresAt: DateTime.now());
+  Token? token;
 
   AuthRequestHelper authRequestHelper = AuthRequestHelper();
 

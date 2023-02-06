@@ -174,7 +174,7 @@ class ReceiptsProvider with ChangeNotifier {
     for (int i = 1; i <= n; i++) {
       final List<Product> products = [];
 
-      final numberOfProducts = Random().nextInt(40) + 1;
+      final numberOfProducts = Random().nextInt(15) + 1;
       for (int x = 0; x <= numberOfProducts; x++) {
         products.add(Product(
             id: x,

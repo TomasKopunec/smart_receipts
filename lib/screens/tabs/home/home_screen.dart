@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     if (!result && mounted) {
-      RequestHelper.showErrorDialog(context, "Network Error");
+      RequestHelper.showErrorDialog(context, err: 'Failed to log-out.');
     }
     auth.setToken(null);
   }
