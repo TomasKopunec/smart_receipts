@@ -52,7 +52,7 @@ class Receipt {
   final int retailer_receipt_id;
   final int retailer_id;
   final String retailer_name;
-  final int customer_id;
+  final String customer_email;
   final DateTime purchase_date_time;
   final String purchase_location;
   final ReceiptStatus status;
@@ -70,7 +70,7 @@ class Receipt {
       required this.retailer_receipt_id,
       required this.retailer_id,
       required this.retailer_name,
-      required this.customer_id,
+      required this.customer_email,
       required this.purchase_date_time,
       required this.purchase_location,
       required this.status,

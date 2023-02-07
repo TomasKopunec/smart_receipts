@@ -53,7 +53,7 @@ class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: QrImage(
         data: QrCodeHelper.getReceiveReceiptQrCode(
-          "---SAMPLE customer_id---",
+          "email@email.com",
           settings.digitalOnly,
         ),
         padding: EdgeInsets.zero,

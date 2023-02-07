@@ -190,7 +190,7 @@ class ReceiptsProvider with ChangeNotifier {
           retailer_receipt_id: i,
           retailer_id: i,
           retailer_name: storeNames[Random().nextInt(storeNames.length)],
-          customer_id: i,
+          customer_email: 'email$i@gmail.com',
           purchase_date_time: DateTime.now()
               .subtract(Duration(days: Random().nextInt(365 * 2))),
           purchase_location: 'London, UK',
