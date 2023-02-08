@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:smart_receipts/helpers/qr_code_helper.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
+import 'package:smart_receipts/models/user.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
+import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/widgets/toggle_switch.dart';
 import '../tab_control/abstract_tab_screen.dart';
 
@@ -29,6 +34,37 @@ class ReceiveReceiptScreen extends AbstractTabScreen {
 }
 
 class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
+  Timer? timer;
+  String _timeString = DateFormat('dd.MM.yyyy HH:mm:ss').format(DateTime.now());
+
+  @override
+  void initState() {
+    _timeString = _formatTime(DateTime.now());
+
+    timer = Timer.periodic(
+        const Duration(seconds: 1), (Timer t) => _getTimeString());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  String _formatTime(DateTime dateTime) {
+    return DateFormat('dd.MM.yyyy HH:mm:ss').format(dateTime);
+  }
+
+  _getTimeString() {
+    final DateTime now = DateTime.now();
+    final String formattedTime = _formatTime(now);
+
+    setState(() {
+      _timeString = formattedTime;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.getScreen(screenBody: Center(
@@ -47,13 +83,13 @@ class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
     ));
   }
 
-  Widget getQrCode(SettingsProvider settings, AuthProvider auth) {
+  Widget getQrCode(SettingsProvider settings, AuthProvider auth, String email) {
     final double qrCodeSize = SizeHelper.getScreenWidth(context) * 0.8;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: QrImage(
         data: QrCodeHelper.getReceiveReceiptQrCode(
-          "email@email.com",
+          email,
           settings.digitalOnly,
         ),
         padding: EdgeInsets.zero,
@@ -73,45 +109,47 @@ class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
     final double padding =
         (SizeHelper.getScreenWidth(context) - qrCodeSize) * 0.5;
 
-    return Card(
-      elevation: 3,
-      margin: EdgeInsets.zero,
-      child: Container(
-        color: Theme.of(context).canvasColor,
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: getQrCode(settings, auth),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: padding, vertical: 4),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Tomas Kopunec',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: SizeHelper.getFontSize(context,
-                            size: FontSize.cardSize)),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    softWrap: true,
-                    'vpke9ePEgAgySvFFwNsTc8/LZa03Ow==',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontWeight: FontWeight.w300,
-                        fontSize: SizeHelper.getFontSize(context,
-                            size: FontSize.regularLarge)),
-                  ),
-                ],
+    return Consumer<UserProvider>(
+      builder: (ctx, users, _) => Card(
+        elevation: 3,
+        margin: EdgeInsets.zero,
+        child: Container(
+          color: Theme.of(context).canvasColor,
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: getQrCode(settings, auth, users.user!.email),
               ),
-            )
-          ],
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: padding, vertical: 4),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      users.user!.email,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: SizeHelper.getFontSize(context,
+                              size: FontSize.cardSize)),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _timeString,
+                      softWrap: true,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.w300,
+                          fontSize: SizeHelper.getFontSize(context,
+                              size: FontSize.regularLarge)),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

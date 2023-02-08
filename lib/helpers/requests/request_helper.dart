@@ -12,22 +12,39 @@ class RequestHelper {
   final String functionKey =
       "nDDhMcGI64BL0foQDGp8t-9D9URyyi1mlvEHvpK2rn1tAzFuA86DDw==";
 
+  /// Sends a request and logs
+  Future<Response> send(
+      {required String name,
+      required RequestType type,
+      required String path,
+      Object? body,
+      String? authToken}) async {
+    final Map<String, String> headers = {
+      'x-functions-key': functionKey,
+      'Authorization': authToken ?? "",
+      'Content-Type': 'application/json'
+    };
+
+    _log(name.toUpperCase(), headers, body, true);
+
+    final Response response = await _send(type, path,
+        body: body, headers: headers, authToken: authToken);
+
+    _log(name.toUpperCase(), headers, response, false);
+    return response;
+  }
+
   /// Sends any type of request
   Future<Response> _send(
     RequestType requestType,
     String path, {
     String? authToken,
     Object? body,
+    Map<String, String>? headers,
   }) async {
     Future<http.Response>? future;
     // final Uri uri = Uri.https(host, "/api/$path");
     final Uri uri = Uri(scheme: 'https', host: host, path: '/api/$path');
-
-    final Map<String, String> headers = {
-      'x-functions-key': functionKey,
-      'Authorization': authToken ?? "",
-      'Content-Type': 'application/json'
-    };
 
     switch (requestType) {
       case RequestType.post:
@@ -59,17 +76,7 @@ class RequestHelper {
     return _getResponse(response);
   }
 
-  /// Sends a request and logs
-  Future<Response> send(String name, RequestType type, String path, Object body,
-      {String? authToken}) async {
-    log(name.toUpperCase(), body, true);
-    final Response response =
-        await _send(type, path, body: body, authToken: authToken);
-    log(name.toUpperCase(), response, false);
-    return response;
-  }
-
-  Future<Response> get(
+  Future<Response> _get(
     String path, {
     String? authToken,
     Map<String, String>? headers,
@@ -78,7 +85,7 @@ class RequestHelper {
     return _send(RequestType.get, path, body: body, authToken: authToken);
   }
 
-  Future<Response> post(
+  Future<Response> _post(
     String path, {
     String? authToken,
     Map<String, String>? headers,
@@ -87,7 +94,7 @@ class RequestHelper {
     return _send(RequestType.post, path, body: body, authToken: authToken);
   }
 
-  Future<Response> put(
+  Future<Response> _put(
     String path, {
     String? authToken,
     Map<String, String>? headers,
@@ -96,7 +103,7 @@ class RequestHelper {
     return _send(RequestType.put, path, body: body, authToken: authToken);
   }
 
-  Future<Response> patch(
+  Future<Response> _patch(
     String path, {
     String? authToken,
     Map<String, String>? headers,
@@ -105,7 +112,7 @@ class RequestHelper {
     return _send(RequestType.patch, path, body: body, authToken: authToken);
   }
 
-  Future<Response> delete(
+  Future<Response> _delete(
     String path, {
     String? authToken,
     Map<String, String>? headers,
@@ -129,11 +136,12 @@ class RequestHelper {
     }
   }
 
-  void log(String methodName, Object body, bool isRequest) {
-    print("[API] $methodName ${isRequest ? 'request' : 'response'}: $body");
+  void _log(String methodName, Object? headers, Object? body, bool isRequest) {
+    print(
+        "[API] $methodName ${isRequest ? 'request' : 'response'} | Headers: ${headers ?? '{}'} | Body: ${body ?? '{}'} |");
   }
 
-  static void showErrorDialog(BuildContext context,
+  static void showNetworkErrorDialog(BuildContext context,
       {String title = "Network Exception", Object err = ''}) {
     showDialog<void>(
       context: context,

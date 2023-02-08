@@ -5,6 +5,7 @@ import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/screen_provider.dart.dart';
 import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
+import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/playgroundScreen.dart';
 import 'screens/home.dart';
 
@@ -28,6 +29,7 @@ class Main extends StatelessWidget {
           ChangeNotifierProvider.value(value: ScreenProvider()),
           ChangeNotifierProvider.value(value: ReceiptsProvider()),
           ChangeNotifierProvider.value(value: SettingsProvider()),
+          ChangeNotifierProvider.value(value: UserProvider()),
         ],
         child: Consumer<SettingsProvider>(
           builder: (context, settings, child) {

@@ -133,7 +133,7 @@ class _RegisterState extends State<Register> {
 
     if (mounted) {
       if (isException) {
-        RequestHelper.showErrorDialog(context,
+        RequestHelper.showNetworkErrorDialog(context,
             err: result.message, title: "Network Exception");
       } else {
         AppSnackBar.show(

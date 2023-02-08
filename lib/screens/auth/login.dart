@@ -114,7 +114,7 @@ class _LoginState extends State<Login> {
 
     if (mounted) {
       if (isException) {
-        RequestHelper.showErrorDialog(context,
+        RequestHelper.showNetworkErrorDialog(context,
             err: result.message, title: "Network Exception");
       } else {
         AppSnackBar.show(

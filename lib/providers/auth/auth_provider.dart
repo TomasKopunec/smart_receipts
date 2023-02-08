@@ -4,17 +4,21 @@ import 'package:smart_receipts/providers/auth/token.dart';
 import 'package:smart_receipts/utils/shared_preferences_helper.dart';
 
 class AuthProvider with ChangeNotifier {
-  Token? token;
+  Token? _token;
 
   AuthRequestHelper authRequestHelper = AuthRequestHelper();
 
   /* Digital Only */
   bool get isAuthenticated {
-    return token != null && (token!.expiresAt.isAfter(DateTime.now()));
+    return _token != null && (_token!.expiresAt.isAfter(DateTime.now()));
+  }
+
+  Token? get token {
+    return _token;
   }
 
   void setToken(Token? token) {
-    this.token = token;
+    _token = token;
     SharedPreferencesHelper.setToken(token);
     notifyListeners();
   }
@@ -27,8 +31,8 @@ class AuthProvider with ChangeNotifier {
     return authRequestHelper.login(email, password);
   }
 
-  Future<bool> logout(String tokenId) async {
-    return authRequestHelper.logout(tokenId);
+  Future<bool> logout() async {
+    return authRequestHelper.logout(_token!.accessToken);
   }
 
   Future<bool> changePassword(String email) {

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/requests/request_helper.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
+import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/tabs/home/recent_receipts.dart';
 import 'package:smart_receipts/screens/tabs/home/sustainability_widget.dart';
 
@@ -30,6 +31,7 @@ class HomeScreen extends AbstractTabScreen {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
+  bool _hasEmail = false;
 
   @override
   Widget build(BuildContext context) {
@@ -86,14 +88,14 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     // Wait for response
-    final result = await auth.logout(auth.token!.accessToken);
+    final result = await auth.logout();
 
     setState(() {
       _isLoading = false;
     });
 
     if (!result && mounted) {
-      RequestHelper.showErrorDialog(context, err: 'Failed to log-out.');
+      RequestHelper.showNetworkErrorDialog(context, err: 'Failed to log-out.');
     }
     auth.setToken(null);
   }
@@ -111,18 +113,50 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(width: 16),
-          Text('Hello, ',
+          Expanded(
+            child: Consumer<UserProvider>(
+              builder: (ctx, user, _) => email,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget get email {
+    final user = Provider.of<UserProvider>(context).user;
+    if (user == null) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Loading email',
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall!
                   .copyWith(fontWeight: FontWeight.w300)),
-          Text('Tomas!',
+          const SizedBox(height: 4),
+          const LinearProgressIndicator(),
+        ],
+      );
+    } else {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Welcome back',
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall!
-                  .copyWith(fontWeight: FontWeight.w500))
+                  .copyWith(fontWeight: FontWeight.w300)),
+          const SizedBox(height: 3),
+          Text(user.email,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineSmall!
+                  .copyWith(fontWeight: FontWeight.w400)),
         ],
-      ),
-    );
+      );
+    }
   }
 }

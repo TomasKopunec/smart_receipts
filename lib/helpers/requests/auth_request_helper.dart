@@ -17,8 +17,12 @@ enum AuthMethod {
 class AuthRequestHelper extends RequestHelper {
   Future<AuthResponseDTO> register(String email, String password) async {
     const method = AuthMethod.register;
-    final response = await send(method.name, method.type, method.path,
-        json.encode({'email': email, 'password': password}));
+    final response = await send(
+      name: method.name,
+      type: method.type,
+      path: method.path,
+      body: json.encode({'email': email, 'password': password}),
+    );
 
     bool success = response.code == 201;
     if (success) {
@@ -39,8 +43,12 @@ class AuthRequestHelper extends RequestHelper {
 
   Future<AuthResponseDTO> login(String email, String password) async {
     const method = AuthMethod.login;
-    final response = await send(method.name, method.type, method.path,
-        json.encode({'email': email, 'password': password}));
+    final response = await send(
+      name: method.name,
+      type: method.type,
+      path: method.path,
+      body: json.encode({'email': email, 'password': password}),
+    );
 
     bool success = response.code == 200;
     final parsed = json.decode(response.body);
@@ -59,8 +67,12 @@ class AuthRequestHelper extends RequestHelper {
 
   Future<bool> logout(String tokenId) async {
     const method = AuthMethod.logout;
-    final response = await send(method.name, method.type, method.path,
-        json.encode({'access_token': tokenId}));
+    final response = await send(
+      name: method.name,
+      type: method.type,
+      path: method.path,
+      body: json.encode({'access_token': tokenId}),
+    );
     return response.code == 200;
   }
 }
