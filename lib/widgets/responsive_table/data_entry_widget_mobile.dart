@@ -24,7 +24,7 @@ class DataEntryWidgetMobile extends StatefulWidget {
     required this.color,
     required this.data,
     required this.headers,
-  }) : super(key: ValueKey(data['id']));
+  }) : super(key: ValueKey(data[ReceiptField.receiptId.name]));
 
   @override
   State<DataEntryWidgetMobile> createState() => _DataEntryWidgetMobileState();

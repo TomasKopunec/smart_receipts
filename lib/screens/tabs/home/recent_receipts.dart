@@ -77,7 +77,7 @@ class RecentReceipts extends StatelessWidget {
 
     List<Widget> widgets = [];
 
-    receipts.getMostRecent(2).forEach((receipt) {
+    receipts.getMostRecentN(2).forEach((receipt) {
       widgets.add(Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),

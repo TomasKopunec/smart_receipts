@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
-import 'package:smart_receipts/widgets/dialogs/confirm_dialog.dart';
+import 'package:smart_receipts/widgets/dialogs/dialog_helper.dart';
 
 class EntryDismissible extends StatelessWidget {
   final String id;
@@ -14,18 +13,7 @@ class EntryDismissible extends StatelessWidget {
       {required this.child, required this.color, required this.id});
 
   void _delete(BuildContext context) async {
-    final result = await showDialog(
-      context: context,
-      builder: (context) => ConfirmDialog(
-          title: 'Delete Receipt',
-          subtitle: 'Are you sure you want to remove this receipt?',
-          color: color,
-          width: SizeHelper.getScreenWidth(context) * 0.9),
-    );
-
-    if (result) {
-      print('Removing receipt with id: ${id}');
-    }
+    DialogHelper.showDeleteReceiptDialog(context);
   }
 
   void _star(BuildContext context) {

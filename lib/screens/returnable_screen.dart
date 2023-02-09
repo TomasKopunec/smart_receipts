@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
-
-import '../helpers/size_helper.dart';
-import '../widgets/dialogs/confirm_dialog.dart';
+import 'package:smart_receipts/widgets/dialogs/dialog_helper.dart';
 
 /// Screen that can be returned (opened from Navigator push)
 class ReturnableScreen extends StatelessWidget {
@@ -49,18 +47,6 @@ class ReturnableScreen extends StatelessWidget {
   }
 
   void _delete(BuildContext context) async {
-    final result = await showDialog(
-      context: context,
-      builder: (context) => ConfirmDialog(
-          title: 'Delete Receipt',
-          subtitle: 'Are you sure you want to remove this receipt?',
-          color: Theme.of(context).primaryColor,
-          width: SizeHelper.getScreenWidth(context) * 0.9),
-    );
-
-    if (result != null && result) {
-      // TODO Remove receipt
-      print('Removing receipt with id: ${receiptId}');
-    }
+    DialogHelper.showDeleteReceiptDialog(context);
   }
 }

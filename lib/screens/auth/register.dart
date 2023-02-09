@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/requests/auth_request_helper.dart';
 import 'package:smart_receipts/helpers/requests/request_helper.dart';
+import 'package:smart_receipts/models/product/product.dart';
+import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/screens/auth/auth_section_builder.dart';
 import 'package:smart_receipts/screens/auth/authentication_screen.dart';
 import 'package:smart_receipts/utils/snackbar_builder.dart';
+
+import '../../widgets/dialogs/dialog_helper.dart';
 
 class Register extends StatefulWidget {
   final Function(AuthState state) func;

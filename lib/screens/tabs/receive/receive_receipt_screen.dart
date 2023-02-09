@@ -7,11 +7,13 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:smart_receipts/helpers/qr_code_helper.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
+import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
+import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/widgets/toggle_switch.dart';
-import '../tab_control/abstract_tab_screen.dart';
+import '../../tab_control/abstract_tab_screen.dart';
 
 class ReceiveReceiptScreen extends AbstractTabScreen {
   @override
@@ -34,21 +36,33 @@ class ReceiveReceiptScreen extends AbstractTabScreen {
 }
 
 class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
-  Timer? timer;
+  late final Timer timeTimer;
+
   String _timeString = DateFormat('dd.MM.yyyy HH:mm:ss').format(DateTime.now());
 
   @override
   void initState() {
     _timeString = _formatTime(DateTime.now());
 
-    timer = Timer.periodic(
+    timeTimer = Timer.periodic(
         const Duration(seconds: 1), (Timer t) => _getTimeString());
+
+    // Start a background thread that will listen to any changes
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final auth = Provider.of<AuthProvider>(context, listen: false);
+      Provider.of<ReceiptsProvider>(context, listen: false).startListening(
+        context,
+        Provider.of<UserProvider>(context, listen: false),
+        auth.token!.accessToken,
+      );
+    });
+
     super.initState();
   }
 
   @override
   void dispose() {
-    timer?.cancel();
+    timeTimer.cancel();
     super.dispose();
   }
 

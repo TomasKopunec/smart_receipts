@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smart_receipts/screens/tabs/receive/receive_receipt_screen.dart';
 import '../screens/tab_control/abstract_tab_screen.dart';
-import '../screens/tabs/receive_receipt_screen.dart';
 import '../screens/tabs/all_receipts/all_receipts_screen.dart';
 import '../screens/tabs/returns_screen.dart';
 import '../screens/tabs/home/home_screen.dart';

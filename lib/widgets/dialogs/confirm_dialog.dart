@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:smart_receipts/helpers/size_helper.dart';
 
 class ConfirmDialog extends StatelessWidget {
-  // final bckgColor = const Color.fromRGBO(240, 240, 240, 1);
-
   final String title;
   final String subtitle;
-  final double width;
-  final Color color;
+  final IconData icon;
+  final List<ElevatedButton> buttons;
 
-  ConfirmDialog(
-      {required this.title,
-      required this.subtitle,
-      required this.color,
-      required this.width});
+  ConfirmDialog({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.buttons,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +21,19 @@ class ConfirmDialog extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       iconPadding: const EdgeInsets.only(top: 8),
       insetPadding: EdgeInsets.zero,
-      icon: Icon(Icons.delete, color: color),
+      icon: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Icon(icon, color: Theme.of(context).primaryColor),
+      ),
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8))),
       title: Text(
         title,
-        style: TextStyle(color: color, fontWeight: FontWeight.w800),
+        style: TextStyle(
+            color: Theme.of(context).primaryColor, fontWeight: FontWeight.w800),
       ),
       content: Container(
-          width: width,
+          width: SizeHelper.getScreenWidth(context) * 0.8,
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
           child: Column(
@@ -47,18 +51,16 @@ class ConfirmDialog extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 2, left: 8, right: 8),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                          style:
-                              ElevatedButton.styleFrom(backgroundColor: color),
-                          onPressed: () => Navigator.pop(context, false),
-                          child: const Text('No')),
-                      ElevatedButton(
-                          style:
-                              ElevatedButton.styleFrom(backgroundColor: color),
-                          onPressed: () => Navigator.pop(context, true),
-                          child: const Text('Yes')),
-                    ]),
+                    children: buttons
+                        .map((e) => Expanded(
+                                child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      SizeHelper.getScreenWidth(context) *
+                                          0.05),
+                              child: e,
+                            )))
+                        .toList()),
               )
             ],
           )),

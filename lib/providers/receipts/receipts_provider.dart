@@ -1,10 +1,16 @@
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
+import 'package:smart_receipts/providers/user_provider.dart';
+import 'package:smart_receipts/screens/tabs/receive/listening_thread.dart';
 
 import '../../widgets/receipt_dropdown_button.dart';
 
 class ReceiptsProvider with ChangeNotifier {
+  ListeningThread? _listeningThread;
+
   List<Receipt> _receipts = [];
 
   List<Map<String, dynamic>> _source = [];
@@ -159,11 +165,15 @@ class ReceiptsProvider with ChangeNotifier {
     return _receipts.firstWhere((e) => e.receiptId == id);
   }
 
-  List<Receipt> getMostRecent([int n = 2]) {
+  List<Receipt> getMostRecentN([int n = 2]) {
     List<Receipt> copy = [..._receipts];
-    copy.sort((a, b) => (a.getField(ReceiptField.purchaseDateTime) as DateTime)
-        .compareTo(b.getField(ReceiptField.purchaseDateTime) as DateTime));
+    copy.sort((a, b) => (b.getField(ReceiptField.purchaseDateTime) as DateTime)
+        .compareTo(a.getField(ReceiptField.purchaseDateTime) as DateTime));
     return copy.take(n).toList();
+  }
+
+  Receipt getMostRecent() {
+    return getMostRecentN(1).first;
   }
 
   // SORTING
@@ -231,6 +241,23 @@ class ReceiptsProvider with ChangeNotifier {
 
   List<String> get selecteds {
     return [..._selecteds];
+  }
+
+  /// LISTENING THREAD
+  void startListening(
+      BuildContext context, UserProvider users, String accessToken) {
+    _listeningThread = ListeningThread(
+      context: context,
+      users: users,
+      accessToken: accessToken,
+      onFinish: () => stopListening(),
+    );
+  }
+
+  void stopListening() {
+    if (_listeningThread != null) {
+      _listeningThread = null;
+    }
   }
 
   // Used during debugging
