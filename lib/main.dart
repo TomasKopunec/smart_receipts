@@ -7,7 +7,6 @@ import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/playgroundScreen.dart';
-import 'package:smart_receipts/screens/tab_control/tabs_scaffold.dart';
 import 'screens/home.dart';
 
 void main() {
@@ -70,7 +69,7 @@ class Main extends StatelessWidget {
                       style: ButtonStyle(
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.teal)))),
-              home: TabsScaffold(), // const Home(),
+              home: const Home(),
               routes: getRoutes(),
             );
           },

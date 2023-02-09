@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:smart_receipts/helpers/qr_code_helper.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
-import 'package:smart_receipts/models/user.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
@@ -129,8 +129,9 @@ class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    AutoSizeText(
                       users.user!.email,
+                      maxLines: 1,
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                           fontWeight: FontWeight.w500,
                           fontSize: SizeHelper.getFontSize(context,

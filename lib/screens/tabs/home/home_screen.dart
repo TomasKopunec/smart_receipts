@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/requests/request_helper.dart';
@@ -31,7 +32,6 @@ class HomeScreen extends AbstractTabScreen {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
-  bool _hasEmail = false;
 
   @override
   Widget build(BuildContext context) {
@@ -103,21 +103,27 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget get headerBody {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-      child: Row(
+      child: Column(
         children: [
-          CircleAvatar(
-            backgroundColor: Theme.of(context).primaryColor,
-            child: Icon(
-              Icons.person,
-              color: Theme.of(context).canvasColor,
-            ),
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Theme.of(context).primaryColor,
+                radius: SizeHelper.getScreenHeight(context) * 0.032,
+                child: Icon(
+                  Icons.person,
+                  color: Theme.of(context).canvasColor,
+                  size: SizeHelper.getScreenHeight(context) * 0.03,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Consumer<UserProvider>(
+                  builder: (ctx, user, _) => email,
+                ),
+              )
+            ],
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Consumer<UserProvider>(
-              builder: (ctx, user, _) => email,
-            ),
-          )
         ],
       ),
     );
@@ -135,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   .textTheme
                   .headlineSmall!
                   .copyWith(fontWeight: FontWeight.w300)),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           const LinearProgressIndicator(),
         ],
       );
@@ -150,11 +156,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   .headlineSmall!
                   .copyWith(fontWeight: FontWeight.w300)),
           const SizedBox(height: 3),
-          Text(user.email,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall!
-                  .copyWith(fontWeight: FontWeight.w400)),
+          AutoSizeText(
+            user.email,
+            maxLines: 1,
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall!
+                .copyWith(fontWeight: FontWeight.w400),
+          ),
         ],
       );
     }
