@@ -43,17 +43,15 @@ class SharedPreferencesHelper {
     return res;
   }
 
-  static Future<bool> saveFavorites(List<int> favorites) async {
-    return await setStringList(
-        key: FAVORITES_LIST,
-        value: favorites.map((e) => e.toString()).toList());
+  static Future<bool> saveFavorites(List<String> favorites) async {
+    return await setStringList(key: FAVORITES_LIST, value: favorites);
   }
 
-  static Future<List<int>> getFavorites() async {
+  static Future<List<String>> getFavorites() async {
     final prefs = await _instance;
 
     final List<String>? favs = prefs.getStringList(FAVORITES_LIST);
-    return favs == null ? [] : favs.map((e) => int.parse(e)).toList();
+    return favs ?? [];
   }
 
   static Future<void> setToken(Token? token) async {

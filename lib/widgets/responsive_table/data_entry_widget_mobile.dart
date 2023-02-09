@@ -8,8 +8,6 @@ import 'package:smart_receipts/screens/show_receipt_screen.dart';
 import '../../helpers/currency_helper.dart';
 import '../../models/receipt/receipt.dart';
 
-import '../../models/product/product.dart';
-
 import '../receipt_status_label.dart';
 import 'entry_dismissible.dart';
 
@@ -31,8 +29,8 @@ class DataEntryWidgetMobile extends StatefulWidget {
   @override
   State<DataEntryWidgetMobile> createState() => _DataEntryWidgetMobileState();
 
-  int get id {
-    return data['id'];
+  String get id {
+    return data[ReceiptField.receiptId.name];
   }
 }
 
@@ -138,27 +136,26 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
             key: ValueKey(widget.id),
             tilePadding: const EdgeInsets.only(left: 10, right: 20),
             controlAffinity: ListTileControlAffinity.leading,
-            title: Row(
-              children: [
-                Text(
-                  widget.data[ReceiptField.retailer_name.name],
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Text(numberOfItems),
-              ],
+            title: Text(
+              '${widget.data[ReceiptField.retailerName.name]}  $numberOfItems',
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+              softWrap: false,
             ),
+
             subtitle: Opacity(
               opacity: 0.75,
               child: Text(
                 DateFormat(_settingsProvider.dateTimeFormat.format).format(
                     DateTime.parse(
-                        widget.data[ReceiptField.purchase_date_time.name])),
+                        widget.data[ReceiptField.purchaseDateTime.name])),
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
                     .copyWith(fontWeight: FontWeight.w400),
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+                softWrap: false,
               ),
             ),
             trailing: Row(
@@ -198,9 +195,13 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 'Number of Products',
                                 overflow: TextOverflow.clip,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(fontWeight: FontWeight.w400),
                               ),
                               const Spacer(),
                               getValueWidget(
@@ -263,6 +264,10 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                 Text(
                   header.toString(),
                   overflow: TextOverflow.clip,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontWeight: FontWeight.w400),
                 ),
                 const Spacer(),
                 getValueWidget(header, widget.data[header.name])
@@ -280,7 +285,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     }
 
     String stringOutput = '$value';
-    if (header == ReceiptField.purchase_date_time ||
+    if (header == ReceiptField.purchaseDateTime ||
         header == ReceiptField.expiration) {
       stringOutput = DateFormat(_settingsProvider.dateTimeFormat.format)
           .format(DateTime.parse(stringOutput));
@@ -290,7 +295,11 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     } else if (header == ReceiptField.products) {
       stringOutput = '${widget.data[ReceiptField.products.name].length}';
     }
-    return Text(stringOutput);
+    return Text(stringOutput,
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium!
+            .copyWith(fontWeight: FontWeight.w300));
   }
 
   @override

@@ -7,7 +7,7 @@ import '../widgets/dialogs/confirm_dialog.dart';
 
 /// Screen that can be returned (opened from Navigator push)
 class ReturnableScreen extends StatelessWidget {
-  final int receiptId;
+  final String receiptId;
   final String title;
   final Widget body;
 

@@ -26,8 +26,8 @@ class DataEntryWidgetDesktop extends StatefulWidget {
   @override
   State<DataEntryWidgetDesktop> createState() => _DataEntryWidgetDesktopState();
 
-  int get id {
-    return data['id'];
+  String get id {
+    return data[ReceiptField.receiptId.name];
   }
 }
 
@@ -204,7 +204,7 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
 
     String stringOutput = '$value';
 
-    if (header == ReceiptField.purchase_date_time ||
+    if (header == ReceiptField.purchaseDateTime ||
         header == ReceiptField.expiration) {
       stringOutput = DateFormat(_settingsProvider.dateTimeFormat.format)
           .format(DateTime.parse(stringOutput));

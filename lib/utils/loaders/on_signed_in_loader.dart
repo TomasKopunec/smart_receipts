@@ -6,16 +6,17 @@ class OnSignedInLoader extends Loader {
   OnSignedInLoader({required super.context, required super.onLoad});
 
   @override
-  void initialise() {
-    loadProfile();
-    fetchReceipts();
+  Future<bool> initialise() async {
+    await loadProfile();
+    loadReceipts();
+    return true;
   }
 
-  void loadProfile() {
-    users.fetchAndSetUser(auth.token!.accessToken);
+  Future<void> loadProfile() {
+    return users.fetchAndSetUser(auth.token!.accessToken);
   }
 
-  void fetchReceipts() {
-    receipt.fetchAndSetFavorites();
+  void loadReceipts() {
+    receipt.setReceipts(users.user!.receipts);
   }
 }

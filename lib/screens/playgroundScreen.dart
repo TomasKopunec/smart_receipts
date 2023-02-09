@@ -7,7 +7,7 @@ class PlaygroundScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ReturnableScreen(
-        receiptId: 1,
+        receiptId: "1",
         title: 'Returnable Screen',
         body: Center(
           child: Text('Hello world'),

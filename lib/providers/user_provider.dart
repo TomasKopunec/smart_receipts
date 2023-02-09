@@ -18,7 +18,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void fetchAndSetUser(String token) async {
+  Future<void> fetchAndSetUser(String token) async {
     final response = await userRequestHelper.getUser(token);
     setUser(response.user);
   }

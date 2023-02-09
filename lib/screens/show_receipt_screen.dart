@@ -21,7 +21,7 @@ class ShowReceiptScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     settings = Provider.of<SettingsProvider>(context, listen: true);
-    final id = ModalRoute.of(context)!.settings.arguments as int;
+    final id = ModalRoute.of(context)!.settings.arguments as String;
 
     // receipt = Receipt(
     //     id: 1,
@@ -75,8 +75,8 @@ class ShowReceiptScreen extends StatelessWidget {
         .getReceiptById(id);
 
     return ReturnableScreen(
-        receiptId: receipt.id,
-        title: receipt.retailer_name,
+        receiptId: receipt.receiptId,
+        title: receipt.retailerName,
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
@@ -91,7 +91,7 @@ class ShowReceiptScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Text(
-                      "Thank you for shopping with ${receipt.retailer_name}!",
+                      "Thank you for shopping with ${receipt.retailerName}!",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.w300,
@@ -137,14 +137,14 @@ class ShowReceiptScreen extends StatelessWidget {
   }
 
   Widget getTitle(BuildContext context) {
-    return getSection(context, receipt.retailer_name, [
-      getSectionEntry("Location: ", receipt.purchase_location),
+    return getSection(context, receipt.retailerName, [
+      getSectionEntry("Location: ", receipt.purchaseLocation),
 
       // Date time
       getSectionEntry(
           "Date: ",
           DateFormat(settings.dateTimeFormat.format)
-              .format(receipt.getField(ReceiptField.purchase_date_time))),
+              .format(receipt.getField(ReceiptField.purchaseDateTime))),
 
       getSectionEntry(
           "Number of products: ", receipt.getProductsCount().toString()),
@@ -204,10 +204,10 @@ class ShowReceiptScreen extends StatelessWidget {
       getSectionEntry(
           "Expiration: ",
           DateFormat(settings.dateTimeFormat.format)
-              .format(receipt.getField(ReceiptField.purchase_date_time))),
+              .format(receipt.getField(ReceiptField.purchaseDateTime))),
       getSectionEntryStatus(
           "Receipt Status: ", ReceiptStatusLabel(status: receipt.status)),
-      getSectionEntry("Receipt ID: ", receipt.id.toString()),
+      getSectionEntry("Receipt ID: ", receipt.receiptId.toString()),
     ]);
   }
 

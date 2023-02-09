@@ -16,41 +16,68 @@ class RecentReceipts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Section(
-        title: 'Recent Receipts',
-        titleAction: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () => Provider.of<ScreenProvider>(context, listen: false)
-                .setSelectedIndex(1),
-            splashColor: Theme.of(context).primaryColor,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              child: Text(
-                'View All',
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: SizeHelper.getFontSize(context,
-                        size: FontSize.regularLarge)),
-              ),
-            ),
-          ),
-        ),
-        body: Consumer<ReceiptsProvider>(
-          builder: (_, provider, __) {
-            return Column(
-              children: getMostRecentReceipts(context),
-            );
-          },
-        ));
+    return Consumer<ReceiptsProvider>(
+      builder: (ctx, receipts, _) => Section(
+          title: 'Recent Receipts',
+          titleAction: receipts.receiptSize == 0
+              ? Container()
+              : Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () =>
+                        Provider.of<ScreenProvider>(context, listen: false)
+                            .setSelectedIndex(1),
+                    splashColor: Theme.of(context).primaryColor,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      child: Text(
+                        'View All',
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: SizeHelper.getFontSize(context,
+                                size: FontSize.regularLarge)),
+                      ),
+                    ),
+                  ),
+                ),
+          body: Column(
+            children: getMostRecentReceipts(context, receipts),
+          )),
+    );
   }
 
-  List<Widget> getMostRecentReceipts(context) {
+  List<Widget> getMostRecentReceipts(context, ReceiptsProvider receipts) {
+    if (receipts.receiptSize == 0) {
+      return [
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('No receipts have been received yet.',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: SizeHelper.getFontSize(context,
+                          size: FontSize.regularLarge))),
+              const SizedBox(
+                height: 8,
+              ),
+              Text(
+                  'Once you make your first purchase, the most recent receipts will show up here.',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: SizeHelper.getFontSize(context,
+                          size: FontSize.regularSmall))),
+            ],
+          ),
+        )
+      ];
+    }
+
     List<Widget> widgets = [];
 
-    Provider.of<ReceiptsProvider>(context, listen: false)
-        .getMostRecent(2)
-        .forEach((receipt) {
+    receipts.getMostRecent(2).forEach((receipt) {
       widgets.add(Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -60,15 +87,25 @@ class RecentReceipts extends StatelessWidget {
           builder: (ctx, settings, _) {
             return ListTile(
                 onTap: () {
-                  _showReceipt(context, receipt.getField(ReceiptField.id));
+                  _showReceipt(
+                      context, receipt.getField(ReceiptField.receiptId));
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 title: Text(
-                    '${receipt.getField(ReceiptField.retailer_name)} (${receipt.getProductsCount()} products)'),
-                subtitle: Text(DateFormat(settings.dateTimeFormat.format)
-                    .format(receipt.getField(ReceiptField.purchase_date_time))),
+                  '${receipt.getField(ReceiptField.retailerName)} (${receipt.getProductsCount()} products)',
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                  softWrap: false,
+                ),
+                subtitle: Text(
+                  DateFormat(settings.dateTimeFormat.format)
+                      .format(receipt.getField(ReceiptField.purchaseDateTime)),
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                  softWrap: false,
+                ),
                 trailing: Text(
                   CurrencyHelper.getFormatted(
                       receipt.getField(ReceiptField.price), settings.currency),

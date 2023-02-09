@@ -6,7 +6,7 @@ import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/widgets/dialogs/confirm_dialog.dart';
 
 class EntryDismissible extends StatelessWidget {
-  final int id;
+  final String id;
   final Widget child;
   final Color color;
 

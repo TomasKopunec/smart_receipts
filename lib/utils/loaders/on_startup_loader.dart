@@ -7,11 +7,12 @@ class OnStartupLoader extends Loader {
   OnStartupLoader({required super.context, required super.onLoad});
 
   @override
-  void initialise() async {
+  Future<bool> initialise() async {
     // await SharedPreferencesHelper.clearAll();
     loadAuthentication();
     loadFavouriteReceipts();
     loadSettings();
+    return true;
   }
 
   void loadSettings() async {

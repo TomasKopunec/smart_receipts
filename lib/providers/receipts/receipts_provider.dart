@@ -1,10 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
 
-import '../../models/product/product.dart';
 import '../../widgets/receipt_dropdown_button.dart';
 
 class ReceiptsProvider with ChangeNotifier {
@@ -14,92 +11,30 @@ class ReceiptsProvider with ChangeNotifier {
 
   bool _isSelecting = false;
 
-  final Set<int> _selecteds = {}; // List of selected receipts (id)
-  final Set<int> _favorites = {}; // List of favorite receipts (id)
-
-  int get receiptSize {
-    return _receipts.length;
-  }
+  final Set<String> _selecteds = {}; // List of selected receipts (id)
+  final Set<String> _favorites = {}; // List of favorite receipts (id)
 
   bool _isShowingFavorites = false;
+
   String _filterValue = '';
+
   ReceiptField _searchKey =
-      ReceiptField.purchase_date_time; // Refer to Receipt class
+      ReceiptField.purchaseDateTime; // Refer to Receipt class
+
   SortStatus _sortStatus = SortStatus.desc;
 
-  void resetState() {
-    _filterValue = '';
-    _searchKey = ReceiptField.purchase_date_time;
-    _sortStatus = SortStatus.desc;
-    _selecteds.clear();
-    _isSelecting = false;
-    _isShowingFavorites = false;
+  /// Set the Receipts
+  Future<dynamic> setReceipts(List<Receipt> receipts) async {
+    _receipts = receipts;
     _updateSource();
   }
 
-  // FAVOURITES
-  void toggleFavourites() {
-    _isShowingFavorites = !_isShowingFavorites;
-    _updateSource();
-  }
-
-  bool get isShowingFavorites {
-    return _isShowingFavorites;
-  }
-
-  // MAIN
-  void setSource(List<Map<String, dynamic>> newSource) {
-    _source = newSource;
-    notifyListeners();
-  }
-
-  List<Map<String, dynamic>> get source {
-    return _source;
-  }
-
-  // SORTING
-  SortStatus get sortStatus {
-    return _sortStatus;
-  }
-
-  void toggleSorting() {
-    _sortStatus =
-        _sortStatus == SortStatus.asc ? SortStatus.desc : SortStatus.asc;
-    _updateSource();
-  }
-
-  // FILTERING
-  String get filterValue {
-    return _filterValue;
-  }
-
-  void setFilterValue(value) {
-    _filterValue = value.trim();
-    _updateSource();
-  }
-
-  ReceiptField get searchKey {
-    return _searchKey;
-  }
-
-  void setSearchKey(String key) {
-    if (key == _searchKey.name) {
-      toggleSorting();
-    }
-    _searchKey = ReceiptField.from(key);
-
-    if (_searchKey == ReceiptField.status) {
-      toggleSorting();
-    }
-
-    _updateSource();
-  }
-
-  // OTHER
-  Receipt getReceiptById(int id) {
-    return _receipts.firstWhere((e) => e.id == id);
-  }
-
+  /// Update Source
+  /// 1. Converts the Receipts list into JSONs
+  /// 2. Filters according to the favourites toggle
+  /// 3. Filters according to the search key
+  /// 4. Sorts according to the Sort status
+  /// 5. Finally, sets the source to the source
   void _updateSource() {
     List<Map<String, dynamic>> newSource = [];
 
@@ -132,21 +67,130 @@ class ReceiptsProvider with ChangeNotifier {
     setSource(newSource);
   }
 
-  Future<dynamic> fetchAndSetReceipts() async {
-    List<Receipt> newList = [];
-
-    return Future.delayed(const Duration(milliseconds: 250)).then((value) {
-      newList.addAll(_generateData(n: 8));
-      _receipts = newList;
-
-      // Update source
-      _updateSource();
-    });
+  /// Sets the source of the Receipts list / table to list of JSONs
+  void setSource(List<Map<String, dynamic>> newSource) {
+    _source = newSource;
+    notifyListeners();
   }
 
+  /// Used to reset the source when the screen is opened again
+  void resetSource() {
+    _filterValue = '';
+    _searchKey = ReceiptField.purchaseDateTime;
+    _sortStatus = SortStatus.desc;
+    _selecteds.clear();
+    _isSelecting = false;
+    _isShowingFavorites = false;
+    _updateSource();
+  }
+
+  /// FAVOURITES
+  Future<Set<String>> fetchAndSetFavorites() async {
+    final fetched = await SharedPreferencesHelper.getFavorites();
+    _favorites.addAll(fetched);
+    notifyListeners();
+    return _favorites;
+  }
+
+  void toggleFavourites() {
+    _isShowingFavorites = !_isShowingFavorites;
+    _updateSource();
+  }
+
+  bool get isShowingFavorites {
+    return _isShowingFavorites;
+  }
+
+  List<String> get favorites {
+    return [..._favorites];
+  }
+
+  void flipFavorite(String id, [bool notify = true]) {
+    if (_favorites.contains(id)) {
+      _favorites.remove(id);
+    } else {
+      _favorites.add(id);
+    }
+
+    SharedPreferencesHelper.saveFavorites(_favorites.toList());
+    if (notify) {
+      notifyListeners();
+    }
+  }
+
+  void flipFavorites(List<String> list) {
+    for (final id in list) {
+      flipFavorite(id, false);
+    }
+    notifyListeners();
+  }
+
+  bool isFavorite(String id) {
+    return _favorites.contains(id);
+  }
+
+  /// SOURCE
+  List<Map<String, dynamic>> get source {
+    return _source;
+  }
+
+  ReceiptField get searchKey {
+    return _searchKey;
+  }
+
+  int get receiptSize {
+    return _receipts.length;
+  }
+
+  void setSearchKey(String key) {
+    if (key == _searchKey.name) {
+      toggleSorting();
+    }
+    _searchKey = ReceiptField.from(key);
+
+    if (_searchKey == ReceiptField.status) {
+      toggleSorting();
+    }
+
+    _updateSource();
+  }
+
+  Receipt getReceiptById(String id) {
+    return _receipts.firstWhere((e) => e.receiptId == id);
+  }
+
+  List<Receipt> getMostRecent([int n = 2]) {
+    List<Receipt> copy = [..._receipts];
+    copy.sort((a, b) => (a.getField(ReceiptField.purchaseDateTime) as DateTime)
+        .compareTo(b.getField(ReceiptField.purchaseDateTime) as DateTime));
+    return copy.take(n).toList();
+  }
+
+  // SORTING
+  SortStatus get sortStatus {
+    return _sortStatus;
+  }
+
+  void toggleSorting() {
+    _sortStatus =
+        _sortStatus == SortStatus.asc ? SortStatus.desc : SortStatus.asc;
+    _updateSource();
+  }
+
+  // FILTERING
+  String get filterValue {
+    return _filterValue;
+  }
+
+  void setFilterValue(value) {
+    _filterValue = value.trim();
+    _updateSource();
+  }
+
+  /// SELECTION
   void selectAll() {
     for (var e in _receipts) {
-      _selecteds.add(e.id);
+      _selecteds.add(e.receiptId);
     }
     notifyListeners();
   }
@@ -156,57 +200,6 @@ class ReceiptsProvider with ChangeNotifier {
     if (notify) {
       notifyListeners();
     }
-  }
-
-  List<Receipt> _generateData({required int n}) {
-    List<String> storeNames = [
-      'H&M',
-      'Zara',
-      'McDonald\'s',
-      'Lidl',
-      'Gant',
-      'Nike',
-      'Dell',
-      'Deli Store'
-    ];
-
-    final List<Receipt> generated = [];
-    for (int i = 1; i <= n; i++) {
-      final List<Product> products = [];
-
-      final numberOfProducts = Random().nextInt(15) + 1;
-      for (int x = 0; x <= numberOfProducts; x++) {
-        products.add(Product(
-            id: x,
-            name: 'Item $x',
-            price: x * 10,
-            sku: '$x',
-            category: 'Default Category'));
-      }
-
-      generated.add(Receipt(
-          id: i,
-          auto_delete_date_time: DateTime.now().add(const Duration(days: 365)),
-          retailer_receipt_id: i,
-          retailer_id: i,
-          retailer_name: storeNames[Random().nextInt(storeNames.length)],
-          customer_email: 'email$i@gmail.com',
-          purchase_date_time: DateTime.now()
-              .subtract(Duration(days: Random().nextInt(365 * 2))),
-          purchase_location: 'London, UK',
-          status: ReceiptStatus
-              .values[Random().nextInt(ReceiptStatus.values.length)],
-          expiration: DateTime.now()
-              .subtract(Duration(days: i))
-              .add(const Duration(days: 365)),
-          price: (Random().nextDouble() * 200),
-          currency: 'GBP',
-          paymentMethod: 'Card',
-          cardNumber: "1234 1234 1234 1234",
-          products: products));
-    }
-    generated.shuffle();
-    return generated;
   }
 
   int get selectedsLen {
@@ -222,64 +215,73 @@ class ReceiptsProvider with ChangeNotifier {
     return _isSelecting;
   }
 
-  void addSelectedByID(int id) {
+  void addSelectedByID(String id) {
     _selecteds.add(id);
     notifyListeners();
   }
 
-  void removeSelectedByID(int id) {
+  void removeSelectedByID(String id) {
     _selecteds.remove(id);
     notifyListeners();
   }
 
-  bool selectedContains(int id) {
+  bool selectedContains(String id) {
     return _selecteds.contains(id);
   }
 
-  List<int> get selecteds {
+  List<String> get selecteds {
     return [..._selecteds];
   }
 
-  List<int> get favorites {
-    return [..._favorites];
-  }
+  // Used during debugging
+  // List<Receipt> _generateData({required int n}) {
+  //   List<String> storeNames = [
+  //     'H&M',
+  //     'Zara',
+  //     'McDonald\'s',
+  //     'Lidl',
+  //     'Gant',
+  //     'Nike',
+  //     'Dell',
+  //     'Deli Store'
+  //   ];
 
-  void flipFavorite(int id, [bool notify = true]) {
-    if (_favorites.contains(id)) {
-      _favorites.remove(id);
-    } else {
-      _favorites.add(id);
-    }
+  //   final List<Receipt> generated = [];
+  //   for (int i = 1; i <= n; i++) {
+  //     final List<Product> products = [];
 
-    SharedPreferencesHelper.saveFavorites(_favorites.toList());
-    if (notify) {
-      notifyListeners();
-    }
-  }
+  //     final numberOfProducts = Random().nextInt(15) + 1;
+  //     for (int x = 0; x <= numberOfProducts; x++) {
+  //       products.add(Product(
+  //           id: x,
+  //           name: 'Item $x',
+  //           price: x * 10,
+  //           sku: '$x',
+  //           category: 'Default Category'));
+  //     }
 
-  void flipFavorites(List<int> list) {
-    for (final id in list) {
-      flipFavorite(id, false);
-    }
-    notifyListeners();
-  }
-
-  bool isFavorite(int id) {
-    return _favorites.contains(id);
-  }
-
-  Future<Set<int>> fetchAndSetFavorites() async {
-    final fetched = await SharedPreferencesHelper.getFavorites();
-    _favorites.addAll(fetched);
-    notifyListeners();
-    return _favorites;
-  }
-
-  List<Receipt> getMostRecent([int n = 2]) {
-    List<Receipt> copy = [..._receipts];
-    copy.sort((a, b) => (a.getField(ReceiptField.purchase_date_time)
-            as DateTime)
-        .compareTo(b.getField(ReceiptField.purchase_date_time) as DateTime));
-    return copy.take(n).toList();
-  }
+  //     generated.add(Receipt(
+  //         id: i,
+  //         auto_delete_date_time: DateTime.now().add(const Duration(days: 365)),
+  //         retailer_receipt_id: i,
+  //         retailer_id: i,
+  //         retailer_name: storeNames[Random().nextInt(storeNames.length)],
+  //         customer_email: 'email$i@gmail.com',
+  //         purchase_date_time: DateTime.now()
+  //             .subtract(Duration(days: Random().nextInt(365 * 2))),
+  //         purchase_location: 'London, UK',
+  //         status: ReceiptStatus
+  //             .values[Random().nextInt(ReceiptStatus.values.length)],
+  //         expiration: DateTime.now()
+  //             .subtract(Duration(days: i))
+  //             .add(const Duration(days: 365)),
+  //         price: (Random().nextDouble() * 200),
+  //         currency: 'GBP',
+  //         paymentMethod: 'Card',
+  //         cardNumber: "1234 1234 1234 1234",
+  //         products: products));
+  //   }
+  //   generated.shuffle();
+  //   return generated;
+  // }
 }

@@ -19,10 +19,10 @@ enum ReceiptStatus {
 }
 
 enum ReceiptField {
-  id('ID'),
-  retailer_name('Retailer Name'),
-  purchase_date_time('Purchase Time'),
-  purchase_location('Purchase Location'),
+  receiptId('Receipt ID'),
+  retailerName('Retailer Name'),
+  purchaseDateTime('Purchase Time'),
+  purchaseLocation('Purchase Location'),
   status('Status'),
   expiration('Expiration'),
   price('Price'),
@@ -47,14 +47,13 @@ enum ReceiptField {
 
 @JsonSerializable()
 class Receipt {
-  final int id;
-  final DateTime? auto_delete_date_time;
-  final int retailer_receipt_id;
-  final int retailer_id;
-  final String retailer_name;
-  final String customer_email;
-  final DateTime purchase_date_time;
-  final String purchase_location;
+  final String receiptId;
+  final String retailerReceiptId;
+  final String retailerId;
+  final String retailerName;
+  final String customerEmail;
+  final DateTime purchaseDateTime;
+  final String purchaseLocation;
   final ReceiptStatus status;
   final DateTime? expiration;
   final double price;
@@ -64,22 +63,22 @@ class Receipt {
 
   final List<Product> products;
 
-  Receipt(
-      {required this.id,
-      required this.auto_delete_date_time,
-      required this.retailer_receipt_id,
-      required this.retailer_id,
-      required this.retailer_name,
-      required this.customer_email,
-      required this.purchase_date_time,
-      required this.purchase_location,
-      required this.status,
-      required this.expiration,
-      required this.price,
-      required this.currency,
-      required this.paymentMethod,
-      this.cardNumber,
-      required this.products});
+  Receipt({
+    required this.receiptId,
+    required this.retailerReceiptId,
+    required this.retailerId,
+    required this.retailerName,
+    required this.customerEmail,
+    required this.purchaseDateTime,
+    required this.purchaseLocation,
+    required this.status,
+    required this.expiration,
+    required this.price,
+    required this.currency,
+    required this.paymentMethod,
+    this.cardNumber,
+    required this.products,
+  });
 
   factory Receipt.fromJson(Map<String, dynamic> json) =>
       _$ReceiptFromJson(json);
@@ -88,10 +87,10 @@ class Receipt {
 
   static List<ReceiptField> getSearchableKeys() {
     return [
-      ReceiptField.id,
-      ReceiptField.retailer_name,
-      ReceiptField.purchase_date_time,
-      ReceiptField.purchase_location,
+      ReceiptField.receiptId,
+      ReceiptField.retailerName,
+      ReceiptField.purchaseDateTime,
+      ReceiptField.purchaseLocation,
       ReceiptField.price,
       ReceiptField.status
     ];
@@ -103,14 +102,14 @@ class Receipt {
 
   dynamic getField(ReceiptField field) {
     switch (field) {
-      case ReceiptField.id:
-        return id;
-      case ReceiptField.retailer_name:
-        return retailer_name;
-      case ReceiptField.purchase_date_time:
-        return purchase_date_time;
-      case ReceiptField.purchase_location:
-        return purchase_location;
+      case ReceiptField.receiptId:
+        return receiptId;
+      case ReceiptField.retailerName:
+        return retailerName;
+      case ReceiptField.purchaseDateTime:
+        return purchaseDateTime;
+      case ReceiptField.purchaseLocation:
+        return purchaseLocation;
       case ReceiptField.status:
         return status;
       case ReceiptField.expiration:

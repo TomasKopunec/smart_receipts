@@ -51,7 +51,7 @@ class ResponsiveDatatable extends StatefulWidget {
 class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   /// List of widgets that is shown in the portrait mode
   List<Widget> get mobileList {
-    return getList();
+    return widget.total == 0 ? [widget.noDataWidget] : getList();
   }
 
   List<Widget> getList() {
@@ -74,14 +74,14 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
       for (final Map<String, dynamic> entry in widget.source) {
         String key = "";
         if (widget.groupType == GroupType.retailerName) {
-          key = entry[ReceiptField.retailer_name.name];
+          key = entry[ReceiptField.retailerName.name];
         } else if (widget.groupType == GroupType.purchaseTime) {
           final parsedDate =
-              DateTime.parse(entry[ReceiptField.purchase_date_time.name]);
+              DateTime.parse(entry[ReceiptField.purchaseDateTime.name]);
           key =
               "${DateFormat.MMMM().format(DateTime(0, parsedDate.month))}, ${parsedDate.year}";
         } else if (widget.groupType == GroupType.location) {
-          key = entry[ReceiptField.purchase_location.name];
+          key = entry[ReceiptField.purchaseLocation.name];
         } else if (widget.groupType == GroupType.status) {
           key = toBeginningOfSentenceCase(
               entry[ReceiptField.status.name] as String)!;

@@ -27,9 +27,11 @@ class _NoDataFoundWidgetState extends State<NoDataFoundWidget> {
   Widget build(BuildContext context) {
     Future.delayed(const Duration(milliseconds: 1)).then(
       (value) {
-        setState(() {
-          animParam = 1;
-        });
+        if (mounted) {
+          setState(() {
+            animParam = 1;
+          });
+        }
       },
     );
 

@@ -18,12 +18,16 @@ abstract class Loader {
       _users = Provider.of<UserProvider>(context, listen: false);
       _receipt = Provider.of<ReceiptsProvider>(context, listen: false);
       _settings = Provider.of<SettingsProvider>(context, listen: false);
-      initialise();
-      onLoad();
+      final result = await initialise();
+      if (result) {
+        onLoad();
+      } else {
+        log("Error", "Initialization failed!");
+      }
     });
   }
 
-  void initialise();
+  Future<bool> initialise();
 
   AuthProvider get auth {
     return _auth!;
