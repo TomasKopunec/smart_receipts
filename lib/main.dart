@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/screen_provider.dart.dart';
-import 'package:smart_receipts/providers/receipts_provider.dart';
+import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/playgroundScreen.dart';

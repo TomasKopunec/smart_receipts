@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
-import 'package:smart_receipts/providers/receipts_provider.dart';
+import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 
 class AnimatedToggle extends StatefulWidget {
   final List<String> values;

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:smart_receipts/helpers/requests/auth_request_helper.dart';
 import 'package:smart_receipts/providers/auth/token.dart';
-import 'package:smart_receipts/utils/shared_preferences_helper.dart';
+import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
 
 class AuthProvider with ChangeNotifier {
   Token? _token;

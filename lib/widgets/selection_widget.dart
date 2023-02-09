@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/size_helper.dart';
-import '../providers/receipts_provider.dart';
+import '../providers/receipts/receipts_provider.dart';
 
 class SelectionWidget extends StatefulWidget {
   const SelectionWidget();

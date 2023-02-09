@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
-import 'package:smart_receipts/providers/receipts_provider.dart';
+import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/widgets/dialogs/confirm_dialog.dart';
 
 class EntryDismissible extends StatelessWidget {

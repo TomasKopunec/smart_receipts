@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
-import 'package:smart_receipts/utils/shared_preferences_helper.dart';
+import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
 
-import '../models/product/product.dart';
-import '../widgets/receipt_dropdown_button.dart';
+import '../../models/product/product.dart';
+import '../../widgets/receipt_dropdown_button.dart';
 
 class ReceiptsProvider with ChangeNotifier {
   List<Receipt> _receipts = [];
@@ -95,7 +95,7 @@ class ReceiptsProvider with ChangeNotifier {
     _updateSource();
   }
 
-  // Other
+  // OTHER
   Receipt getReceiptById(int id) {
     return _receipts.firstWhere((e) => e.id == id);
   }

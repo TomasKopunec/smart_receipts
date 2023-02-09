@@ -1,5 +1,5 @@
 import 'package:smart_receipts/utils/loaders/loader.dart';
-import 'package:smart_receipts/utils/shared_preferences_helper.dart';
+import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
 
 /// Loader class that is run single time during the app startup (Splash screen)
 /// This class's logic runs in constructor
@@ -7,7 +7,8 @@ class OnStartupLoader extends Loader {
   OnStartupLoader({required super.context, required super.onLoad});
 
   @override
-  void initialise() {
+  void initialise() async {
+    // await SharedPreferencesHelper.clearAll();
     loadAuthentication();
     loadFavouriteReceipts();
     loadSettings();

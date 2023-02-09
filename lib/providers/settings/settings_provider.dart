@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_receipts/providers/settings/settings_dto.dart';
-import 'package:smart_receipts/utils/shared_preferences_helper.dart';
+import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
 
 enum Currency {
   pound('British Pound', '£', 'gbp'),
