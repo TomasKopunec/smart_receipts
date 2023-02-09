@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/constants/image_strings.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
-import 'package:smart_receipts/utils/loader.dart';
+
+import '../utils/loaders/on_startup_loader.dart';
 
 class SplashScreen extends StatefulWidget {
   final Function onFinish;
@@ -22,13 +23,14 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     /// Load all neccessary resources
-    Loader(context, () {
-      Future.delayed(const Duration(milliseconds: 500)).then((value) {
-        setState(() {
-          _isLoaded = true;
-        });
-      });
-    });
+    OnStartupLoader(
+        context: context,
+        onLoad: () =>
+            Future.delayed(const Duration(milliseconds: 500)).then((value) {
+              setState(() {
+                _isLoaded = true;
+              });
+            }));
   }
 
   @override

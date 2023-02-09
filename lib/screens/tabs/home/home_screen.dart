@@ -130,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Loading email',
+          Text('Profile loading',
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall!

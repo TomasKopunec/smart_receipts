@@ -19,7 +19,7 @@ class AuthProvider with ChangeNotifier {
 
   void setToken(Token? token) {
     _token = token;
-    SharedPreferencesHelper.setToken(token);
+    SharedPreferencesHelper.setToken(token); // Update the memory
     notifyListeners();
   }
 

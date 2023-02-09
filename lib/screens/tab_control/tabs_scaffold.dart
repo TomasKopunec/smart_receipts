@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
-import 'package:smart_receipts/providers/auth/auth_provider.dart';
-import 'package:smart_receipts/providers/receipts_provider.dart';
 import 'package:smart_receipts/providers/screen_provider.dart.dart';
-import 'package:smart_receipts/providers/user_provider.dart';
+import 'package:smart_receipts/utils/loaders/on_signed_in_loader.dart';
 
 import 'abstract_tab_screen.dart';
 
@@ -18,36 +16,24 @@ class TabsScaffold extends StatefulWidget {
 }
 
 class _TabsScaffoldState extends State<TabsScaffold> {
-  late final ReceiptsProvider receiptsProvider;
   late final ScreenProvider screenProvider;
-  late final UserProvider userProvider;
-
   late final PageController _myPage;
 
   @override
   void initState() {
-    // 1. Fetch all receipts
-    receiptsProvider = Provider.of<ReceiptsProvider>(context, listen: false);
-    receiptsProvider.fetchAndSetReceipts();
-
-    // 2. Initialize screen provider
+    // 1. Initialize screen provider
     screenProvider = Provider.of<ScreenProvider>(context, listen: false);
-
-    // 3. Initialize page controller
-    _myPage = PageController(initialPage: screenProvider.selectedIndex);
-
     screenProvider.addListener(() {
       safeSetState(() {
         _myPage.jumpToPage(screenProvider.selectedIndex);
       });
     });
 
-    // 4. Fetch User (only if not loaded already)
-    userProvider = Provider.of<UserProvider>(context, listen: false);
-    if (userProvider.user == null) {
-      userProvider.fetchAndSetUser(
-          Provider.of<AuthProvider>(context, listen: false).token!.accessToken);
-    }
+    // 2. Initialize page controller
+    _myPage = PageController(initialPage: screenProvider.selectedIndex);
+
+    // 3. Load the rest
+    OnSignedInLoader(context: context, onLoad: () {});
 
     super.initState();
   }
