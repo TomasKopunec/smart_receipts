@@ -30,7 +30,8 @@ class RequestHelper {
     final Response response = await _send(type, path,
         body: body, headers: headers, authToken: authToken);
 
-    _log(name.toUpperCase(), headers, response, false);
+    _log(name.toUpperCase(), response.headers, response.body, false,
+        statusCode: response.code, exception: response.exception);
     return response;
   }
 
@@ -136,9 +137,60 @@ class RequestHelper {
     }
   }
 
-  void _log(String methodName, Object? headers, Object? body, bool isRequest) {
+  void _log(
+    String methodName,
+    Object? headers,
+    Object? body,
+    bool isRequest, {
+    int? statusCode,
+    String? exception,
+  }) {
+    const JsonDecoder decoder = JsonDecoder();
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+
+    String? formattedHeaders;
+    String? formattedBody;
+
+    try {
+      formattedHeaders = encoder.convert(headers);
+    } catch (e) {}
+
+    try {
+      formattedBody = encoder.convert(decoder.convert(body.toString()));
+    } catch (e) {}
+
+    print("[API] $methodName ${isRequest ? 'request' : 'response'}");
+
+    if (!isRequest) {
+      if (statusCode != null) {
+        print("[API] Status Code: $statusCode");
+      }
+
+      if (exception != null && exception != "OK") {
+        print("[API] Exception: $exception");
+      }
+    }
+
+    if (formattedHeaders == null || formattedHeaders.contains('null')) {
+      print("[API] HEADERS: {}");
+    } else {
+      print("[API] HEADERS: ");
+      formattedHeaders
+          .split('\n')
+          .forEach((dynamic element) => print("[API] $element"));
+    }
+
+    if (formattedBody == null || formattedBody.contains('null')) {
+      print("[API] BODY: {}");
+    } else {
+      print("[API] BODY: ");
+      formattedBody
+          .split('\n')
+          .forEach((dynamic element) => print("[API] $element"));
+    }
+
     print(
-        "[API] $methodName ${isRequest ? 'request' : 'response'} | Headers: ${headers ?? '{}'} | Body: ${body ?? '{}'} |");
+        "[API] ----------------------------------------------------------------- \n");
   }
 
   static void showNetworkErrorDialog(BuildContext context,
