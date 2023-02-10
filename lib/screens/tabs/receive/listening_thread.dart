@@ -41,14 +41,18 @@ class ListeningThread {
         "[${runtimeType.toString().toUpperCase()}] Listening for receipt updates started.");
   }
 
-  void onPingTick() {
-    users.fetchAndSetUser(context, accessToken).then((value) {
+  void onPingTick() async {
+    users.fetchAndSetUser(accessToken).then((value) {
       if (users.user!.count > oldCount) {
         print(
             "[${runtimeType.toString().toUpperCase()}] Received new receipt.");
+
         final provider = Provider.of<ReceiptsProvider>(context, listen: false);
-        DialogHelper.showReceivedNewReceipt(context, provider.getMostRecent());
-        clear();
+        provider
+            .fetchAndSetReceipts(accessToken)
+            .then((value) => DialogHelper.showReceivedNewReceipt(
+                context, provider.getMostRecent()))
+            .then((value) => clear());
       }
     });
   }

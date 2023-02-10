@@ -1,6 +1,5 @@
-import 'dart:collection';
-
 import 'package:flutter/cupertino.dart';
+import 'package:smart_receipts/helpers/requests/receipt_request_helper.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
@@ -29,10 +28,17 @@ class ReceiptsProvider with ChangeNotifier {
 
   SortStatus _sortStatus = SortStatus.desc;
 
+  final ReceiptsRequestHelper _receiptsRequestHelper = ReceiptsRequestHelper();
+
   /// Set the Receipts
   Future<dynamic> setReceipts(List<Receipt> receipts) async {
     _receipts = receipts;
     _updateSource();
+  }
+
+  Future<void> fetchAndSetReceipts(String token) async {
+    final response = await _receiptsRequestHelper.getReceipts(token);
+    setReceipts(response.status ? response.receipts! : []);
   }
 
   /// Update Source
@@ -50,7 +56,7 @@ class ReceiptsProvider with ChangeNotifier {
         // Filter our favourites
         .where((receipt) {
           if (_isShowingFavorites) {
-            return _favorites.contains(receipt['id']);
+            return _favorites.contains(receipt[ReceiptField.receiptId.name]);
           } else {
             return true;
           }

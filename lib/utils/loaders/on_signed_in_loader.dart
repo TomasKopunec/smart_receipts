@@ -10,10 +10,15 @@ class OnSignedInLoader extends Loader {
   @override
   Future<bool> initialise() async {
     loadProfile();
+    loadReceipts();
     return true;
   }
 
-  Future<void> loadProfile() {
-    return users.fetchAndSetUser(context, auth.token!.accessToken);
+  void loadProfile() async {
+    return await users.fetchAndSetUser(auth.token!.accessToken);
+  }
+
+  void loadReceipts() async {
+    return await receipt.fetchAndSetReceipts(auth.token!.accessToken);
   }
 }
