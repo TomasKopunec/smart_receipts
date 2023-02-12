@@ -47,5 +47,6 @@ Map<String, dynamic> _$ReceiptToJson(Receipt instance) => <String, dynamic>{
 const _$ReceiptStatusEnumMap = {
   ReceiptStatus.active: 'active',
   ReceiptStatus.expired: 'expired',
+  ReceiptStatus.partial_return: 'partial_return',
   ReceiptStatus.returned: 'returned',
 };

@@ -5,13 +5,15 @@ import '../product/product.dart';
 part 'receipt.g.dart';
 
 enum ReceiptStatus {
-  active(Colors.teal),
-  expired(Color.fromRGBO(227, 70, 73, 1)),
-  returned(Color.fromRGBO(174, 163, 176, 1));
+  active(Colors.teal, "Active"),
+  expired(Color.fromRGBO(227, 70, 73, 1), "Expired"),
+  partial_return(Color.fromRGBO(203, 175, 208, 1), "Partial Return"),
+  returned(Color.fromRGBO(151, 115, 158, 1), "Return");
 
   final Color color;
+  final String title;
 
-  const ReceiptStatus(this.color);
+  const ReceiptStatus(this.color, this.title);
 
   static ReceiptStatus from(String name) {
     return ReceiptStatus.values.firstWhere((e) => e.name == name.toLowerCase());

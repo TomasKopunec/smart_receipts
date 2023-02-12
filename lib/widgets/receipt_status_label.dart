@@ -14,7 +14,7 @@ class ReceiptStatusLabel extends StatelessWidget {
       decoration: BoxDecoration(
           color: status.color, borderRadius: BorderRadius.circular(6)),
       child: Text(
-        status.name.toUpperCase(),
+        status.title,
         textAlign: TextAlign.center,
         style: TextStyle(
           color: Theme.of(context).scaffoldBackgroundColor,
