@@ -76,7 +76,7 @@ class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
                         height: _showingQRCode
                             ? SizeHelper.getScreenWidth(context)
                             : 0,
-                        child: getQrCodeView("Tomas")),
+                        child: getQrCodeView(user.user!.email)),
                   ),
                   const SizedBox(height: 8),
                   Row(
