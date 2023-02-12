@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_receipts/models/product/product.dart';
+import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/screen_provider.dart.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/playgroundScreen.dart';
+import 'package:smart_receipts/screens/return_screen/return_from_receipt_screen.dart';
 import 'package:smart_receipts/screens/tab_control/tabs_scaffold.dart';
 import 'screens/home.dart';
 
@@ -71,6 +74,47 @@ class Main extends StatelessWidget {
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.teal)))),
               home: const Home(),
+              // home: ReturnFromReceiptScreen(
+              //     receipt: Receipt(
+              //         receiptId: "1234",
+              //         currency: "GBP",
+              //         customerEmail: "tomas.kopunec5@gmail.com",
+              //         expiration: DateTime.now(),
+              //         paymentMethod: "CARD",
+              //         price: 129.99,
+              //         purchaseDateTime: DateTime.now(),
+              //         purchaseLocation: "London",
+              //         retailerId: "5678",
+              //         cardNumber: "12312312312312",
+              //         status: ReceiptStatus.active,
+              //         retailerName: "Zara",
+              //         retailerReceiptId: "1",
+              //         products: [
+              //       Product(
+              //           id: 1,
+              //           name: "Jeans",
+              //           price: 12.99,
+              //           sku: "SKU-123",
+              //           category: "Clothing"),
+              //       Product(
+              //           id: 1,
+              //           name: "Jacket",
+              //           price: 5.99,
+              //           sku: "SKU-456",
+              //           category: "Men"),
+              //       Product(
+              //           id: 1,
+              //           name: "Jeans",
+              //           price: 24.99,
+              //           sku: "SKU-123",
+              //           category: "Clothing"),
+              //       Product(
+              //           id: 1,
+              //           name: "Shoes",
+              //           price: 24.99,
+              //           sku: "SKU-1235",
+              //           category: "Clothing"),
+              //     ])), // const Home(),
               routes: getRoutes(),
             );
           },

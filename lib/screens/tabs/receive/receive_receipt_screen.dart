@@ -98,23 +98,10 @@ class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
   }
 
   Widget getQrCode(SettingsProvider settings, AuthProvider auth, String email) {
-    final double qrCodeSize = SizeHelper.getScreenWidth(context) * 0.8;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
-      child: QrImage(
-        data: QrCodeHelper.getReceiveReceiptQrCode(
-          email,
-          settings.digitalOnly,
-        ),
-        padding: EdgeInsets.zero,
-        version: QrVersions.auto,
-        constrainErrorBounds: true,
-        size: qrCodeSize,
-        foregroundColor: Theme.of(context).indicatorColor,
-        backgroundColor: Colors.transparent,
-        errorCorrectionLevel: QrErrorCorrectLevel.L,
-        gapless: false,
-      ),
+      child: QrCodeHelper.getReceiveQrCodeWidget(
+          context, email, settings.digitalOnly),
     );
   }
 

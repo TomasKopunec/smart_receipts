@@ -6,11 +6,13 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
+import 'package:smart_receipts/screens/return_screen/return_from_receipt_screen.dart';
 import 'package:smart_receipts/screens/returnable_screen.dart';
 import 'package:smart_receipts/widgets/receipt_status_label.dart';
 
 import '../helpers/currency_helper.dart';
 import '../models/receipt/receipt.dart';
+import '../widgets/dialogs/dialog_helper.dart';
 
 class ShowReceiptScreen extends StatelessWidget {
   late Receipt receipt;
@@ -18,9 +20,13 @@ class ShowReceiptScreen extends StatelessWidget {
 
   ShowReceiptScreen({super.key});
 
+  void _delete(BuildContext context) async {
+    DialogHelper.showDeleteReceiptDialog(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    settings = Provider.of<SettingsProvider>(context, listen: true);
+    settings = Provider.of<SettingsProvider>(context, listen: false);
     final id = ModalRoute.of(context)!.settings.arguments as String;
 
     // receipt = Receipt(
@@ -71,12 +77,24 @@ class ShowReceiptScreen extends StatelessWidget {
     //           category: "Men Clothing"),
     //     ]);
 
-    receipt = Provider.of<ReceiptsProvider>(context, listen: false)
-        .getReceiptById(id);
+    final provider = Provider.of<ReceiptsProvider>(context, listen: false);
+    receipt = provider.getReceiptById(id);
 
     return ReturnableScreen(
         receiptId: receipt.receiptId,
         title: receipt.retailerName,
+        actions: [
+          IconButton(
+              onPressed: () {
+                provider.flipFavorite(receipt.receiptId, true);
+              },
+              icon: Icon(provider.isFavorite(receipt.receiptId)
+                  ? Icons.star
+                  : Icons.star_border)),
+          IconButton(
+              onPressed: () => _delete(context),
+              icon: const Icon(Icons.delete)),
+        ],
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
@@ -103,7 +121,9 @@ class ShowReceiptScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              _returnItems(context);
+                            },
                             icon: const Icon(Icons.arrow_back),
                             label: const Padding(
                               padding: EdgeInsets.symmetric(vertical: 12),
@@ -117,6 +137,15 @@ class ShowReceiptScreen extends StatelessWidget {
             ],
           ),
         ));
+  }
+
+  void _returnItems(context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ReturnFromReceiptScreen(
+                  receipt: receipt,
+                )));
   }
 
   Widget getCard(Widget child) {

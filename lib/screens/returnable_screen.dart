@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
-import 'package:smart_receipts/widgets/dialogs/dialog_helper.dart';
 
 /// Screen that can be returned (opened from Navigator push)
 class ReturnableScreen extends StatelessWidget {
   final String receiptId;
   final String title;
   final Widget body;
+  final List<Widget>? actions;
 
-  const ReturnableScreen(
-      {super.key,
-      required this.title,
-      required this.body,
-      required this.receiptId});
+  const ReturnableScreen({
+    super.key,
+    required this.title,
+    required this.body,
+    required this.receiptId,
+    this.actions,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +25,7 @@ class ReturnableScreen extends StatelessWidget {
           appBar: AppBar(
             title: Text(title),
             centerTitle: true,
-            actions: [
-              IconButton(
-                  onPressed: () {
-                    provider.flipFavorite(receiptId, true);
-                  },
-                  icon: Icon(provider.isFavorite(receiptId)
-                      ? Icons.star
-                      : Icons.star_border)),
-              IconButton(
-                  onPressed: () => _delete(context),
-                  icon: const Icon(Icons.delete)),
-            ],
+            actions: actions,
           ),
           body: child,
         );
@@ -44,9 +35,5 @@ class ReturnableScreen extends StatelessWidget {
         child: body,
       ),
     );
-  }
-
-  void _delete(BuildContext context) async {
-    DialogHelper.showDeleteReceiptDialog(context);
   }
 }
