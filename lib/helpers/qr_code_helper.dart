@@ -16,10 +16,13 @@ class QrCodeHelper {
     );
   }
 
-  static getReturnQrCodeWidget(
-      BuildContext context, String email, Map<Product, int> products,
+  static getReturnQrCodeWidget(BuildContext context, String email,
+      String receiptId, Map<Product, int> products,
       {double? size}) {
-    return getQrImageWidget(context, getReturnQrCodeData(email, products),
+    return getQrImageWidget(
+        context,
+        getReturnQrCodeData(
+            email: email, receiptId: receiptId, products: products),
         size: size);
   }
 
@@ -44,12 +47,20 @@ class QrCodeHelper {
     });
   }
 
-  static String getReturnQrCodeData(String id, Map<Product, int> products) {
+  static String getReturnQrCodeData({
+    required String receiptId,
+    required String email,
+    required Map<Product, int> products,
+  }) {
     List<dynamic> jsons = [];
     for (final entry in products.entries) {
       jsons.add({'sku': entry.key.sku, 'quantity': entry.value});
     }
 
-    return json.encode({"customer_id": id, "products": jsons});
+    return json.encode({
+      "receipt_id": receiptId,
+      "customer_email": email,
+      "returned_items": jsons,
+    });
   }
 }

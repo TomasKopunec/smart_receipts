@@ -17,7 +17,7 @@ class ReceiptStatusLabel extends StatelessWidget {
         status.title,
         textAlign: TextAlign.center,
         style: TextStyle(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: Colors.white,
           fontSize: SizeHelper.getFontSize(context, size: FontSize.small),
         ),
       ),

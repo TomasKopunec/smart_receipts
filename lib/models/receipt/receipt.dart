@@ -7,8 +7,8 @@ part 'receipt.g.dart';
 enum ReceiptStatus {
   active(Colors.teal, "Active"),
   expired(Color.fromRGBO(227, 70, 73, 1), "Expired"),
-  partial_return(Color.fromRGBO(203, 175, 208, 1), "Partial Return"),
-  returned(Color.fromRGBO(151, 115, 158, 1), "Return");
+  partial_return(Color.fromRGBO(135, 100, 151, 1), "Partially Returned"),
+  returned(Color.fromRGBO(102, 96, 103, 1), "Returned");
 
   final Color color;
   final String title;

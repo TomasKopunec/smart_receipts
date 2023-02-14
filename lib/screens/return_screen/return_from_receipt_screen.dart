@@ -115,7 +115,7 @@ class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
                   padding:
                       EdgeInsets.all(SizeHelper.getScreenWidth(context) * 0.05),
                   child: QrCodeHelper.getReturnQrCodeWidget(
-                      context, email, getPairsMap(),
+                      context, email, widget.receipt.receiptId, getPairsMap(),
                       size: SizeHelper.getScreenWidth(context))),
             ),
           )
