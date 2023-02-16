@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:smart_receipts/models/product/returns.dart';
 part 'product.g.dart';
 
 enum ProductField {
@@ -6,7 +7,8 @@ enum ProductField {
   name('name'),
   price('price'),
   sku('sku'),
-  category('category');
+  category('category'),
+  returns('returns');
 
   final String colName;
 
@@ -18,7 +20,7 @@ enum ProductField {
 
   @override
   String toString() {
-    return this.colName;
+    return colName;
   }
 }
 
@@ -29,13 +31,15 @@ class Product {
   final double price;
   final String sku;
   final String category;
+  final Returns returns;
 
   Product(
       {required this.id,
       required this.name,
       required this.price,
       required this.sku,
-      required this.category});
+      required this.category,
+      required this.returns});
 
   factory Product.fromJson(Map<String, dynamic> json) =>
       _$ProductFromJson(json);
@@ -59,6 +63,8 @@ class Product {
         return sku;
       case ProductField.category:
         return category;
+      case ProductField.returns:
+        return returns;
       default:
         throw Exception('Undefined key in Product! "${field.toString}"');
     }

@@ -11,6 +11,7 @@ import 'package:smart_receipts/screens/returnable_screen.dart';
 import 'package:smart_receipts/widgets/receipt_status_label.dart';
 
 import '../helpers/currency_helper.dart';
+import '../models/product/product.dart';
 import '../models/receipt/receipt.dart';
 import '../widgets/dialogs/dialog_helper.dart';
 
@@ -28,55 +29,6 @@ class ShowReceiptScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     settings = Provider.of<SettingsProvider>(context, listen: false);
     final id = ModalRoute.of(context)!.settings.arguments as String;
-
-    // receipt = Receipt(
-    //     id: 1,
-    //     auto_delete_date_time: DateTime.now(),
-    //     retailer_receipt_id: 2,
-    //     retailer_id: 3,
-    //     retailer_name: "Zara",
-    //     customer_id: 4,
-    //     purchase_date_time: DateTime.now(),
-    //     purchase_location: "Southampton",
-    //     status: ReceiptStatus.active,
-    //     expiration: DateTime.now().add(const Duration(days: 365)),
-    //     price: 59.99,
-    //     currency: "GBP",
-    //     paymentMethod: "Card",
-    //     cardNumber: "1234 1234 1234 1234",
-    //     products: [
-    //       Product(
-    //           id: 1,
-    //           name: "T-Shirt",
-    //           price: 19.99,
-    //           sku: "1234-5678",
-    //           category: "Men T-Shirts"),
-    //       Product(
-    //           id: 2,
-    //           name: "Socks",
-    //           price: 9.99,
-    //           sku: "1234-9999",
-    //           category: "Men Accessories"),
-    //       Product(
-    //           id: 3,
-    //           name: "Jeans",
-    //           price: 39.99,
-    //           sku: "9999-5678",
-    //           category: "Men Pants"),
-    //       Product(
-    //           id: 4,
-    //           name: "Jeans",
-    //           price: 39.99,
-    //           sku: "9999-5678",
-    //           category: "Men Pants"),
-    //       Product(
-    //           id: 5,
-    //           name: "Jacket",
-    //           price: 109.99,
-    //           sku: "1BA4-5AS8",
-    //           category: "Men Clothing"),
-    //     ]);
-
     final provider = Provider.of<ReceiptsProvider>(context, listen: false);
     receipt = provider.getReceiptById(id);
 
@@ -187,21 +139,46 @@ class ShowReceiptScreen extends StatelessWidget {
   Widget getProducts(BuildContext context) {
     List<Widget> productEntries = [];
 
-    // For each product, group by SKU
-    Map<String, int> skuGroup = HashMap();
-    for (var e in receipt.products) {
-      skuGroup.update(e.sku, (value) => ++value, ifAbsent: () => 1);
+    // For each product, group by ProductDTO
+    Set<ProductDto> set = HashSet();
+    for (var p in receipt.products) {
+      final dto = ProductDto(product: p, count: 0, returned_count: 0);
+      if (set.contains(dto)) {
+        final ProductDto loaded =
+            set.firstWhere((dto) => dto.product.sku == p.sku);
+        loaded.count++;
+        if (p.returns.returned) {
+          loaded.returned_count++;
+        }
+        set.removeWhere((dto) => dto.product.sku == p.sku);
+        set.add(loaded);
+      } else {
+        dto.count++;
+        if (p.returns.returned) {
+          dto.returned_count++;
+        }
+        set.add(dto);
+      }
     }
 
     final Set keys = HashSet();
     for (var p in receipt.products) {
-      final int count = skuGroup[p.sku]!;
+      final dto = set.firstWhere((dto) => dto.product.sku == p.sku);
+      final int count = dto.count;
       if (keys.contains(p.sku)) {
         continue;
       }
 
       keys.add(p.sku);
-      productEntries.add(getSectionEntry("${p.name} ($count x ${p.price})",
+
+      String returned = "${p.name} ($count x ${p.price})";
+
+      if (dto.returned_count > 0) {
+        returned =
+            "$returned  #Returned ${dto.returned_count == dto.count ? 'All' : '${dto.returned_count}}'}";
+      }
+
+      productEntries.add(getSectionEntry(returned,
           CurrencyHelper.getFormatted(p.price * count, settings.currency)));
     }
 
@@ -279,5 +256,27 @@ class ShowReceiptScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class ProductDto {
+  final Product product;
+  int count = 0;
+  int returned_count = 0;
+
+  ProductDto({
+    required this.product,
+    this.count = 0,
+    this.returned_count = 0,
+  });
+
+  @override
+  int get hashCode {
+    return product.sku.hashCode;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return (other is ProductDto) && (other.product.sku == other.product.sku);
   }
 }
