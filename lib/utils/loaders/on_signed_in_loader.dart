@@ -11,6 +11,7 @@ class OnSignedInLoader extends Loader {
   Future<bool> initialise() async {
     loadProfile();
     loadReceipts();
+    loadReturns();
     return true;
   }
 
@@ -20,5 +21,9 @@ class OnSignedInLoader extends Loader {
 
   void loadReceipts() async {
     return await receipt.fetchAndSetReceipts(auth.token!.accessToken);
+  }
+
+  void loadReturns() async {
+    return await returns.fetchAndSetReturns(auth.token!.accessToken);
   }
 }

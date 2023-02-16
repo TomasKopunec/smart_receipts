@@ -24,13 +24,12 @@ class ReturnsRequestHelper extends RequestHelper {
 
     bool success = response.code == 200;
     if (success) {
-      final Map<String, dynamic> parsed = json.decode(response.body);
+      final List<dynamic> parsed = json.decode(response.body);
 
       return ReturnsResponseDTO(
         status: success,
         message: "Returns fetched successfully.",
-        returns:
-            (parsed as List<dynamic>).map((e) => Return.fromJson(e)).toList(),
+        returns: parsed.map((e) => Return.fromJson(e)).toList(),
       );
     } else {
       return ReturnsResponseDTO(

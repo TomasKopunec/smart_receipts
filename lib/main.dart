@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_receipts/models/product/product.dart';
-import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
+import 'package:smart_receipts/providers/returns/returns_provider.dart';
 import 'package:smart_receipts/providers/screen_provider.dart.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/playgroundScreen.dart';
-import 'package:smart_receipts/screens/return_screen/return_from_receipt_screen.dart';
-import 'package:smart_receipts/screens/tab_control/tabs_scaffold.dart';
 import 'screens/home.dart';
 
 void main() {
@@ -32,6 +29,7 @@ class Main extends StatelessWidget {
           ChangeNotifierProvider.value(value: AuthProvider()),
           ChangeNotifierProvider.value(value: ScreenProvider()),
           ChangeNotifierProvider.value(value: ReceiptsProvider()),
+          ChangeNotifierProvider.value(value: ReturnsProvider()),
           ChangeNotifierProvider.value(value: SettingsProvider()),
           ChangeNotifierProvider.value(value: UserProvider()),
         ],

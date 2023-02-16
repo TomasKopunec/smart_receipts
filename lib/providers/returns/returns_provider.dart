@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:smart_receipts/helpers/requests/receipt_request_helper.dart';
 import 'package:smart_receipts/helpers/requests/returns_request_helper.dart';
-import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/models/return/return.dart';
 
 import '../../widgets/receipt_dropdown_button.dart';
@@ -22,9 +20,13 @@ class ReturnsProvider with ChangeNotifier {
     _returns = returns;
   }
 
-  Future<void> fetchAndSetReturn(String token) async {
+  Future<void> fetchAndSetReturns(String token) async {
     final response = await _returnsRequestHelper.getReturns(token);
     setReturns(response.status ? response.returns! : []);
+  }
+
+  List<Return> get returns {
+    return [..._returns];
   }
 
   int get returnsSize {
@@ -36,10 +38,6 @@ class ReturnsProvider with ChangeNotifier {
       toggleSorting();
     }
     _searchKey = ReturnField.from(key);
-
-    if (_searchKey == ReceiptField.status) {
-      toggleSorting();
-    }
   }
 
   Return getReturnById(String id) {

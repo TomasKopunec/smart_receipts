@@ -7,8 +7,6 @@ import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/tabs/home/recent_receipts.dart';
 import 'package:smart_receipts/screens/tabs/home/sustainability_widget.dart';
-import 'package:smart_receipts/widgets/dialogs/confirm_dialog.dart';
-import 'package:smart_receipts/widgets/dialogs/dialog_helper.dart';
 
 import '../../tab_control/abstract_tab_screen.dart';
 

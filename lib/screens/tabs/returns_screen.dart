@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:smart_receipts/models/return/return.dart';
+import 'package:smart_receipts/providers/returns/returns_provider.dart';
 
 import '../tab_control/abstract_tab_screen.dart';
 
@@ -25,6 +28,22 @@ class ReturnsScreen extends AbstractTabScreen {
 class _ReturnsScreenState extends State<ReturnsScreen> {
   @override
   Widget build(BuildContext context) {
-    return widget.getScreen();
+    return widget.getScreen(
+        screenBody: Consumer<ReturnsProvider>(
+      builder: (ctx, returns, _) => Column(
+        children: returns.returns.map((e) => getReturn(e)).toList(),
+      ),
+    ));
+    ;
+  }
+
+  Widget getReturn(Return r) {
+    return Card(
+      child: ExpansionTile(
+        title: Text(r.receiptId),
+        subtitle: Text(r.refundedAmount.toString()),
+        leading: Text(r.returnedItems.length.toString()),
+      ),
+    );
   }
 }

@@ -41,7 +41,7 @@ class Return {
       receiptId: json['receipt_id'],
       customerEmail: json['customer_email'],
       recentDateTime: DateTime.parse(json['recent_datetime']),
-      refundedAmount: double.parse(json['refunded_amount']),
+      refundedAmount: json['refunded_amount'],
       returnedItems: (json['returned_items'] as List<dynamic>)
           .map((e) => ReturnedItem.fromJson(e))
           .toList());

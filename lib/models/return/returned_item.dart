@@ -17,7 +17,7 @@ class ReturnedItem {
 
   static ReturnedItem fromJson(Map<String, dynamic> json) => ReturnedItem(
         sku: json['sku'],
-        quantity: int.parse(json['quantity']),
+        quantity: json['quantity'],
         returnDateTime: DateTime.parse(json['return_datetime']),
       );
 }
