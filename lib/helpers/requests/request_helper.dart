@@ -4,10 +4,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:smart_receipts/helpers/requests/http_exception.dart';
 import 'package:smart_receipts/helpers/requests/response.dart';
+import 'package:smart_receipts/utils/logger.dart';
 
 enum RequestType { post, get, patch, put, delete }
 
 class RequestHelper {
+  final Logger logger = Logger(RequestHelper);
+
   final String host = "digitalreceipts.azurewebsites.net";
   final String functionKey =
       "nDDhMcGI64BL0foQDGp8t-9D9URyyi1mlvEHvpK2rn1tAzFuA86DDw==";
@@ -159,38 +162,40 @@ class RequestHelper {
       formattedBody = encoder.convert(decoder.convert(body.toString()));
     } catch (e) {}
 
-    print("[API] $methodName ${isRequest ? 'request' : 'response'}");
+    logger.log("$methodName ${isRequest ? 'request' : 'response'}",
+        name: 'API');
 
     if (!isRequest) {
       if (statusCode != null) {
-        print("[API] Status Code: $statusCode");
+        logger.log("Status Code: $statusCode", name: 'API');
       }
 
       if (exception != null && exception != "OK") {
-        print("[API] Exception: $exception");
+        logger.log("Exception: $exception", name: 'API');
       }
     }
 
     if (formattedHeaders == null || formattedHeaders.contains('null')) {
-      print("[API] HEADERS: {}");
+      logger.log("HEADERS: {}", name: 'API');
     } else {
-      print("[API] HEADERS: ");
+      logger.log("HEADERS: ", name: 'API');
       formattedHeaders
           .split('\n')
-          .forEach((dynamic element) => print("[API] $element"));
+          .forEach((dynamic element) => logger.log("$element", name: 'API'));
     }
 
     if (formattedBody == null || formattedBody.contains('null')) {
-      print("[API] BODY: {}");
+      logger.log("BODY: {}", name: 'API');
     } else {
-      print("[API] BODY: ");
+      logger.log("BODY: ", name: 'API');
       formattedBody
           .split('\n')
-          .forEach((dynamic element) => print("[API] $element"));
+          .forEach((dynamic element) => logger.log("$element", name: 'API'));
     }
 
-    print(
-        "[API] ----------------------------------------------------------------- \n");
+    logger.log(
+        "----------------------------------------------------------------- \n",
+        name: 'API');
   }
 
   static void showNetworkErrorDialog(BuildContext context,

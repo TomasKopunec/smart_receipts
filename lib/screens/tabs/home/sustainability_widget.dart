@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/tabs/home/grid_card.dart';
 import 'package:smart_receipts/widgets/section.dart';
 import 'package:smart_receipts/widgets/shimmer_widget.dart';
@@ -13,6 +15,14 @@ class SustainabilityWidget extends StatefulWidget {
 }
 
 class _SustainabilityWidgetState extends State<SustainabilityWidget> {
+  late final UserProvider user;
+
+  @override
+  void initState() {
+    user = Provider.of<UserProvider>(context, listen: false);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Section(
@@ -30,6 +40,7 @@ class _SustainabilityWidgetState extends State<SustainabilityWidget> {
       childAspectRatio: 4 / 3,
       crossAxisCount: 2,
       children: gridCards,
+      physics: const NeverScrollableScrollPhysics(),
     );
   }
 
@@ -42,33 +53,36 @@ class _SustainabilityWidgetState extends State<SustainabilityWidget> {
   }
 
   GridCard get paper {
-    return const GridCard(
+    return GridCard(
         icon: Icons.auto_awesome_motion_rounded,
-        number: 10,
+        number: user.user == null ? "" : user.user!.count.toStringAsFixed(0),
         title: 'No. of digital receipts');
   }
 
   GridCard get co2 {
-    return const GridCard(
+    return GridCard(
       icon: Icons.eco_rounded,
-      number: 165,
+      number:
+          user.user == null ? "" : (user.user!.count * 2.5).toStringAsFixed(1),
       title: 'CO2 Saved',
       unit: 'g',
     );
   }
 
   GridCard get trees {
-    return const GridCard(
-      icon: Icons.forest_rounded,
-      number: 3,
-      title: 'Trees Saved',
+    return GridCard(
+      icon: Icons.delete_sweep_rounded,
+      number:
+          user.user == null ? "" : (user.user!.count / 3).toStringAsFixed(0),
+      title: 'Waste Saved',
     );
   }
 
   GridCard get water {
-    return const GridCard(
+    return GridCard(
       icon: Icons.water_drop_rounded,
-      number: 5,
+      number:
+          user.user == null ? "" : (user.user!.count / 7).toStringAsFixed(1), //
       unit: 'L',
       title: 'Water Saved',
     );

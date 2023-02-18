@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 
 class GridCard extends StatelessWidget {
-  final int number;
+  final String number;
   final String? unit;
   final IconData icon;
   final String title;
@@ -33,7 +33,7 @@ class GridCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${number.toString()}$unit',
+                      '${number}$unit',
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: SizeHelper.getFontSize(context,

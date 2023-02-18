@@ -18,11 +18,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(builder: (ctx, auth, _) {
-      return auth.isAuthenticated
-          ? const TabsScaffold()
-          : const AuthenticationScreen();
-    }); // TODO
+    // return Consumer<AuthProvider>(builder: (ctx, auth, _) {
+    //   return auth.isAuthenticated
+    //       ? const TabsScaffold()
+    //       : const AuthenticationScreen();
+    // }); // TODO
 
     return _seenSplash
         ? Consumer<AuthProvider>(builder: (ctx, auth, _) {

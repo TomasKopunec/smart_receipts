@@ -5,8 +5,10 @@ import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/returns/returns_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
+import 'package:smart_receipts/utils/logger.dart';
 
 abstract class Loader {
+  final Logger logger = Logger(Loader);
   AuthProvider? _auth;
   UserProvider? _users;
   ReceiptsProvider? _receipt;
@@ -52,7 +54,7 @@ abstract class Loader {
     return _returns!;
   }
 
-  void log(String title, String body) {
-    print("[$runtimeType] ${title.toUpperCase()}: $body");
+  void log(String name, String message) {
+    logger.log(message, name: name);
   }
 }

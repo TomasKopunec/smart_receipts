@@ -5,9 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/requests/user_request_helper.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
+import 'package:smart_receipts/utils/logger.dart';
 import 'package:smart_receipts/widgets/dialogs/dialog_helper.dart';
 
 class ListeningThread {
+  final Logger logger = Logger(ListeningThread);
+
   final BuildContext context;
   final String accessToken;
   final VoidCallback onFinish;
@@ -28,24 +31,25 @@ class ListeningThread {
       required this.onFinish})
       : oldCount = users.user!.count {
     // Listen for one minute
-    periodTimer = Timer(const Duration(minutes: 1), () {
+    periodTimer = Timer(const Duration(minutes: 2), () {
       clear();
     });
 
-    // Ping every 5 seconds
-    pingTimer = Timer.periodic(const Duration(seconds: 5), (Timer t) {
+    // Ping every 3 seconds
+    pingTimer = Timer.periodic(const Duration(seconds: 3), (Timer t) {
       onPingTick();
     });
 
-    print(
-        "[${runtimeType.toString().toUpperCase()}] Listening for receipt updates started.");
+    // Do an initial call
+    onPingTick();
+
+    logger.log("Listening Thread for receipt updates started. (2s)");
   }
 
   void onPingTick() async {
     users.fetchAndSetUser(accessToken).then((value) {
       if (users.user!.count > oldCount) {
-        print(
-            "[${runtimeType.toString().toUpperCase()}] Received new receipt.");
+        logger.log("Received new receipt.");
 
         final provider = Provider.of<ReceiptsProvider>(context, listen: false);
         provider
@@ -61,6 +65,6 @@ class ListeningThread {
     pingTimer!.cancel();
     periodTimer!.cancel();
     onFinish();
-    print("[${runtimeType.toString().toUpperCase()}] Successfully canceled.");
+    logger.log("Successfully canceled Listening Thread.");
   }
 }

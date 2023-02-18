@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_receipts/providers/settings/settings_dto.dart';
 import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
+import 'package:smart_receipts/utils/logger.dart';
 
 enum Currency {
   pound('British Pound', '£', 'gbp'),
@@ -56,6 +57,8 @@ enum ThemeSetting {
 }
 
 class SettingsProvider with ChangeNotifier {
+  final Logger logger = Logger(SettingsProvider);
+
   Currency _selectedCurrency = Currency.pound;
   DateTimeFormat _selectedDateTimeFormat = DateTimeFormat.standard;
   ThemeSetting _selectedTheme = ThemeSetting.light;
@@ -92,7 +95,7 @@ class SettingsProvider with ChangeNotifier {
   void save() async {
     final result = await SharedPreferencesHelper.saveSettings(getSettingsDto());
     if (result) {
-      print("Settings saved.");
+      logger.log("Settings saved.");
     }
   }
 
