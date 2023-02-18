@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:smart_receipts/screens/tabs/home/grid_card.dart';
 import 'package:smart_receipts/widgets/section.dart';
+import 'package:smart_receipts/widgets/shimmer_widget.dart';
 
 class SustainabilityWidget extends StatefulWidget {
-  const SustainabilityWidget();
+  final bool isLoading;
+
+  const SustainabilityWidget({required this.isLoading});
 
   @override
   State<SustainabilityWidget> createState() => _SustainabilityWidgetState();
@@ -26,8 +29,16 @@ class _SustainabilityWidgetState extends State<SustainabilityWidget> {
       padding: EdgeInsets.zero,
       childAspectRatio: 4 / 3,
       crossAxisCount: 2,
-      children: [paper, co2, trees, water],
+      children: gridCards,
     );
+  }
+
+  List<Widget> get gridCards {
+    final list = [paper, co2, trees, water];
+
+    return widget.isLoading
+        ? list.map((e) => ShimmerWidget(child: e)).toList()
+        : list;
   }
 
   GridCard get paper {

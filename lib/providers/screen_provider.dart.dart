@@ -15,7 +15,7 @@ class ScreenProvider with ChangeNotifier {
     ReceiveReceiptScreen()
   ];
 
-  int _selectedIndex = 2;
+  int _selectedIndex = 0;
 
   List<AbstractTabScreen> get screens {
     return [..._screens];

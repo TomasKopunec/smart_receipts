@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
+import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/screens/tabs/all_receipts/control_header.dart';
 import 'package:smart_receipts/widgets/responsive_table/receipt_table.dart';
@@ -30,13 +31,59 @@ class AllReceiptsScreen extends AbstractTabScreen {
 }
 
 class _AllReceiptsState extends State<AllReceiptsScreen> {
+  late final ReceiptsProvider _receiptsProvider;
+  bool _isLoading = false;
+  final ScrollController _controller = ScrollController();
+
+  /* Asynchronous operations */
+  void _refreshData() async {
+    if (_isLoading) {
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    await _receiptsProvider.fetchAndSetReceipts(
+        Provider.of<AuthProvider>(context, listen: false).token!.accessToken);
+
+    await Future.delayed(const Duration(milliseconds: 600));
+
+    setState(() => _isLoading = false);
+  }
+
+  @override
+  void setState(func) {
+    if (mounted) {
+      super.setState(() {
+        func();
+      });
+    }
+  }
+
   @override
   void initState() {
-    // On load clear the selection
-    Provider.of<ReceiptsProvider>(context, listen: false)
-        .clearSelecteds(notify: false);
+    // Initialise Receipts Provider
+    _receiptsProvider = Provider.of<ReceiptsProvider>(context, listen: false);
 
-    super.initState();
+    // Reload state when receipts change
+    _receiptsProvider.addListener(() => setState(() => {}));
+
+    // On load clear the selection
+    _receiptsProvider.clearSelecteds(notify: false);
+
+    _controller.addListener(() {
+      double pixels = _controller.position.pixels;
+      if (_isLoading) {
+        return;
+      }
+
+      // If we pull the scroll to refresh
+      if (pixels <= SizeHelper.getScreenHeight(context) * 0.1) {
+        _refreshData();
+      } else {
+        _isLoading = false;
+      }
+    });
 
     // Allow landscape in this screen
     SystemChrome.setPreferredOrientations([
@@ -44,6 +91,13 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft
     ]);
+
+    // Reset the screen everytime opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _receiptsProvider.resetSource();
+    });
+
+    super.initState();
   }
 
   @override
@@ -57,11 +111,12 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
   Widget build(BuildContext context) {
     return widget.getScreen(
         action: action,
-        headerBody: const ControlHeader(),
+        headerBody: ControlHeader(isLoading: _isLoading),
         screenBody: SingleChildScrollView(
+          controller: _controller,
           physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),
-          child: ReceiptTable(),
+          child: ReceiptTable(refreshData: _refreshData, isLoading: _isLoading),
         ));
   }
 

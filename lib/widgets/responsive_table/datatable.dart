@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/widgets/responsive_table/datatable_desktop_header.dart';
+import 'package:smart_receipts/widgets/shimmer_widget.dart';
 import 'data_entry_widget_desktop.dart';
 import 'data_entry_widget_mobile.dart';
+import 'entry_dismissible.dart';
 
 enum GroupType {
   retailerName,
@@ -27,22 +29,25 @@ class ResponsiveDatatable extends StatefulWidget {
   final GroupType groupType;
 
   final Color backgroundColor;
+  final bool isLoading;
 
   // Const decoration for entries
   final BoxDecoration decoration = BoxDecoration(
       border: Border(
           bottom: BorderSide(color: Colors.black.withOpacity(0.1), width: 1)));
 
-  ResponsiveDatatable(
-      {super.key,
-      required this.groupType,
-      required this.headers,
-      required this.source,
-      required this.isSelecting,
-      required this.noDataWidget,
-      required this.total,
-      required this.prefferedColor,
-      this.backgroundColor = Colors.transparent});
+  ResponsiveDatatable({
+    super.key,
+    required this.groupType,
+    required this.headers,
+    required this.source,
+    required this.isSelecting,
+    required this.noDataWidget,
+    required this.total,
+    required this.prefferedColor,
+    this.backgroundColor = Colors.transparent,
+    required this.isLoading,
+  });
 
   @override
   State<ResponsiveDatatable> createState() => _ResponsiveDatatableState();
@@ -51,10 +56,47 @@ class ResponsiveDatatable extends StatefulWidget {
 class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   /// List of widgets that is shown in the portrait mode
   List<Widget> get mobileList {
-    return widget.total == 0 ? [widget.noDataWidget] : getList();
+    return widget.total == 0 && !widget.isLoading
+        ? [widget.noDataWidget]
+        : getList();
+  }
+
+  Widget getShimmeringCard(int id) {
+    return ShimmerWidget(
+      child: Container(
+        margin: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          margin: EdgeInsets.zero,
+          elevation: 3,
+          child: EntryDismissible(
+            id: id.toString(),
+            color: Colors.white,
+            child: const ExpansionTile(
+              leading: Text(""),
+              tilePadding: EdgeInsets.only(left: 10, right: 20),
+              controlAffinity: ListTileControlAffinity.leading,
+              title: Text(""),
+              subtitle: Text(""),
+              trailing: Text(""),
+              //  textColor: widget.color,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   List<Widget> getList() {
+    if (widget.isLoading) {
+      return [
+        const SizedBox(height: 10),
+        ...List.generate(5, (index) => getShimmeringCard(index)).toList()
+      ];
+    }
+
     if (widget.groupType == GroupType.none) {
       return [
         const SizedBox(height: 6),

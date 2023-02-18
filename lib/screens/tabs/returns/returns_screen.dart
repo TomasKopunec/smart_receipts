@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/models/return/return.dart';
+import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/returns/returns_provider.dart';
 import 'package:smart_receipts/screens/tabs/returns/control_header.dart';
 import 'package:smart_receipts/screens/tabs/returns/returns_entry.dart';
 import 'package:smart_receipts/widgets/no_data_found_widget.dart';
+import 'package:smart_receipts/widgets/shimmer_widget.dart';
 
 import '../../tab_control/abstract_tab_screen.dart';
 
@@ -31,33 +33,87 @@ class ReturnsScreen extends AbstractTabScreen {
 }
 
 class _ReturnsScreenState extends State<ReturnsScreen> {
-  late final ReceiptsProvider receipts;
+  bool _isLoading = false;
+  final ScrollController _controller = ScrollController();
+  late final ReceiptsProvider _receipts;
+  late final ReturnsProvider _returns;
+
+  /* Asynchronous operations */
+  void _refreshData() async {
+    if (_isLoading) {
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    await _returns.fetchAndSetReturns(
+        Provider.of<AuthProvider>(context, listen: false).token!.accessToken);
+
+    await Future.delayed(const Duration(milliseconds: 600));
+
+    setState(() => _isLoading = false);
+  }
+
+  @override
+  void setState(func) {
+    if (mounted) {
+      super.setState(() {
+        func();
+      });
+    }
+  }
 
   @override
   void initState() {
-    receipts = Provider.of<ReceiptsProvider>(context, listen: false);
+    _receipts = Provider.of<ReceiptsProvider>(context, listen: false);
+    _returns = Provider.of<ReturnsProvider>(context, listen: false);
+
+    _receipts.addListener(() => setState(() => {}));
+    _returns.addListener(() => setState(() => {}));
+
+    _controller.addListener(() {
+      double pixels = _controller.position.pixels;
+      if (_isLoading) {
+        return;
+      }
+
+      // If we pull the scroll to refresh
+      if (pixels <= SizeHelper.getScreenHeight(context) * 0.1) {
+        _refreshData();
+      } else {
+        _isLoading = false;
+      }
+    });
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return widget.getScreen(
-        headerBody: const ControlHeader(), screenBody: getScreenBody());
-  }
-
-  Widget getScreenBody() {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        child: Consumer<ReturnsProvider>(
-          builder: (ctx, returns, _) => getBody(returns),
+      headerBody: ControlHeader(isLoading: _isLoading),
+      screenBody: SingleChildScrollView(
+        controller: _controller,
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          child: getBody(_returns),
         ),
       ),
     );
   }
 
   Widget getBody(ReturnsProvider provider) {
+    if (_isLoading) {
+      return Column(
+        children: [
+          const SizedBox(height: 10),
+          ...List.generate(5, (index) => getBlankEntry())
+        ],
+      );
+    }
+
     if (provider.source.isEmpty) {
       final title = (provider.filterValue.isNotEmpty &&
               provider.returnsSize == 0)
@@ -82,8 +138,31 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
 
   Widget getReturn(Return r) {
     return ReturnsEntry(
-      receipt: receipts.getReceiptById(r.receiptId),
+      receipt: _receipts.getReceiptById(r.receiptId),
       returnEntry: r,
+    );
+  }
+
+  Widget getBlankEntry() {
+    return ShimmerWidget(
+      child: Container(
+        margin: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          margin: EdgeInsets.zero,
+          elevation: 3,
+          child: const ExpansionTile(
+            leading: Text(""),
+            tilePadding: EdgeInsets.only(left: 10, right: 20),
+            controlAffinity: ListTileControlAffinity.leading,
+            title: Text(""),
+            subtitle: Text(""),
+            trailing: Text(""),
+          ),
+        ),
+      ),
     );
   }
 }

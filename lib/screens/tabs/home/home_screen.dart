@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/requests/request_helper.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
+import 'package:smart_receipts/models/user.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/tabs/home/recent_receipts.dart';
 import 'package:smart_receipts/screens/tabs/home/sustainability_widget.dart';
+import 'package:smart_receipts/widgets/shimmer_widget.dart';
 
 import '../../tab_control/abstract_tab_screen.dart';
 
@@ -31,21 +33,25 @@ class HomeScreen extends AbstractTabScreen {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isLoading = false;
+  bool _isSigningOut = false;
 
   @override
   Widget build(BuildContext context) {
-    return widget.getScreen(
-        headerBody: headerBody, screenBody: screenBody, action: action);
+    return Consumer<UserProvider>(
+        builder: (ctx, user, _) => widget.getScreen(
+              headerBody: getHeaderBody(user.user),
+              screenBody: getScreenBody(user.user),
+              action: action,
+            ));
   }
 
-  Widget get screenBody {
+  Widget getScreenBody(User? user) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        SustainabilityWidget(),
-        RecentReceipts(),
+      children: [
+        SustainabilityWidget(isLoading: user == null),
+        RecentReceipts(isLoading: user == null),
       ],
     );
   }
@@ -53,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget get action {
     return Consumer<AuthProvider>(
       builder: (_, auth, __) {
-        return _isLoading
+        return _isSigningOut
             ? Padding(
                 padding: const EdgeInsets.only(top: 8, right: 8),
                 child: Transform.scale(
@@ -84,14 +90,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void handleLogout(AuthProvider auth) async {
     setState(() {
-      _isLoading = true;
+      _isSigningOut = true;
     });
 
     // Wait for response
     final result = await auth.logout();
 
     setState(() {
-      _isLoading = false;
+      _isSigningOut = false;
     });
 
     if (!result && mounted) {
@@ -100,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
     auth.setToken(null);
   }
 
-  Widget get headerBody {
+  Widget getHeaderBody(User? user) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       child: Column(
@@ -118,9 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: Consumer<UserProvider>(
-                  builder: (ctx, user, _) => email,
-                ),
+                child: getEmail(user),
               )
             ],
           ),
@@ -129,8 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget get email {
-    final user = Provider.of<UserProvider>(context).user;
+  Widget getEmail(User? user) {
     if (user == null) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,

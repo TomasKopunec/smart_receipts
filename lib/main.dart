@@ -72,7 +72,7 @@ class Main extends StatelessWidget {
                       style: ButtonStyle(
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.teal)))),
-              home: const TabsScaffold(), // const Home(),
+              home: const Home(),
               routes: getRoutes(),
             );
           },

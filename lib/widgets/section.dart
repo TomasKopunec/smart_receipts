@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smart_receipts/helpers/size_helper.dart';
 
 class Section extends StatelessWidget {
   final String title;
