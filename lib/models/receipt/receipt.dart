@@ -98,6 +98,10 @@ class Receipt {
     ];
   }
 
+  Product findProductBySku(String sku) {
+    return products.firstWhere((e) => e.sku == sku);
+  }
+
   int getProductsCount() {
     return products.length;
   }

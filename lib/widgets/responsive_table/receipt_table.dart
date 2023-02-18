@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 import 'package:smart_receipts/helpers/size_helper.dart';
@@ -90,7 +89,7 @@ class _ReceiptTableState extends State<ReceiptTable> {
       groupType: groupType,
       isSelecting: _receiptsProvider.isSelecting,
       noDataWidget: NoDataFoundWidget(
-          color: headerColor,
+          icon: Icons.receipt,
           height: SizeHelper.getScreenHeight(context) * 0.5,
           title: title,
           subtitle: subtitle),
@@ -114,90 +113,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
       return GroupType.none;
     }
   }
-
-  /// Footer
-  // Row _getRowsPerPageSection() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //     children: [
-  //       const Text('Rows per page:'),
-  //       const SizedBox(width: 6),
-  //       if (_perPages.isNotEmpty)
-  //         DropdownButton<int>(
-  //           borderRadius: BorderRadius.circular(8),
-  //           iconEnabledColor: Theme.of(context).primaryColor,
-  //           value: _currentPerPage,
-  //           items: _perPages
-  //               .map((e) => DropdownMenuItem<int>(
-  //                     value: e,
-  //                     child: Text('$e'),
-  //                   ))
-  //               .toList(),
-  //           onChanged: (dynamic value) {
-  //             setState(() {
-  //               _currentPerPage = value;
-  //               _currentPage = 1;
-  //             });
-  //           },
-  //           isExpanded: false,
-  //         )
-  //     ],
-  //   );
-  // }
-
-  // Row _getCurrentPageSection() {
-  //   isFirstPage() {
-  //     return _currentPage == 1;
-  //   }
-
-  //   isLastPage() {
-  //     return _currentPage + _currentPerPage - 1 >=
-  //         _receiptsProvider.receiptSize;
-  //   }
-
-  //   upperRange() {
-  //     return _currentPage + _currentPerPage >= _receiptsProvider.receiptSize
-  //         ? _receiptsProvider.receiptSize
-  //         : _currentPage + _currentPerPage - 1;
-  //   }
-
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //     children: [
-  //       Text(
-  //           "$_currentPage - ${upperRange()} of ${_receiptsProvider.receiptSize}"),
-  //       IconButton(
-  //         icon: isFirstPage()
-  //             ? _getIcon(Icons.arrow_back_ios_new_rounded, false)
-  //             : _getIcon(Icons.arrow_back_ios_new_rounded, true),
-  //         onPressed: isFirstPage()
-  //             ? null
-  //             : () {
-  //                 var nextSet = _currentPage - _currentPerPage;
-  //                 setState(() {
-  //                   _currentPage = nextSet > 1 ? nextSet : 1;
-  //                 });
-  //               },
-  //       ),
-  //       IconButton(
-  //         icon: isLastPage()
-  //             ? _getIcon(Icons.arrow_forward_ios_rounded, false)
-  //             : _getIcon(Icons.arrow_forward_ios_rounded, true),
-  //         onPressed: isLastPage()
-  //             ? null
-  //             : () {
-  //                 var nextSet = _currentPage + _currentPerPage;
-
-  //                 setState(() {
-  //                   _currentPage = nextSet < _receiptsProvider.receiptSize
-  //                       ? nextSet
-  //                       : _receiptsProvider.receiptSize - _currentPerPage;
-  //                 });
-  //               },
-  //       )
-  //     ],
-  //   );
-  // }
 
   /// Helper methods
   Icon _getIcon(IconData icon, bool isActive, {double? size}) {

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -295,7 +296,9 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     } else if (header == ReceiptField.products) {
       stringOutput = '${widget.data[ReceiptField.products.name].length}';
     }
-    return Text(stringOutput,
+    return AutoSizeText(stringOutput,
+        maxLines: 1,
+        overflow: TextOverflow.fade,
         style: Theme.of(context)
             .textTheme
             .bodyMedium!

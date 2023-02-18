@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 
 class NoDataFoundWidget extends StatefulWidget {
-  final Color color;
+  final IconData icon;
   final String title;
   final String subtitle;
   final double height;
 
-  const NoDataFoundWidget(
-      {required this.height,
-      required this.title,
-      required this.subtitle,
-      required this.color});
+  const NoDataFoundWidget({
+    required this.height,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+  });
 
   @override
   State<NoDataFoundWidget> createState() => _NoDataFoundWidgetState();
@@ -89,9 +90,9 @@ class _NoDataFoundWidgetState extends State<NoDataFoundWidget> {
       clipBehavior: Clip.none,
       fit: BoxFit.fitHeight,
       child: Icon(
-        Icons.receipt,
+        widget.icon,
         size: height,
-        color: widget.color,
+        color: Theme.of(context).primaryColor,
       ),
     );
   }

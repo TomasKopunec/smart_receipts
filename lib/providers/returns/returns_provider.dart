@@ -5,6 +5,7 @@ import '../../widgets/control_header/sorting_selection_dropdown.dart';
 
 class ReturnsProvider with ChangeNotifier {
   List<Return> _returns = [];
+  List<Return> _source = [];
 
   String _filterValue = '';
 
@@ -17,6 +18,7 @@ class ReturnsProvider with ChangeNotifier {
   /// Set the Receipts
   Future<dynamic> setReturns(List<Return> returns) async {
     _returns = returns;
+    _updateSource();
   }
 
   Future<void> fetchAndSetReturns(String token) async {
@@ -24,8 +26,32 @@ class ReturnsProvider with ChangeNotifier {
     setReturns(response.status ? response.returns! : []);
   }
 
-  List<Return> get returns {
-    return [..._returns];
+  void _updateSource() {
+    _source = [..._returns];
+
+    // Filter acording to filter value
+    _source = _source
+        .where((e) => e
+            .getField(searchKey)
+            .toString()
+            .toLowerCase()
+            .contains(_filterValue.toUpperCase().toLowerCase()))
+        .toList();
+
+    // Sort according to search key
+    _source.sort((a, b) {
+      if (_sortStatus == SortStatus.asc) {
+        return a.getField(_searchKey).compareTo(b.getField(_searchKey));
+      } else {
+        return b.getField(_searchKey).compareTo(a.getField(_searchKey));
+      }
+    });
+
+    notifyListeners();
+  }
+
+  List<Return> get source {
+    return [..._source];
   }
 
   int get returnsSize {
@@ -37,6 +63,8 @@ class ReturnsProvider with ChangeNotifier {
       toggleSorting();
     }
     _searchKey = key;
+
+    _updateSource();
   }
 
   Return getReturnById(String id) {
@@ -55,7 +83,7 @@ class ReturnsProvider with ChangeNotifier {
   void toggleSorting() {
     _sortStatus =
         _sortStatus == SortStatus.asc ? SortStatus.desc : SortStatus.asc;
-    notifyListeners();
+    _updateSource();
   }
 
   // FILTERING
@@ -65,6 +93,6 @@ class ReturnsProvider with ChangeNotifier {
 
   void setFilterValue(value) {
     _filterValue = value.trim();
-    notifyListeners();
+    _updateSource();
   }
 }

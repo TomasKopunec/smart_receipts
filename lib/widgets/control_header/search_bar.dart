@@ -54,7 +54,10 @@ class _SearchBarState<T> extends State<SearchBar> {
               duration: const Duration(milliseconds: 500),
               opacity: isEmpty ? 0 : 1,
               child: GestureDetector(
-                onTap: () => _controller.clear(),
+                onTap: () {
+                  _controller.clear();
+                  widget.onValueChanged(_controller.text);
+                },
                 child: Icon(
                   Icons.clear,
                   color: color,
