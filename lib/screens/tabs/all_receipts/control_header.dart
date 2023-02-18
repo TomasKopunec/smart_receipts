@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
-import 'package:smart_receipts/screens/tabs/all_receipts/search_bar.dart';
+import 'package:smart_receipts/widgets/control_header/sorting_selection.dart';
 import 'package:smart_receipts/widgets/selection_widget.dart';
 
 import '../../../helpers/size_helper.dart';
 import '../../../widgets/animated_toggle.dart';
-import '../../../widgets/receipt_dropdown_button.dart';
+import '../../../widgets/control_header/search_bar.dart';
 
 class ControlHeader extends StatelessWidget {
   const ControlHeader({super.key});
@@ -20,7 +21,14 @@ class ControlHeader extends StatelessWidget {
         children: [
           // Search Bar
           const SizedBox(height: 10),
-          SearchBar(),
+
+          Consumer<ReceiptsProvider>(
+            builder: (ctx, provider, _) => SearchBar(
+              onValueChanged: (value) => provider.setFilterValue(value),
+              hintText: () => "Receipts's ${provider.searchKey.toString()}",
+            ),
+          ),
+
           const SizedBox(height: 10),
 
           // Toggle Switch
@@ -40,30 +48,12 @@ class ControlHeader extends StatelessWidget {
           const SizedBox(height: 10),
 
           // Sorting
-          Padding(
-            padding: const EdgeInsets.only(left: 6),
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'SORT BY:',
-                    style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: SizeHelper.getFontSize(context,
-                            size: FontSize.regular)),
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  ReceiptDropdownButton(
-                    width: SizeHelper.getScreenWidth(context) * 0.525,
-                    textColor: Theme.of(context).primaryColor,
-                    backgroundColor: Theme.of(context).focusColor,
-                  ),
-                ],
-              ),
+          Consumer<ReceiptsProvider>(
+            builder: (ctx, provider, _) => SortingSelection(
+              searchableKeys: Receipt.getSearchableKeys(),
+              onSelected: (value) => provider.setSearchKey(value),
+              getSortStatus: () => provider.sortStatus,
+              getValue: () => provider.searchKey,
             ),
           ),
         ],

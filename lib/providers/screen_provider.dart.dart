@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_receipts/screens/tabs/receive/receive_receipt_screen.dart';
 import '../screens/tab_control/abstract_tab_screen.dart';
 import '../screens/tabs/all_receipts/all_receipts_screen.dart';
-import '../screens/tabs/returns_screen.dart';
+import '../screens/tabs/returns/returns_screen.dart';
 import '../screens/tabs/home/home_screen.dart';
 import '../screens/tabs/settings_screen/settings_screen.dart';
 
@@ -15,7 +15,7 @@ class ScreenProvider with ChangeNotifier {
     ReceiveReceiptScreen()
   ];
 
-  int _selectedIndex = 0;
+  int _selectedIndex = 2;
 
   List<AbstractTabScreen> get screens {
     return [..._screens];

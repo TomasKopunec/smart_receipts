@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:smart_receipts/helpers/requests/returns_request_helper.dart';
 import 'package:smart_receipts/models/return/return.dart';
-
-import '../../widgets/receipt_dropdown_button.dart';
+import '../../widgets/control_header/sorting_selection_dropdown.dart';
 
 class ReturnsProvider with ChangeNotifier {
   List<Return> _returns = [];
@@ -33,15 +32,19 @@ class ReturnsProvider with ChangeNotifier {
     return _returns.length;
   }
 
-  void setSearchKey(String key) {
-    if (key == _searchKey.name) {
+  void setSearchKey(ReturnField key) {
+    if (key == _searchKey) {
       toggleSorting();
     }
-    _searchKey = ReturnField.from(key);
+    _searchKey = key;
   }
 
   Return getReturnById(String id) {
     return _returns.firstWhere((e) => e.receiptId == id);
+  }
+
+  ReturnField get searchKey {
+    return _searchKey;
   }
 
   // SORTING

@@ -55,7 +55,10 @@ class Return {
       };
 
   static List<ReturnField> getSearchableKeys() {
-    return [ReturnField.recentDateTime, ReturnField.refundedAmount];
+    return [
+      ReturnField.recentDateTime,
+      ReturnField.refundedAmount,
+    ];
   }
 
   int getProductsCount() {

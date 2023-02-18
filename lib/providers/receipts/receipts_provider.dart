@@ -5,7 +5,7 @@ import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/tabs/receive/listening_thread.dart';
 
-import '../../widgets/receipt_dropdown_button.dart';
+import '../../widgets/control_header/sorting_selection_dropdown.dart';
 
 class ReceiptsProvider with ChangeNotifier {
   ListeningThread? _listeningThread;
@@ -154,11 +154,11 @@ class ReceiptsProvider with ChangeNotifier {
     return _receipts.length;
   }
 
-  void setSearchKey(String key) {
-    if (key == _searchKey.name) {
+  void setSearchKey(ReceiptField key) {
+    if (key == _searchKey) {
       toggleSorting();
     }
-    _searchKey = ReceiptField.from(key);
+    _searchKey = key;
 
     if (_searchKey == ReceiptField.status) {
       toggleSorting();

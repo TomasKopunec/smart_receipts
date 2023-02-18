@@ -169,13 +169,14 @@ class MenuItem extends StatelessWidget {
   final Function changePage;
   final bool isDummy;
 
-  const MenuItem(
-      {required this.icon,
-      required this.label,
-      required this.isSelected,
-      required this.changePage,
-      req,
-      required this.isDummy});
+  const MenuItem({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.changePage,
+    required this.isDummy,
+  });
 
   @override
   Widget build(BuildContext context) {
