@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:smart_receipts/helpers/filter_helper.dart';
 import 'package:smart_receipts/helpers/requests/receipt_request_helper.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
@@ -42,41 +43,26 @@ class ReceiptsProvider with ChangeNotifier {
   }
 
   /// Update Source
-  /// 1. Converts the Receipts list into JSONs
-  /// 2. Filters according to the favourites toggle
-  /// 3. Filters according to the search key
-  /// 4. Sorts according to the Sort status
-  /// 5. Finally, sets the source to the source
-  void _updateSource() {
-    List<Map<String, dynamic>> newSource = [];
+  void _updateSource() async {
+    // 1. Filter
+    List<Receipt> newReceipts = await FilterHelper.filterReceipts(
+      receipts: [..._receipts],
+      value: _filterValue,
+      favourites: _favorites,
+      favouritesEnabled: _isShowingFavorites,
+    );
 
-    newSource = [..._receipts]
-        // Change to JSON
-        .map((receipt) => receipt.toJson())
-        // Filter our favourites
-        .where((receipt) {
-          if (_isShowingFavorites) {
-            return _favorites.contains(receipt[ReceiptField.receiptId.name]);
-          } else {
-            return true;
-          }
-        })
-        // Filter according to search key
-        .where((receipt) => receipt[_searchKey]
-            .toString()
-            .toLowerCase()
-            .contains(_filterValue.toString().toLowerCase()))
-        .toList();
-
-    newSource.sort((a, b) {
+    // 2. Sort
+    newReceipts.sort((a, b) {
       if (_sortStatus == SortStatus.asc) {
-        return a[_searchKey.name].compareTo(b[_searchKey.name]);
+        return a.getField(_searchKey).compareTo(b.getField(_searchKey));
       } else {
-        return b[_searchKey.name].compareTo(a[_searchKey.name]);
+        return b.getField(_searchKey).compareTo(a.getField(_searchKey));
       }
     });
 
-    setSource(newSource);
+    // 3. Convert to JSON
+    setSource(newReceipts.map((r) => r.toJson()).toList());
   }
 
   /// Sets the source of the Receipts list / table to list of JSONs

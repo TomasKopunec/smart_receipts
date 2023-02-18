@@ -159,10 +159,7 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
           //  textColor: widget.color,
           iconColor: Theme.of(context).primaryColor,
           children: [
-            Column(mainAxisSize: MainAxisSize.min, children: getChildren()
-                // ...widget.headers.map((e) => getEntry(e)).toList(),
-
-                ),
+            Column(mainAxisSize: MainAxisSize.min, children: getChildren()),
           ],
         ),
       ),
@@ -208,13 +205,13 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
       }
     }
 
-    items.forEach((e) {
+    for (var e in items) {
       widgets.add(getEntry(
           "${e.product.name} (${e.quantity} x ${e.product.price}) ",
           FieldType.price,
           e.product.price * e.quantity,
           includeDivider: false));
-    });
+    }
 
     widgets.add(Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 4, left: 10, right: 10),
@@ -290,6 +287,12 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
         break;
       case FieldType.status:
         return ReturnStatusLabel(index: value);
+      case FieldType.integer:
+        // TODO: Handle this case.
+        break;
+      case FieldType.string:
+        // TODO: Handle this case.
+        break;
     }
     return AutoSizeText(stringOutput,
         maxLines: 1,
