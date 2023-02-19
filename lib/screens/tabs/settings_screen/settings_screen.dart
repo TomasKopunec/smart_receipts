@@ -60,6 +60,7 @@ class _SettingsState extends State<SettingsScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: ToggleSelection(
             defaultState: provider.digitalOnly,
+            enabled: true,
             onToggle: (val) {
               provider.setDigitalOnly(val);
             },

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class ToggleSelection extends StatefulWidget {
   final bool defaultState;
+  final bool enabled;
   final Function(bool)? onToggle;
 
-  const ToggleSelection({super.key, this.onToggle, required this.defaultState});
+  const ToggleSelection({
+    super.key,
+    this.onToggle,
+    required this.defaultState,
+    required this.enabled,
+  });
 
   @override
   State<ToggleSelection> createState() => _ToggleSelectionState();
@@ -28,14 +32,16 @@ class _ToggleSelectionState extends State<ToggleSelection> {
       child: Switch(
           activeColor: Theme.of(context).primaryColor,
           value: _state,
-          onChanged: (val) {
-            setState(() {
-              _state = val;
-            });
-            if (widget.onToggle != null) {
-              widget.onToggle!(val);
-            }
-          }),
+          onChanged: widget.enabled
+              ? (val) {
+                  setState(() {
+                    _state = val;
+                  });
+                  if (widget.onToggle != null) {
+                    widget.onToggle!(val);
+                  }
+                }
+              : null),
     );
   }
 }

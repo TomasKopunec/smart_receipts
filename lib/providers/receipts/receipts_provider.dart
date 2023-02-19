@@ -3,6 +3,7 @@ import 'package:smart_receipts/helpers/filter_helper.dart';
 import 'package:smart_receipts/helpers/requests/receipt_request_helper.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
+import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/tabs/receive/listening_thread.dart';
 
@@ -237,11 +238,11 @@ class ReceiptsProvider with ChangeNotifier {
 
   /// LISTENING THREAD
   void startListening(
-      BuildContext context, UserProvider users, String accessToken) {
+      BuildContext context, UserProvider users, AuthProvider auth) {
     _listeningThread = ListeningThread(
       context: context,
       users: users,
-      accessToken: accessToken,
+      auth: auth,
       onFinish: () => stopListening(),
     );
   }

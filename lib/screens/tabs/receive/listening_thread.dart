@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/requests/user_request_helper.dart';
+import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/utils/logger.dart';
@@ -12,10 +13,10 @@ class ListeningThread {
   final Logger logger = Logger(ListeningThread);
 
   final BuildContext context;
-  final String accessToken;
   final VoidCallback onFinish;
 
   final UserProvider users;
+  final AuthProvider auth;
 
   Timer? pingTimer;
   Timer? periodTimer;
@@ -24,12 +25,12 @@ class ListeningThread {
 
   final UserRequestHelper userRequestHelper = UserRequestHelper();
 
-  ListeningThread(
-      {required this.context,
-      required this.users,
-      required this.accessToken,
-      required this.onFinish})
-      : oldCount = users.user!.count {
+  ListeningThread({
+    required this.context,
+    required this.users,
+    required this.auth,
+    required this.onFinish,
+  }) : oldCount = users.user!.count {
     // Listen for one minute
     periodTimer = Timer(const Duration(minutes: 2), () {
       clear();
@@ -47,13 +48,18 @@ class ListeningThread {
   }
 
   void onPingTick() async {
-    users.fetchAndSetUser(accessToken).then((value) {
+    if (!auth.isAuthenticated) {
+      clear();
+    }
+
+    final token = auth.token!.accessToken;
+    users.fetchAndSetUser(token).then((value) {
       if (users.user!.count > oldCount) {
         logger.log("Received new receipt.");
 
         final provider = Provider.of<ReceiptsProvider>(context, listen: false);
         provider
-            .fetchAndSetReceipts(accessToken)
+            .fetchAndSetReceipts(token)
             .then((value) => DialogHelper.showReceivedNewReceipt(
                 context, provider.getMostRecent()))
             .then((value) => clear());
