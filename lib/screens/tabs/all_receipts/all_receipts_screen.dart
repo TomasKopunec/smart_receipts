@@ -5,7 +5,7 @@ import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/screens/tabs/all_receipts/control_header.dart';
-import 'package:smart_receipts/widgets/responsive_table/receipt_table.dart';
+import 'package:smart_receipts/screens/tabs/all_receipts/responsive_table/receipt_table.dart';
 
 import '../../../utils/snackbar_builder.dart';
 import '../../tab_control/abstract_tab_screen.dart';

@@ -8,18 +8,42 @@ import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/screens/return_screen/return_from_receipt_screen.dart';
 import 'package:smart_receipts/screens/returnable_screen.dart';
+import 'package:smart_receipts/widgets/dialogs/dialog_helper.dart';
 import 'package:smart_receipts/widgets/receipt_status_label.dart';
 
 import '../helpers/currency_helper.dart';
 import '../models/product/product.dart';
 import '../models/receipt/receipt.dart';
-import '../widgets/dialogs/dialog_helper.dart';
 
-class ShowReceiptScreen extends StatelessWidget {
-  late Receipt receipt;
-  late SettingsProvider settings;
-
+class ShowReceiptScreen extends StatefulWidget {
   ShowReceiptScreen({super.key});
+
+  @override
+  State<ShowReceiptScreen> createState() => _ShowReceiptScreenState();
+}
+
+class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
+  bool _isFavourite = false;
+  late final ReceiptsProvider receipts;
+  late final SettingsProvider settings;
+  late final Receipt receipt;
+  String? id;
+
+  @override
+  void initState() {
+    super.initState();
+
+    settings = Provider.of<SettingsProvider>(context, listen: false);
+    receipts = Provider.of<ReceiptsProvider>(context, listen: false);
+  }
+
+  @override
+  void didChangeDependencies() {
+    id = ModalRoute.of(context)!.settings.arguments as String;
+    receipt = receipts.getReceiptById(id!);
+    _isFavourite = receipts.isFavorite(id!);
+    super.didChangeDependencies();
+  }
 
   void _delete(BuildContext context) async {
     DialogHelper.showDeleteReceiptDialog(context);
@@ -27,22 +51,17 @@ class ShowReceiptScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    settings = Provider.of<SettingsProvider>(context, listen: false);
-    final id = ModalRoute.of(context)!.settings.arguments as String;
-    final provider = Provider.of<ReceiptsProvider>(context, listen: false);
-    receipt = provider.getReceiptById(id);
-
     return ReturnableScreen(
         receiptId: receipt.receiptId,
         title: receipt.retailerName,
         actions: [
           IconButton(
               onPressed: () {
-                provider.flipFavorite(receipt.receiptId, true);
+                setState(() {
+                  _isFavourite = receipts.flipFavorite(receipt.receiptId);
+                });
               },
-              icon: Icon(provider.isFavorite(receipt.receiptId)
-                  ? Icons.star
-                  : Icons.star_border)),
+              icon: Icon(_isFavourite ? Icons.star : Icons.star_border)),
           IconButton(
               onPressed: () => _delete(context),
               icon: const Icon(Icons.delete)),

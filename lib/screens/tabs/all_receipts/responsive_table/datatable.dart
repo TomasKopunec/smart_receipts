@@ -3,10 +3,10 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
-import 'package:smart_receipts/widgets/responsive_table/datatable_desktop_header.dart';
 import 'package:smart_receipts/widgets/shimmer_widget.dart';
 import 'data_entry_widget_desktop.dart';
 import 'data_entry_widget_mobile.dart';
+import 'datatable_desktop_header.dart';
 import 'entry_dismissible.dart';
 
 enum GroupType {

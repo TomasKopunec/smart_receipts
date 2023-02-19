@@ -103,22 +103,22 @@ class ReceiptsProvider with ChangeNotifier {
     return [..._favorites];
   }
 
-  void flipFavorite(String id, [bool notify = true]) {
+  bool flipFavorite(String id) {
+    bool isFavorite = false;
     if (_favorites.contains(id)) {
       _favorites.remove(id);
     } else {
       _favorites.add(id);
+      isFavorite = true;
     }
 
     SharedPreferencesHelper.saveFavorites(_favorites.toList());
-    if (notify) {
-      notifyListeners();
-    }
+    return isFavorite;
   }
 
   void flipFavorites(List<String> list) {
     for (final id in list) {
-      flipFavorite(id, false);
+      flipFavorite(id);
     }
     notifyListeners();
   }

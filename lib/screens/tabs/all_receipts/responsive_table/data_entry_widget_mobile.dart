@@ -6,10 +6,10 @@ import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/screens/show_receipt_screen.dart';
-import '../../helpers/currency_helper.dart';
-import '../../models/receipt/receipt.dart';
+import '../../../../helpers/currency_helper.dart';
+import '../../../../models/receipt/receipt.dart';
 
-import '../receipt_status_label.dart';
+import '../../../../widgets/receipt_status_label.dart';
 import 'entry_dismissible.dart';
 
 class DataEntryWidgetMobile extends StatefulWidget {

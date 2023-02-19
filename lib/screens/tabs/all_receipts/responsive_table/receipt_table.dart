@@ -5,9 +5,9 @@ import 'package:shimmer/shimmer.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/widgets/no_data_found_widget.dart';
-import 'package:smart_receipts/widgets/responsive_table/datatable.dart';
+import 'package:smart_receipts/screens/tabs/all_receipts/responsive_table/datatable.dart';
 
-import '../../models/receipt/receipt.dart';
+import '../../../../models/receipt/receipt.dart';
 
 class ReceiptTable extends StatefulWidget {
   final VoidCallback refreshData;
