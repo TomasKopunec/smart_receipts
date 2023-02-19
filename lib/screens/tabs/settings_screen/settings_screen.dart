@@ -5,6 +5,7 @@ import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/widgets/currency_dropdown_button.dart';
 import 'package:smart_receipts/widgets/datetime_dropdown_button.dart';
 import 'package:smart_receipts/widgets/animated_toggle.dart';
+import 'package:smart_receipts/widgets/dialogs/dialog_helper.dart';
 import 'package:smart_receipts/widgets/toggle_switch.dart';
 
 import '../../tab_control/abstract_tab_screen.dart';
@@ -142,7 +143,7 @@ class _SettingsState extends State<SettingsScreen> {
                               backgroundColor:
                                   const Color.fromARGB(255, 226, 85, 75)),
                           onPressed: () {
-                            print('Delete account pressed!');
+                            DialogHelper.confirmAccountDeletion(context);
                           },
                           icon: const Icon(Icons.delete),
                           label: const Text('Delete Account')),

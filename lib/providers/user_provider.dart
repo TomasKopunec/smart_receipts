@@ -8,9 +8,12 @@ class UserProvider with ChangeNotifier {
 
   UserRequestHelper userRequestHelper = UserRequestHelper();
 
-  /* USER */
   User? get user {
     return _user;
+  }
+
+  void clearUser() {
+    _user = null;
   }
 
   Future<void> fetchAndSetUser(String token) async {
@@ -30,6 +33,18 @@ class UserProvider with ChangeNotifier {
       oldPassword: oldPassword,
       newPassword: newPassword,
       newPasswordRepeat: newPasswordRepeat,
+    );
+  }
+
+  Future<UserResponseDTO> deleteAccount({
+    required String token,
+    required String email,
+    required String password,
+  }) async {
+    return await userRequestHelper.deleteAccount(
+      token: token,
+      email: email,
+      password: password,
     );
   }
 }

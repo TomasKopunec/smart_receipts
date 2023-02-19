@@ -4,26 +4,39 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
+import 'package:smart_receipts/providers/auth/auth_provider.dart';
+import 'package:smart_receipts/providers/user_provider.dart';
+import 'package:smart_receipts/utils/snackbar_builder.dart';
 import 'package:smart_receipts/widgets/dialogs/confirm_dialog.dart';
+import 'package:smart_receipts/widgets/dialogs/loading_button.dart';
 
 import '../../helpers/currency_helper.dart';
 import '../../providers/settings/settings_provider.dart';
 
 class DialogHelper {
-  static void showConfirmDialog(
-      {required BuildContext context,
-      String title = "Confirmation",
-      String subtitle = "",
-      IconData icon = Icons.check,
-      List<ElevatedButton> buttons = const []}) {
+  static void showConfirmDialog({
+    required BuildContext context,
+    String title = "Confirmation",
+    String subtitle = "",
+    IconData icon = Icons.check,
+    List<Widget> buttons = const [],
+    Color? color,
+    TextEditingController? controller,
+    Key? key,
+    bool isForm = false,
+  }) {
+    final dialog = ConfirmDialog(
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
+      buttons: buttons,
+      color: color ?? Theme.of(context).primaryColor,
+      input: controller,
+    );
+
     showDialog(
         context: context,
-        builder: (context) => ConfirmDialog(
-              title: title,
-              subtitle: subtitle,
-              icon: icon,
-              buttons: buttons,
-            ));
+        builder: (context) => isForm ? Form(key: key!, child: dialog) : dialog);
   }
 
   static void showChangedPasswordSuccess(
@@ -39,6 +52,59 @@ class DialogHelper {
           ElevatedButton(
               onPressed: () => Navigator.pop(context, false),
               child: const Text('OK')),
+        ]);
+  }
+
+  static void confirmAccountDeletion(BuildContext context) {
+    TextEditingController controller = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+
+    const redColor = Color.fromRGBO(216, 90, 78, 1);
+    showConfirmDialog(
+        context: context,
+        title: 'Delete Account',
+        subtitle:
+            'Are you sure you want to delete your account? All your receipts and returns will be lost!',
+        icon: Icons.delete,
+        color: redColor,
+        controller: controller,
+        isForm: true,
+        key: _formKey,
+        buttons: [
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, false),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor),
+            child: const Text('No'),
+          ),
+          Consumer<UserProvider>(
+              builder: (ctx, users, child) => LoadingButton(
+                    onPressed: () async {
+                      if (!_formKey.currentState!.validate()) {
+                        return;
+                      }
+
+                      final result = await users.deleteAccount(
+                        token: Provider.of<AuthProvider>(context, listen: false)
+                            .token!
+                            .accessToken,
+                        email: users.user!.email,
+                        password: controller.text,
+                      );
+
+                      if (result.status) {
+                        Provider.of<AuthProvider>(context, listen: false)
+                            .setToken(null);
+                        users.clearUser();
+                        Navigator.pop(context, false);
+                      }
+
+                      AppSnackBar.show(context,
+                          AppSnackBarBuilder().withText(result.message!));
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: redColor),
+                    child: const Text('Yes'),
+                  ))
         ]);
   }
 

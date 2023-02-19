@@ -5,7 +5,8 @@ import '../../models/user.dart';
 
 enum UserMethod {
   getProfile("profile", RequestType.get),
-  changePassword("profile", RequestType.put);
+  changePassword("profile", RequestType.put),
+  deleteAccount("profile", RequestType.delete);
 
   final String path;
   final RequestType type;
@@ -64,6 +65,34 @@ class UserRequestHelper extends RequestHelper {
           status: success,
           message:
               "Password changed successfully. You can now log in with your new password.");
+    } else {
+      return UserResponseDTO(
+          status: success, message: json.decode(response.body)['msg']);
+    }
+  }
+
+  Future<UserResponseDTO> deleteAccount({
+    required String token,
+    required String email,
+    required String password,
+  }) async {
+    const method = UserMethod.deleteAccount;
+
+    final response = await send(
+      authToken: token,
+      name: method.name,
+      path: method.path,
+      type: method.type,
+      body: json.encode({
+        'email': email,
+        'password': password,
+      }),
+    );
+
+    bool success = response.code == 204;
+    if (success) {
+      return UserResponseDTO(
+          status: success, message: "Account deleted successfully.");
     } else {
       return UserResponseDTO(
           status: success, message: json.decode(response.body)['msg']);
