@@ -110,21 +110,26 @@ class AuthSectionBuilder {
     return this;
   }
 
-  AuthSectionBuilder withButton(bool isLoading, String title, Function func) {
-    _widgets.add(SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-          onPressed: () {
-            func();
-          },
-          child: isLoading
-              ? Transform.scale(
-                  scale: 0.675,
-                  child: const CircularProgressIndicator(
-                    color: Colors.white,
-                  ),
-                )
-              : Text(title)),
+  AuthSectionBuilder withButton(bool isLoading, String title, Function func,
+      {Icon? icon}) {
+    _widgets.add(Padding(
+      padding: const EdgeInsets.only(top: 2, bottom: 8),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+            onPressed: () {
+              func();
+            },
+            icon: icon ?? Container(),
+            label: isLoading
+                ? Transform.scale(
+                    scale: 0.675,
+                    child: const CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  )
+                : Text(title)),
+      ),
     ));
     return this;
   }
@@ -160,6 +165,7 @@ class AuthSectionBuilder {
       child: Padding(
         padding: const EdgeInsets.only(top: 12, left: 20, right: 20, bottom: 6),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             ..._widgets,
             _getSubsection(),

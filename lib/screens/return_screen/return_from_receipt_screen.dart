@@ -30,7 +30,6 @@ class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
   @override
   Widget build(BuildContext context) {
     return ReturnableScreen(
-        receiptId: widget.receipt.receiptId,
         title: "Return Items",
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

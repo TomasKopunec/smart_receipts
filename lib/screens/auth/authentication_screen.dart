@@ -26,7 +26,7 @@ class AuthenticationScreen extends StatefulWidget {
 }
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
-  AuthState _state = AuthState.register;
+  AuthState _state = AuthState.login;
 
   @override
   void initState() {

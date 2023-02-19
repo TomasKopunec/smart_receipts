@@ -18,4 +18,18 @@ class UserProvider with ChangeNotifier {
     _user = response.user;
     notifyListeners();
   }
+
+  Future<UserResponseDTO> changePassword({
+    required String email,
+    required String oldPassword,
+    required String newPassword,
+    required String newPasswordRepeat,
+  }) async {
+    return await userRequestHelper.changePassword(
+      email: email,
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+      newPasswordRepeat: newPasswordRepeat,
+    );
+  }
 }

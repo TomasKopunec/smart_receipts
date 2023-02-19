@@ -4,7 +4,8 @@ import 'package:smart_receipts/helpers/requests/request_helper.dart';
 import '../../models/user.dart';
 
 enum UserMethod {
-  getProfile("profile", RequestType.get);
+  getProfile("profile", RequestType.get),
+  changePassword("profile", RequestType.put);
 
   final String path;
   final RequestType type;
@@ -31,6 +32,38 @@ class UserRequestHelper extends RequestHelper {
         message: "User fetched successfully.",
         user: User.fromJson(parsed),
       );
+    } else {
+      return UserResponseDTO(
+          status: success, message: json.decode(response.body)['msg']);
+    }
+  }
+
+  Future<UserResponseDTO> changePassword({
+    required String email,
+    required String oldPassword,
+    required String newPassword,
+    required String newPasswordRepeat,
+  }) async {
+    const method = UserMethod.changePassword;
+
+    final response = await send(
+      name: method.name,
+      path: method.path,
+      type: method.type,
+      body: json.encode({
+        'email': email,
+        'old_password': oldPassword,
+        'new_password': newPassword,
+        'new_password_repeat': newPasswordRepeat
+      }),
+    );
+
+    bool success = response.code == 200;
+    if (success) {
+      return UserResponseDTO(
+          status: success,
+          message:
+              "Password changed successfully. You can now log in with your new password.");
     } else {
       return UserResponseDTO(
           status: success, message: json.decode(response.body)['msg']);

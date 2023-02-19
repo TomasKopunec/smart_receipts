@@ -52,7 +52,6 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
   @override
   Widget build(BuildContext context) {
     return ReturnableScreen(
-        receiptId: receipt.receiptId,
         title: receipt.retailerName,
         actions: [
           IconButton(
@@ -296,6 +295,6 @@ class ProductDto {
 
   @override
   bool operator ==(Object other) {
-    return (other is ProductDto) && (other.product.sku == other.product.sku);
+    return (other is ProductDto) && (other.product.sku == product.sku);
   }
 }

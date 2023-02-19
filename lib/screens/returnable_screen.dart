@@ -4,7 +4,6 @@ import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 
 /// Screen that can be returned (opened from Navigator push)
 class ReturnableScreen extends StatelessWidget {
-  final String receiptId;
   final String title;
   final Widget body;
   final List<Widget>? actions;
@@ -13,7 +12,6 @@ class ReturnableScreen extends StatelessWidget {
     super.key,
     required this.title,
     required this.body,
-    required this.receiptId,
     this.actions,
   });
 
@@ -31,7 +29,7 @@ class ReturnableScreen extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(10),
         child: body,
       ),
     );

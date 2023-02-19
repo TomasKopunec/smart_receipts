@@ -16,24 +16,25 @@ class RequestHelper {
       "nDDhMcGI64BL0foQDGp8t-9D9URyyi1mlvEHvpK2rn1tAzFuA86DDw==";
 
   /// Sends a request and logs
-  Future<Response> send(
-      {required String name,
-      required RequestType type,
-      required String path,
-      Object? body,
-      String? authToken}) async {
+  Future<Response> send({
+    required String name,
+    required RequestType type,
+    required String path,
+    Object? body,
+    String? authToken,
+  }) async {
     final Map<String, String> headers = {
       'x-functions-key': functionKey,
       'Authorization': authToken ?? "",
       'Content-Type': 'application/json'
     };
 
-    _log(name.toUpperCase(), headers, body, true);
+    _log(type, "/$path", headers, body, true);
 
     final Response response = await _send(type, path,
         body: body, headers: headers, authToken: authToken);
 
-    _log(name.toUpperCase(), response.headers, response.body, false,
+    _log(type, "/$path", response.headers, response.body, false,
         statusCode: response.code, exception: response.exception);
     return response;
   }
@@ -69,7 +70,7 @@ class RequestHelper {
     }
 
     final response = await future
-        .timeout(const Duration(seconds: 20)) // Default of 15s timeout
+        .timeout(const Duration(seconds: 20)) // Default of 20s timeout
         .onError((err, stackTrace) {
       print('${err.runtimeType.toString()} occured sending a request!');
       print('Message: $err');
@@ -141,7 +142,8 @@ class RequestHelper {
   }
 
   void _log(
-    String methodName,
+    RequestType type,
+    String path,
     Object? headers,
     Object? body,
     bool isRequest, {
@@ -162,7 +164,18 @@ class RequestHelper {
       formattedBody = encoder.convert(decoder.convert(body.toString()));
     } catch (e) {}
 
-    logger.log("$methodName ${isRequest ? 'request' : 'response'}",
+    if (formattedBody == null && body is Map) {
+      try {
+        formattedBody = encoder.convert(body);
+      } catch (e) {}
+    }
+
+    logger.log(
+        "----------------------------------------------------------------- \n",
+        name: 'API');
+
+    logger.log(
+        "${type.name.toUpperCase()} ${isRequest ? 'REQUEST' : 'RESPONSE'} $path",
         name: 'API');
 
     if (!isRequest) {
@@ -192,10 +205,6 @@ class RequestHelper {
           .split('\n')
           .forEach((dynamic element) => logger.log("$element", name: 'API'));
     }
-
-    logger.log(
-        "----------------------------------------------------------------- \n",
-        name: 'API');
   }
 
   static void showNetworkErrorDialog(BuildContext context,

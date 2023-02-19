@@ -22,7 +22,7 @@ class ConfirmDialog extends StatelessWidget {
       iconPadding: const EdgeInsets.only(top: 8),
       insetPadding: EdgeInsets.zero,
       icon: Padding(
-        padding: const EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.only(top: 12),
         child: Icon(icon, color: Theme.of(context).primaryColor),
       ),
       shape: const RoundedRectangleBorder(
@@ -45,10 +45,14 @@ class ConfirmDialog extends StatelessWidget {
                   subtitle,
                   softWrap: true,
                   textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(fontWeight: FontWeight.w400),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 2, left: 8, right: 8),
+                padding: const EdgeInsets.only(top: 8, bottom: 4),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: buttons

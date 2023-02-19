@@ -8,6 +8,7 @@ import 'package:smart_receipts/widgets/animated_toggle.dart';
 import 'package:smart_receipts/widgets/toggle_switch.dart';
 
 import '../../tab_control/abstract_tab_screen.dart';
+import 'change_password_screen.dart';
 
 class SettingsScreen extends AbstractTabScreen {
   @override
@@ -119,7 +120,14 @@ class _SettingsState extends State<SettingsScreen> {
                     Expanded(
                       child: ElevatedButton.icon(
                           onPressed: () {
-                            print('Change password pressed!');
+                            String? name =
+                                ModalRoute.of(context)!.settings.name;
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ChangePasswordScreen(),
+                                ));
                           },
                           icon: const Icon(Icons.edit),
                           label: const Text('Change Password')),

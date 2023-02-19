@@ -10,22 +10,52 @@ import '../../helpers/currency_helper.dart';
 import '../../providers/settings/settings_provider.dart';
 
 class DialogHelper {
-  static void showDeleteReceiptDialog(BuildContext context) {
+  static void showConfirmDialog(
+      {required BuildContext context,
+      String title = "Confirmation",
+      String subtitle = "",
+      IconData icon = Icons.check,
+      List<ElevatedButton> buttons = const []}) {
     showDialog(
         context: context,
         builder: (context) => ConfirmDialog(
-              title: 'Delete Receipt',
-              subtitle: 'Are you sure you want to remove this receipt?',
-              icon: Icons.delete,
-              buttons: [
-                ElevatedButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: const Text('No')),
-                ElevatedButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: const Text('Yes')),
-              ],
+              title: title,
+              subtitle: subtitle,
+              icon: icon,
+              buttons: buttons,
             ));
+  }
+
+  static void showChangedPasswordSuccess(
+      BuildContext context, bool isLoggedIn) {
+    showConfirmDialog(
+        context: context,
+        title: "Success",
+        subtitle: isLoggedIn
+            ? "Password has been changed successfully. Your account has been updated."
+            : "Password has been changed successfully. You can now log in with your new password.",
+        icon: Icons.check_circle,
+        buttons: [
+          ElevatedButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('OK')),
+        ]);
+  }
+
+  static void showDeleteReceiptDialog(BuildContext context) {
+    showConfirmDialog(
+        context: context,
+        title: 'Delete Receipt',
+        subtitle: 'Are you sure you want to remove this receipt?',
+        icon: Icons.delete,
+        buttons: [
+          ElevatedButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('No')),
+          ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Yes'))
+        ]);
   }
 
   static void showReceivedNewReceipt(BuildContext context, Receipt receipt) {
@@ -123,8 +153,8 @@ class DialogHelper {
                                   Navigator.of(context, rootNavigator: true)
                                       .pop();
                                 },
-                                icon: Icon(Icons.check_circle),
-                                label: Text('OK')),
+                                icon: const Icon(Icons.check_circle),
+                                label: const Text('OK')),
                           )
                         ],
                       )
