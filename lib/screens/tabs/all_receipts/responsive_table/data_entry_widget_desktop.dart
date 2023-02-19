@@ -209,8 +209,11 @@ class _DataEntryWidgetDesktopState extends State<DataEntryWidgetDesktop> {
       stringOutput = DateFormat(_settingsProvider.dateTimeFormat.format)
           .format(DateTime.parse(stringOutput));
     } else if (header == ReceiptField.price) {
-      stringOutput =
-          CurrencyHelper.getFormatted(value, _settingsProvider.currency);
+      stringOutput = CurrencyHelper.getFormatted(
+          price: value,
+          originCurrency:
+              Currency.from(widget.data[ReceiptField.currency.name]),
+          targetCurrency: _settingsProvider.currency);
     }
 
     return Container(

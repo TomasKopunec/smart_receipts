@@ -150,7 +150,10 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
       getSectionEntry(
           "Total Price: ",
           CurrencyHelper.getFormatted(
-              receipt.getField(ReceiptField.price), settings.currency)),
+            price: receipt.getField(ReceiptField.price),
+            originCurrency: receipt.currency,
+            targetCurrency: settings.currency,
+          )),
     ]);
   }
 
@@ -196,8 +199,13 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
             "$returned  #Returned ${dto.returned_count == dto.count ? 'All' : '${dto.returned_count}}'}";
       }
 
-      productEntries.add(getSectionEntry(returned,
-          CurrencyHelper.getFormatted(p.price * count, settings.currency)));
+      productEntries.add(getSectionEntry(
+          returned,
+          CurrencyHelper.getFormatted(
+            price: p.price * count,
+            originCurrency: receipt.currency,
+            targetCurrency: settings.currency,
+          )));
     }
 
     return getSection(context, "Products", productEntries);
@@ -207,8 +215,13 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
     List<Widget> widgets = [];
 
     // Total
-    widgets.add(getSectionEntry("Total Paid: ",
-        CurrencyHelper.getFormatted(receipt.price, settings.currency)));
+    widgets.add(getSectionEntry(
+        "Total Paid: ",
+        CurrencyHelper.getFormatted(
+          price: receipt.price,
+          originCurrency: receipt.currency,
+          targetCurrency: settings.currency,
+        )));
 
     // Payment Method
     widgets.add(getSectionEntry("Payment Method: ", receipt.paymentMethod));
@@ -217,7 +230,7 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
     if (receipt.paymentMethod.toLowerCase() == "card") {
       final String cardNumber = receipt.cardNumber!;
       widgets.add(getSectionEntry("Card Number: ",
-          "•••• •••• •••• ${cardNumber.substring(cardNumber.length - 5)}"));
+          "•••• •••• •••• ${cardNumber.substring(cardNumber.length - 4)}"));
     }
 
     return getSection(context, "Payment", widgets);

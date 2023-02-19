@@ -21,6 +21,8 @@ enum Currency {
     return Currency.values
         .firstWhere((e) => e.code.toLowerCase() == code.toLowerCase());
   }
+
+  String toJson() => code;
 }
 
 enum DateTimeFormat {

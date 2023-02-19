@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import '../product/product.dart';
-
-part 'receipt.g.dart';
 
 enum ReceiptStatus {
   active(Colors.teal, "Active"),
@@ -16,8 +15,11 @@ enum ReceiptStatus {
   const ReceiptStatus(this.color, this.title);
 
   static ReceiptStatus from(String name) {
-    return ReceiptStatus.values.firstWhere((e) => e.name == name.toLowerCase());
+    return ReceiptStatus.values
+        .firstWhere((e) => e.name.toLowerCase() == name.toLowerCase());
   }
+
+  String toJson() => name.toLowerCase();
 }
 
 enum ReceiptField {
@@ -59,7 +61,7 @@ class Receipt {
   final ReceiptStatus status;
   final DateTime? expiration;
   final double price;
-  final String currency;
+  final Currency currency;
   final String paymentMethod;
   final String? cardNumber;
 
@@ -82,10 +84,43 @@ class Receipt {
     required this.products,
   });
 
-  factory Receipt.fromJson(Map<String, dynamic> json) =>
-      _$ReceiptFromJson(json);
+  static Receipt fromJson(Map<String, dynamic> json) => Receipt(
+        receiptId: json['receiptId'] as String,
+        retailerReceiptId: json['retailerReceiptId'] as String,
+        retailerId: json['retailerId'] as String,
+        retailerName: json['retailerName'] as String,
+        customerEmail: json['customerEmail'] as String,
+        purchaseDateTime: DateTime.parse(json['purchaseDateTime'] as String),
+        purchaseLocation: json['purchaseLocation'] as String,
+        status: ReceiptStatus.from(json['status']),
+        expiration: json['expiration'] == null
+            ? null
+            : DateTime.parse(json['expiration'] as String),
+        price: (json['price'] as num).toDouble(),
+        currency: Currency.from(json['currency'] as String),
+        paymentMethod: json['paymentMethod'] as String,
+        cardNumber: json['cardNumber'] as String,
+        products: (json['products'] as List<dynamic>)
+            .map((e) => Product.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
 
-  Map<String, dynamic> toJson() => _$ReceiptToJson(this);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'receiptId': receiptId,
+        'retailerReceiptId': retailerReceiptId,
+        'retailerId': retailerId,
+        'retailerName': retailerName,
+        'customerEmail': customerEmail,
+        'purchaseDateTime': purchaseDateTime.toIso8601String(),
+        'purchaseLocation': purchaseLocation,
+        'status': status.toJson(),
+        'expiration': expiration?.toIso8601String(),
+        'price': price,
+        'currency': currency.toJson(),
+        'paymentMethod': paymentMethod,
+        'cardNumber': cardNumber,
+        'products': products,
+      };
 
   static List<ReceiptField> getSearchableKeys() {
     return [

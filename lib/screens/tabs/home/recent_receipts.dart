@@ -125,7 +125,9 @@ class RecentReceipts extends StatelessWidget {
               ),
               trailing: Text(
                 CurrencyHelper.getFormatted(
-                    receipt.getField(ReceiptField.price), settings.currency),
+                    price: receipt.getField(ReceiptField.price),
+                    originCurrency: receipt.currency,
+                    targetCurrency: settings.currency),
                 style: Theme.of(context).textTheme.titleMedium,
               ));
         },

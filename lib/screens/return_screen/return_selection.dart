@@ -27,6 +27,7 @@ class ReturnSelection extends StatefulWidget {
   final int size;
   final Function(Selection) onSelect;
   final bool enabled;
+  final Currency currency;
 
   const ReturnSelection({
     super.key,
@@ -34,6 +35,7 @@ class ReturnSelection extends StatefulWidget {
     required this.size,
     required this.onSelect,
     required this.enabled,
+    required this.currency,
   });
 
   @override
@@ -95,7 +97,9 @@ class _ReturnSelectionState extends State<ReturnSelection> {
             title: Text(widget.product.name),
             subtitle: Consumer<SettingsProvider>(
                 builder: (ctx, settings, _) => Text(CurrencyHelper.getFormatted(
-                    widget.product.price, settings.currency))),
+                    price: widget.product.price,
+                    originCurrency: widget.currency,
+                    targetCurrency: settings.currency))),
             trailing: _isSelected ? quantity : null,
           ),
         ),

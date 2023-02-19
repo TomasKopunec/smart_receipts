@@ -165,8 +165,10 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
               children: [
                 Text(
                   CurrencyHelper.getFormatted(
-                      widget.data[ReceiptField.price.name],
-                      _settingsProvider.currency),
+                      price: widget.data[ReceiptField.price.name],
+                      originCurrency: Currency.from(
+                          widget.data[ReceiptField.currency.name]),
+                      targetCurrency: _settingsProvider.currency),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 if (_isFavourite)
@@ -291,8 +293,11 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
       stringOutput = DateFormat(_settingsProvider.dateTimeFormat.format)
           .format(DateTime.parse(stringOutput));
     } else if (header == ReceiptField.price) {
-      stringOutput =
-          CurrencyHelper.getFormatted(value, _settingsProvider.currency);
+      stringOutput = CurrencyHelper.getFormatted(
+          price: value,
+          originCurrency:
+              Currency.from(widget.data[ReceiptField.currency.name]),
+          targetCurrency: _settingsProvider.currency);
     } else if (header == ReceiptField.products) {
       stringOutput = '${widget.data[ReceiptField.products.name].length}';
     }

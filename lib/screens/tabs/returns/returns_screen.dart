@@ -137,9 +137,11 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
   }
 
   Widget getReturn(Return r) {
+    final receipt = _receipts.getReceiptById(r.receiptId);
     return ReturnsEntry(
-      receipt: _receipts.getReceiptById(r.receiptId),
+      receipt: receipt,
       returnEntry: r,
+      currency: receipt.currency,
     );
   }
 

@@ -46,11 +46,13 @@ class ReturnItemDto {
 class ReturnsEntry extends StatefulWidget {
   final Receipt receipt;
   final Return returnEntry;
+  final Currency currency;
 
   const ReturnsEntry({
     super.key,
     required this.receipt,
     required this.returnEntry,
+    required this.currency,
   });
 
   String get id {
@@ -150,8 +152,11 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                CurrencyHelper.getFormatted(widget.returnEntry.refundedAmount,
-                    _settingsProvider.currency),
+                CurrencyHelper.getFormatted(
+                  price: widget.returnEntry.refundedAmount,
+                  originCurrency: widget.currency,
+                  targetCurrency: _settingsProvider.currency,
+                ),
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ],
@@ -278,8 +283,10 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
 
     switch (type) {
       case FieldType.price:
-        stringOutput =
-            CurrencyHelper.getFormatted(value, _settingsProvider.currency);
+        stringOutput = CurrencyHelper.getFormatted(
+            price: value,
+            originCurrency: widget.currency,
+            targetCurrency: _settingsProvider.currency);
         break;
       case FieldType.date:
         stringOutput = DateFormat(_settingsProvider.dateTimeFormat.format)
@@ -288,10 +295,7 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
       case FieldType.status:
         return ReturnStatusLabel(index: value);
       case FieldType.integer:
-        // TODO: Handle this case.
-        break;
       case FieldType.string:
-        // TODO: Handle this case.
         break;
     }
     return AutoSizeText(stringOutput,

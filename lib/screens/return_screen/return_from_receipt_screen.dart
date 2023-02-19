@@ -29,6 +29,9 @@ class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currency =
+        Provider.of<SettingsProvider>(context, listen: false).currency;
+
     return ReturnableScreen(
         title: "Return Items",
         body: SingleChildScrollView(
@@ -36,7 +39,7 @@ class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
           child: Column(
             children: [
               getMain(context),
-              getSummary(context),
+              getSummary(context, currency),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -182,6 +185,7 @@ class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
 
       skus.add(p.sku);
       productEntries.add(ReturnSelection(
+        currency: widget.receipt.currency,
         enabled: !_showingQRCode,
         product: p,
         size: count,
@@ -202,14 +206,14 @@ class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
     );
   }
 
-  Widget getSummary(BuildContext context) {
+  Widget getSummary(BuildContext context, Currency currency) {
     return getSection(
       context,
       "Summary",
       subtitle: "Here is the summary of the return",
       [
         getSectionEntry("Number of products: ", refundAmount),
-        getSectionEntry("Amount to be refunded: ", getTotalRefund()),
+        getSectionEntry("Amount to be refunded: ", getTotalRefund(currency)),
       ],
     );
   }
@@ -257,17 +261,23 @@ class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
     return count.toString();
   }
 
-  String getTotalRefund() {
+  String getTotalRefund(Currency targetCurrency) {
     List<Selection> enabled = _pairs.toList().where((e) => e.enabled).toList();
 
     if (_pairs.isEmpty || enabled.isEmpty) {
-      return CurrencyHelper.getFormatted(0, Currency.pound);
+      return CurrencyHelper.getFormatted(
+        price: 0,
+        originCurrency: widget.receipt.currency,
+        targetCurrency: targetCurrency,
+      );
     }
 
     return CurrencyHelper.getFormatted(
-        enabled
-            .map((e) => e.product.price * e.quantity)
-            .reduce((a, b) => a + b),
-        Currency.pound); // TODO fix
+      price: enabled
+          .map((e) => e.product.price * e.quantity)
+          .reduce((a, b) => a + b),
+      originCurrency: widget.receipt.currency,
+      targetCurrency: targetCurrency,
+    );
   }
 }
