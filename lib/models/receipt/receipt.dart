@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import '../product/product.dart';
 
@@ -49,7 +48,6 @@ enum ReceiptField {
   }
 }
 
-@JsonSerializable()
 class Receipt {
   final String receiptId;
   final String retailerReceiptId;

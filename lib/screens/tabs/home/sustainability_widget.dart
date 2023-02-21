@@ -60,10 +60,18 @@ class _SustainabilityWidgetState extends State<SustainabilityWidget> {
   }
 
   GridCard get co2 {
+    String number = "";
+    final count = user.user == null ? -1 : user.user!.count;
+    if (count != -1) {
+      final double result = count * 2.5;
+      number = (result - result.floor() == 0)
+          ? result.toStringAsFixed(0)
+          : result.toStringAsFixed(1);
+    }
+
     return GridCard(
       icon: Icons.eco_rounded,
-      number:
-          user.user == null ? "" : (user.user!.count * 2.5).toStringAsFixed(1),
+      number: number,
       title: 'CO2 Saved',
       unit: 'g',
     );
@@ -75,6 +83,7 @@ class _SustainabilityWidgetState extends State<SustainabilityWidget> {
       number:
           user.user == null ? "" : (user.user!.count / 3).toStringAsFixed(0),
       title: 'Waste Saved',
+      unit: 'g',
     );
   }
 

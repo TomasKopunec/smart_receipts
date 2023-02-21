@@ -6,8 +6,6 @@ import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/screens/tabs/all_receipts/control_header.dart';
 import 'package:smart_receipts/screens/tabs/all_receipts/responsive_table/receipt_table.dart';
-
-import '../../../utils/snackbar_builder.dart';
 import '../../tab_control/abstract_tab_screen.dart';
 
 class AllReceiptsScreen extends AbstractTabScreen {
@@ -78,7 +76,8 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
       }
 
       // If we pull the scroll to refresh
-      if (pixels <= SizeHelper.getScreenHeight(context) * 0.1) {
+      final refreshThreshold = SizeHelper.getScreenHeight(context) * 0.1125;
+      if (pixels <= -refreshThreshold) {
         _refreshData();
       } else {
         _isLoading = false;
@@ -110,7 +109,6 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
   @override
   Widget build(BuildContext context) {
     return widget.getScreen(
-        action: action,
         headerBody: ControlHeader(isLoading: _isLoading),
         screenBody: SingleChildScrollView(
           controller: _controller,
@@ -118,40 +116,5 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
               parent: AlwaysScrollableScrollPhysics()),
           child: ReceiptTable(refreshData: _refreshData, isLoading: _isLoading),
         ));
-  }
-
-  Widget get action {
-    return Consumer<ReceiptsProvider>(
-      builder: (_, provider, __) {
-        return TextButton(
-            style: ButtonStyle(
-              overlayColor: MaterialStateProperty.all(
-                  Theme.of(context).primaryColor.withOpacity(0.2)),
-            ),
-            onPressed: () {
-              if (provider.receiptSize == 0) {
-                AppSnackBar.show(
-                    context,
-                    AppSnackBarBuilder()
-                        .withText('No receipts available.')
-                        .withDuration(const Duration(seconds: 3)));
-                return;
-              }
-
-              if (provider.isSelecting) {
-                provider.clearSelecteds(notify: true);
-              }
-
-              provider.toggleSelecting();
-            },
-            child: Text(
-              provider.isSelecting ? 'Cancel' : 'Select',
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize:
-                      SizeHelper.getFontSize(context, size: FontSize.regular)),
-            ));
-      },
-    );
   }
 }

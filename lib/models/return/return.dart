@@ -1,4 +1,3 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:smart_receipts/models/return/returned_item.dart';
 
 enum ReturnField {
@@ -21,7 +20,6 @@ enum ReturnField {
   }
 }
 
-@JsonSerializable()
 class Return {
   final String receiptId;
   final String customerEmail;

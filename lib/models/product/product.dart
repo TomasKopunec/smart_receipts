@@ -1,4 +1,3 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:smart_receipts/models/product/returns.dart';
 part 'product.g.dart';
 
@@ -24,7 +23,6 @@ enum ProductField {
   }
 }
 
-@JsonSerializable()
 class Product {
   final int id;
   final String name;

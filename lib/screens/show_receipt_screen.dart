@@ -45,10 +45,6 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
     super.didChangeDependencies();
   }
 
-  void _delete(BuildContext context) async {
-    DialogHelper.showDeleteReceiptDialog(context);
-  }
-
   @override
   Widget build(BuildContext context) {
     return ReturnableScreen(
@@ -61,9 +57,6 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
                 });
               },
               icon: Icon(_isFavourite ? Icons.star : Icons.star_border)),
-          IconButton(
-              onPressed: () => _delete(context),
-              icon: const Icon(Icons.delete)),
         ],
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

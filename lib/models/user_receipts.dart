@@ -1,7 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
 
-@JsonSerializable()
 class UserReceipts {
   final String id;
   final String email;
