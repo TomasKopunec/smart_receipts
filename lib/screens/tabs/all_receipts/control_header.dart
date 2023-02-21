@@ -47,7 +47,7 @@ class ControlHeader extends StatelessWidget {
                 animDuration: const Duration(milliseconds: 750),
                 values: const ['ALL', 'FAVOURITE'],
                 buttonColor: color,
-                backgroundColor: Colors.black.withOpacity(0.1),
+                backgroundColor: Theme.of(context).focusColor,
                 textColor: Colors.white,
                 isInitialValue: true,
                 onValueChange: (value) {
@@ -77,7 +77,7 @@ class ControlHeader extends StatelessWidget {
                   children: [
                     dateRangeEntry(
                       context: context,
-                      isFrom: true,
+                      isStart: true,
                       dateFormat: settings.dateTimeFormat,
                       dateTime: receipts.startRangeDate,
                       onSelected: receipts.setStartRangeDate,
@@ -87,7 +87,7 @@ class ControlHeader extends StatelessWidget {
                     const SizedBox(width: 10),
                     dateRangeEntry(
                       context: context,
-                      isFrom: false,
+                      isStart: false,
                       dateFormat: settings.dateTimeFormat,
                       dateTime: receipts.endRangeDate,
                       onSelected: receipts.setEndRangeDate,
@@ -108,21 +108,20 @@ class ControlHeader extends StatelessWidget {
 
   Widget dateRangeEntry({
     required BuildContext context,
-    required bool isFrom,
+    required bool isStart,
     required DateTime dateTime,
     required DateTimeFormat dateFormat,
     required Function(DateTime) onSelected,
   }) {
-    const color = 235;
     return Expanded(
       child: Center(
         child: Material(
-          color: const Color.fromRGBO(color, color, color, 1),
+          color: Theme.of(context).focusColor,
           borderRadius: BorderRadius.circular(8),
           child: InkWell(
             onTap: () async {
-              final selected =
-                  await DialogHelper.showDatePickerDialog(context, dateTime);
+              final selected = await DialogHelper.showDatePickerDialog(
+                  context, dateTime, isStart);
               if (selected != null) {
                 onSelected(selected);
               }
@@ -130,7 +129,7 @@ class ControlHeader extends StatelessWidget {
             splashColor: Theme.of(context).primaryColor.withOpacity(0.5),
             borderRadius: BorderRadius.circular(8),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +138,7 @@ class ControlHeader extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        isFrom ? "Start Date" : "End Date",
+                        isStart ? "Start Date" : "End Date",
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
                             fontWeight: FontWeight.w600,
                             color: Theme.of(context).indicatorColor,

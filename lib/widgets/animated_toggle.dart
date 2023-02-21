@@ -56,7 +56,7 @@ class _AnimatedToggleState extends State<AnimatedToggle> {
                   setState(() {});
                 },
                 child: Card(
-                  elevation: 3,
+                  elevation: 2,
                   margin: EdgeInsets.zero,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6)),

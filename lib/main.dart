@@ -51,6 +51,7 @@ class Main extends StatelessWidget {
                     const Color.fromARGB(255, 236, 236, 236),
                 indicatorColor: const Color.fromARGB(255, 57, 57, 57),
                 primaryColor: Colors.teal,
+                focusColor: const Color.fromRGBO(235, 235, 235, 1),
               ),
               darkTheme: ThemeData.dark().copyWith(
                   pageTransitionsTheme: const PageTransitionsTheme(builders: {
@@ -61,6 +62,7 @@ class Main extends StatelessWidget {
                   scaffoldBackgroundColor:
                       const Color.fromARGB(255, 34, 34, 34),
                   indicatorColor: const Color.fromARGB(255, 236, 236, 236),
+                  focusColor: const Color.fromARGB(255, 40, 40, 40),
                   primaryColor: Colors.teal,
                   elevatedButtonTheme: ElevatedButtonThemeData(
                       style: ButtonStyle(
