@@ -39,6 +39,21 @@ class DialogHelper {
         builder: (context) => isForm ? Form(key: key!, child: dialog) : dialog);
   }
 
+  static Future<DateTime?> showDatePickerDialog(
+      BuildContext context, DateTime initialDate) async {
+    return await showDialog(
+        context: context,
+        builder: (context) => DatePickerDialog(
+              initialDate: initialDate,
+              firstDate: DateTime(2020),
+              lastDate: DateTime.now(),
+              cancelText: "RESET",
+              confirmText: "SELECT",
+              initialCalendarMode: DatePickerMode.day,
+              initialEntryMode: DatePickerEntryMode.calendarOnly,
+            ));
+  }
+
   static void showChangedPasswordSuccess(
       BuildContext context, bool isLoggedIn) {
     showConfirmDialog(
@@ -105,22 +120,6 @@ class DialogHelper {
                     style: ElevatedButton.styleFrom(backgroundColor: redColor),
                     child: const Text('Yes'),
                   ))
-        ]);
-  }
-
-  static void showDeleteReceiptDialog(BuildContext context) {
-    showConfirmDialog(
-        context: context,
-        title: 'Delete Receipt',
-        subtitle: 'Are you sure you want to remove this receipt?',
-        icon: Icons.delete,
-        buttons: [
-          ElevatedButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('No')),
-          ElevatedButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Yes'))
         ]);
   }
 

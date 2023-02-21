@@ -32,6 +32,9 @@ class ReceiptsProvider with ChangeNotifier {
 
   final ReceiptsRequestHelper _receiptsRequestHelper = ReceiptsRequestHelper();
 
+  DateTime _start = DateTime(DateTime.now().year);
+  DateTime _end = DateTime.now();
+
   /// Set the Receipts
   Future<dynamic> setReceipts(List<Receipt> receipts) async {
     _receipts = receipts;
@@ -51,6 +54,8 @@ class ReceiptsProvider with ChangeNotifier {
       value: _filterValue,
       favourites: _favorites,
       favouritesEnabled: _isShowingFavorites,
+      start: _start,
+      end: _end,
     );
 
     // 2. Sort
@@ -80,6 +85,8 @@ class ReceiptsProvider with ChangeNotifier {
     _selecteds.clear();
     _isSelecting = false;
     _isShowingFavorites = false;
+    _start = DateTime(DateTime.now().year);
+    _end = DateTime.now();
     _updateSource();
   }
 
@@ -114,6 +121,7 @@ class ReceiptsProvider with ChangeNotifier {
     }
 
     SharedPreferencesHelper.saveFavorites(_favorites.toList());
+    notifyListeners();
     return isFavorite;
   }
 
@@ -251,6 +259,25 @@ class ReceiptsProvider with ChangeNotifier {
     if (_listeningThread != null) {
       _listeningThread = null;
     }
+  }
+
+  // DATE RANGE
+  DateTime get startRangeDate {
+    return _start;
+  }
+
+  DateTime get endRangeDate {
+    return _end;
+  }
+
+  void setStartRangeDate(DateTime start) {
+    _start = start;
+    _updateSource();
+  }
+
+  void setEndRangeDate(DateTime end) {
+    _end = end;
+    _updateSource();
   }
 
   // Used during debugging
