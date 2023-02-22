@@ -108,6 +108,11 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
     return count == 1 ? '(1 product)' : '($count products)';
   }
 
+  String get titleText {
+    final numberOfReturnedItems = widget.returnEntry.numberOfReturnedItems;
+    return '${widget.receipt.retailerName} ($numberOfReturnedItems item${numberOfReturnedItems == 1 ? "" : "s"})';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -127,7 +132,7 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
           tilePadding: const EdgeInsets.only(left: 10, right: 20),
           controlAffinity: ListTileControlAffinity.leading,
           title: Text(
-            '${widget.receipt.retailerName}  $numberOfItems',
+            titleText,
             overflow: TextOverflow.fade,
             maxLines: 1,
             softWrap: false,
@@ -193,7 +198,7 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
     widgets.add(getEntry("Status", FieldType.status, index));
 
     widgets.add(getEntry("Number Of Items", FieldType.integer,
-        widget.returnEntry.getProductsCount()));
+        widget.returnEntry.numberOfReturnedItems));
 
     widgets.add(getEntry("Returned Items:", FieldType.string, ""));
     widgets.add(const SizedBox(height: 6));
@@ -211,11 +216,14 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
     }
 
     for (var e in items) {
-      widgets.add(getEntry(
-          "${e.product.name} (${e.quantity} x ${e.product.price}) ",
-          FieldType.price,
-          e.product.price * e.quantity,
-          includeDivider: false));
+      widgets.add(Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: getEntry(
+            "${e.product.name} (${e.quantity} x ${e.product.price}) ",
+            FieldType.price,
+            e.product.price * e.quantity,
+            includeDivider: false),
+      ));
     }
 
     widgets.add(Padding(

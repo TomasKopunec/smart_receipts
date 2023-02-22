@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +9,6 @@ import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/screens/return_screen/return_from_receipt_screen.dart';
 import 'package:smart_receipts/screens/returnable_screen.dart';
-import 'package:smart_receipts/widgets/dialogs/dialog_helper.dart';
 import 'package:smart_receipts/widgets/receipt_status_label.dart';
 
 import '../helpers/currency_helper.dart';
@@ -189,7 +189,7 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
 
       if (dto.returned_count > 0) {
         returned =
-            "$returned  #Returned ${dto.returned_count == dto.count ? 'All' : '${dto.returned_count}}'}";
+            "$returned  #Returned ${dto.returned_count == dto.count ? 'All' : '${dto.returned_count}'}";
       }
 
       productEntries.add(getSectionEntry(
@@ -262,8 +262,11 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(left),
-          Text(right),
+          AutoSizeText(left),
+          AutoSizeText(
+            right,
+            maxLines: 1,
+          ),
         ],
       ),
     );

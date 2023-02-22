@@ -63,6 +63,10 @@ class Return {
     return returnedItems.length;
   }
 
+  int get numberOfReturnedItems {
+    return returnedItems.map((e) => e.quantity).reduce((a, b) => a + b);
+  }
+
   dynamic getField(ReturnField field) {
     switch (field) {
       case ReturnField.receiptId:
