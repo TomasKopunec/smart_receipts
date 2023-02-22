@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:smart_receipts/helpers/filter_helper.dart';
+import 'package:smart_receipts/helpers/receipts_filter_helper.dart';
 import 'package:smart_receipts/helpers/requests/receipt_request_helper.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
 import 'package:smart_receipts/helpers/shared_preferences_helper.dart';
@@ -49,11 +49,10 @@ class ReceiptsProvider with ChangeNotifier {
   /// Update Source
   void _updateSource() async {
     // 1. Filter
-    List<Receipt> newReceipts = await FilterHelper.filterReceipts(
+    List<Receipt> newReceipts = await ReceiptsFilterHelper.filterReceipts(
       receipts: [..._receipts],
       value: _filterValue,
       favourites: _favorites,
-      favouritesEnabled: _isShowingFavorites,
       start: _start,
       end: _end,
     );
@@ -279,56 +278,4 @@ class ReceiptsProvider with ChangeNotifier {
     _end = end;
     _updateSource();
   }
-
-  // Used during debugging
-  // List<Receipt> _generateData({required int n}) {
-  //   List<String> storeNames = [
-  //     'H&M',
-  //     'Zara',
-  //     'McDonald\'s',
-  //     'Lidl',
-  //     'Gant',
-  //     'Nike',
-  //     'Dell',
-  //     'Deli Store'
-  //   ];
-
-  //   final List<Receipt> generated = [];
-  //   for (int i = 1; i <= n; i++) {
-  //     final List<Product> products = [];
-
-  //     final numberOfProducts = Random().nextInt(15) + 1;
-  //     for (int x = 0; x <= numberOfProducts; x++) {
-  //       products.add(Product(
-  //           id: x,
-  //           name: 'Item $x',
-  //           price: x * 10,
-  //           sku: '$x',
-  //           category: 'Default Category'));
-  //     }
-
-  //     generated.add(Receipt(
-  //         id: i,
-  //         auto_delete_date_time: DateTime.now().add(const Duration(days: 365)),
-  //         retailer_receipt_id: i,
-  //         retailer_id: i,
-  //         retailer_name: storeNames[Random().nextInt(storeNames.length)],
-  //         customer_email: 'email$i@gmail.com',
-  //         purchase_date_time: DateTime.now()
-  //             .subtract(Duration(days: Random().nextInt(365 * 2))),
-  //         purchase_location: 'London, UK',
-  //         status: ReceiptStatus
-  //             .values[Random().nextInt(ReceiptStatus.values.length)],
-  //         expiration: DateTime.now()
-  //             .subtract(Duration(days: i))
-  //             .add(const Duration(days: 365)),
-  //         price: (Random().nextDouble() * 200),
-  //         currency: 'GBP',
-  //         paymentMethod: 'Card',
-  //         cardNumber: "1234 1234 1234 1234",
-  //         products: products));
-  //   }
-  //   generated.shuffle();
-  //   return generated;
-  // }
 }

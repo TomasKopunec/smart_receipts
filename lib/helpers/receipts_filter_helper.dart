@@ -1,6 +1,6 @@
 import 'package:smart_receipts/models/receipt/receipt.dart';
 
-class FilterHelper {
+class ReceiptsFilterHelper {
   /// Filters out according to the Receipts provider
   /// 1. Favourites
   /// 2. Date Range
@@ -8,22 +8,24 @@ class FilterHelper {
   static Future<List<Receipt>> filterReceipts({
     required List<Receipt> receipts,
     required String value,
-    required Set<String> favourites,
-    required bool favouritesEnabled,
-    required DateTime start,
-    required DateTime end,
+    Set<String>? favourites,
+    DateTime? start,
+    DateTime? end,
   }) async {
     // 1. Filter favourites
-    receipts =
-        await _filterReceiptFavourites(receipts, favourites, favouritesEnabled);
-    if (receipts.isEmpty) {
-      return Future(() => []);
+    if (favourites != null) {
+      receipts = await _filterReceiptFavourites(receipts, favourites);
+      if (receipts.isEmpty) {
+        return Future(() => []);
+      }
     }
 
     // 2. Filter by Date Range
-    receipts = await _filterDateRange(receipts, start, end);
-    if (receipts.isEmpty) {
-      return Future(() => []);
+    if (start != null && end != null) {
+      receipts = await _filterDateRange(receipts, start, end);
+      if (receipts.isEmpty) {
+        return Future(() => []);
+      }
     }
 
     // 3. Filter by criteria
@@ -33,10 +35,9 @@ class FilterHelper {
 
   /// Filters out favourite receipts
   static Future<List<Receipt>> _filterReceiptFavourites(
-      List<Receipt> receipts, Set<String> favourites, bool favouritesEnabled) {
-    return Future(() => receipts
-        .where((r) => _favourite(r, favourites, favouritesEnabled))
-        .toList());
+      List<Receipt> receipts, Set<String> favourites) {
+    return Future(
+        () => receipts.where((r) => _favourite(r, favourites)).toList());
   }
 
   /// Filters by Date Range
@@ -61,13 +62,13 @@ class FilterHelper {
 
     return Future(() => receipts
         .where((r) =>
-            FilterHelper._retailerName(r, value) ||
-            FilterHelper._purchaseLocation(r, value) ||
-            FilterHelper._productNames(r, value) ||
-            FilterHelper._productCategories(r, value) ||
-            FilterHelper._price(r, double.tryParse(value)) ||
-            FilterHelper._status(r, value) ||
-            FilterHelper._receiptId(r, value))
+            ReceiptsFilterHelper._retailerName(r, value) ||
+            ReceiptsFilterHelper._purchaseLocation(r, value) ||
+            ReceiptsFilterHelper._productNames(r, value) ||
+            ReceiptsFilterHelper._productCategories(r, value) ||
+            ReceiptsFilterHelper._price(r, double.tryParse(value)) ||
+            ReceiptsFilterHelper._status(r, value) ||
+            ReceiptsFilterHelper._receiptId(r, value))
         .toList());
   }
 
@@ -76,8 +77,8 @@ class FilterHelper {
     return purchaseDateTime.isAfter(start) && purchaseDateTime.isBefore(end);
   }
 
-  static bool _favourite(Receipt r, Set<String> favourites, bool enabled) {
-    return !enabled ? true : favourites.contains(r.receiptId);
+  static bool _favourite(Receipt r, Set<String> favourites) {
+    return favourites.contains(r.receiptId);
   }
 
   static bool _retailerName(Receipt r, String value) =>

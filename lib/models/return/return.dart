@@ -1,5 +1,7 @@
 import 'package:smart_receipts/models/return/returned_item.dart';
 
+import '../receipt/receipt.dart';
+
 enum ReturnField {
   receiptId('Receipt ID'),
   recentDateTime('Most Recent Return'),
@@ -26,6 +28,7 @@ class Return {
   final DateTime recentDateTime;
   final double refundedAmount;
   final List<ReturnedItem> returnedItems;
+  Receipt? originalReceipt;
 
   Return({
     required this.receiptId,
@@ -36,13 +39,14 @@ class Return {
   });
 
   static Return fromJson(Map<String, dynamic> json) => Return(
-      receiptId: json['receipt_id'],
-      customerEmail: json['customer_email'],
-      recentDateTime: DateTime.parse(json['recent_datetime']),
-      refundedAmount: json['refunded_amount'],
-      returnedItems: (json['returned_items'] as List<dynamic>)
-          .map((e) => ReturnedItem.fromJson(e))
-          .toList());
+        receiptId: json['receipt_id'],
+        customerEmail: json['customer_email'],
+        recentDateTime: DateTime.parse(json['recent_datetime']),
+        refundedAmount: json['refunded_amount'],
+        returnedItems: (json['returned_items'] as List<dynamic>)
+            .map((e) => ReturnedItem.fromJson(e))
+            .toList(),
+      );
 
   Map<String, dynamic> toJson() => {
         'receipt_id': receiptId,

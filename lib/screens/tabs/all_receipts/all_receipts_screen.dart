@@ -102,7 +102,7 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
   @override
   void dispose() {
     // Handle disposal properly
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.dispose();
   }
 

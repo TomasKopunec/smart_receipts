@@ -85,6 +85,11 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
       }
     });
 
+    // Reset the screen everytime opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _returns.resetSource();
+    });
+
     super.initState();
   }
 

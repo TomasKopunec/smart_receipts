@@ -8,21 +8,21 @@ class OnSignedInLoader extends Loader {
 
   @override
   Future<bool> initialise() async {
-    loadProfile();
-    loadReceipts();
-    loadReturns();
+    await loadProfile();
+    await loadReceipts();
+    await loadReturns();
     return true;
   }
 
-  void loadProfile() async {
-    return await users.fetchAndSetUser(auth.token!.accessToken);
+  Future<void> loadProfile() async {
+    return users.fetchAndSetUser(auth.token!.accessToken);
   }
 
-  void loadReceipts() async {
-    return await receipt.fetchAndSetReceipts(auth.token!.accessToken);
+  Future<void> loadReceipts() async {
+    return receipt.fetchAndSetReceipts(auth.token!.accessToken);
   }
 
-  void loadReturns() async {
-    return await returns.fetchAndSetReturns(auth.token!.accessToken);
+  Future<void> loadReturns() async {
+    return returns.fetchAndSetReturns(auth.token!.accessToken);
   }
 }

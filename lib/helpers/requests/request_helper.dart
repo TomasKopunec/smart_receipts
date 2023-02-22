@@ -9,6 +9,8 @@ import 'package:smart_receipts/utils/logger.dart';
 enum RequestType { post, get, patch, put, delete }
 
 class RequestHelper {
+  final bool apiLoggingEnabled = false;
+
   final Logger logger = Logger(RequestHelper);
 
   final String host = "digitalreceipts.azurewebsites.net";
@@ -150,6 +152,10 @@ class RequestHelper {
     int? statusCode,
     String? exception,
   }) {
+    if (!apiLoggingEnabled) {
+      return;
+    }
+
     const JsonDecoder decoder = JsonDecoder();
     const JsonEncoder encoder = JsonEncoder.withIndent('  ');
 
