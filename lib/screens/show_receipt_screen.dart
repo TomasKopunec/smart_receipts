@@ -66,40 +66,66 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
               getProducts(context),
               getSums(context),
               getAdditional(context),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
                       "Thank you for shopping with ${receipt.retailerName}!",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          fontWeight: FontWeight.w300,
+                          fontWeight: FontWeight.w400,
                           fontSize: SizeHelper.getFontSize(context,
                               size: FontSize.largest)),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                            onPressed: () {
-                              _returnItems(context);
-                            },
-                            icon: const Icon(Icons.arrow_back),
-                            label: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 12),
-                              child: Text("Return Products"),
-                            )),
-                      )
-                    ],
-                  )
-                ],
+                    if (isReturnable) returnsSection
+                  ],
+                ),
               ),
             ],
           ),
         ));
+  }
+
+  Widget get returnsSection {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        children: [
+          Text(
+            "If you wish to return any of the items, please press the return button below.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontWeight: FontWeight.w300,
+                fontSize: SizeHelper.getFontSize(
+                  context,
+                  size: FontSize.large,
+                )),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                    onPressed: () {
+                      _returnItems(context);
+                    },
+                    icon: const Icon(Icons.arrow_back),
+                    label: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Text("Return Products"),
+                    )),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  bool get isReturnable {
+    return receipt.products.where((e) => !e.returns.returned).isNotEmpty;
   }
 
   void _returnItems(context) {

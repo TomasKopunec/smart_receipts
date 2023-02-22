@@ -191,8 +191,8 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
         getEntry("Method", FieldType.string, widget.receipt.paymentMethod));
 
     if (widget.receipt.paymentMethod.toLowerCase() == 'card') {
-      widgets.add(
-          getEntry("Card Number", FieldType.string, widget.receipt.cardNumber));
+      widgets.add(getEntry("Card Number", FieldType.string,
+          "•••• •••• •••• ${widget.receipt.cardNumber!.substring(widget.receipt.cardNumber!.length - 4)}"));
     }
 
     widgets.add(getEntry("Status", FieldType.status, index));

@@ -57,6 +57,8 @@ class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
     _isLoaded = users.user != null;
 
     // Start a background thread that will listen to any changes
+    startListening();
+
     super.initState();
   }
 

@@ -24,7 +24,6 @@ class ReturnFromReceiptScreen extends StatefulWidget {
 
 class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
   final Set<Selection> _pairs = {};
-
   bool _showingQRCode = false;
 
   @override
@@ -138,9 +137,14 @@ class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
           Column(
             children: [
               const SizedBox(height: 8),
-              Text(
-                subtitle,
-                style: Theme.of(context).textTheme.titleMedium,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
               )
             ],
           ),
@@ -173,15 +177,20 @@ class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
     // For each product, group by SKU
     Map<String, int> skuGroup = HashMap();
     for (var e in widget.receipt.products) {
+      if (e.returns.returned) {
+        continue;
+      }
+
       skuGroup.update(e.sku, (value) => ++value, ifAbsent: () => 1);
     }
 
     final Set skus = HashSet();
     for (var p in widget.receipt.products) {
-      final int count = skuGroup[p.sku]!;
-      if (skus.contains(p.sku)) {
+      if (p.returns.returned || skus.contains(p.sku)) {
         continue;
       }
+
+      final int count = skuGroup[p.sku]!;
 
       skus.add(p.sku);
       productEntries.add(ReturnSelection(

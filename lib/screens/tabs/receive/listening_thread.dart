@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/requests/user_request_helper.dart';
@@ -54,15 +53,14 @@ class ListeningThread {
 
     final token = auth.token!.accessToken;
     users.fetchAndSetUser(token).then((value) {
+      logger.log("Pinging receipts");
       if (users.user!.count > oldCount) {
         logger.log("Received new receipt.");
-
+        clear();
         final provider = Provider.of<ReceiptsProvider>(context, listen: false);
-        provider
-            .fetchAndSetReceipts(token)
-            .then((value) => DialogHelper.showReceivedNewReceipt(
-                context, provider.getMostRecent()))
-            .then((value) => clear());
+        provider.fetchAndSetReceipts(token).then((value) =>
+            DialogHelper.showReceivedNewReceipt(
+                context, provider.getMostRecent()));
       }
     });
   }

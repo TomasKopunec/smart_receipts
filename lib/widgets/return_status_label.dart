@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../helpers/size_helper.dart';
 
 enum ReturnStatus {
-  issued(Colors.teal, "Refund Issued"),
-  processing(Color.fromRGBO(135, 100, 151, 1), "Processing"),
-  denied(Color.fromRGBO(216, 90, 78, 1), "Denied");
+  issued(Colors.teal, "Refund Issued");
+  //processing(Color.fromRGBO(135, 100, 151, 1), "Processing"),
+  // denied(Color.fromRGBO(216, 90, 78, 1), "Denied");
 
   final Color color;
   final String title;

@@ -5,7 +5,6 @@ import 'package:smart_receipts/models/return/return.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/returns/returns_provider.dart';
-import 'package:smart_receipts/screens/tabs/returns/control_header.dart';
 import 'package:smart_receipts/screens/tabs/returns/returns_entry.dart';
 import 'package:smart_receipts/widgets/control_header/control_header_builder.dart';
 import 'package:smart_receipts/widgets/no_data_found_widget.dart';
@@ -47,11 +46,14 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
 
     setState(() => _isLoading = true);
 
-    await _returns.fetchAndSetReturns(
-        Provider.of<AuthProvider>(context, listen: false).token!.accessToken);
+    final accessToken =
+        Provider.of<AuthProvider>(context, listen: false).token!.accessToken;
 
-    await Future.delayed(const Duration(milliseconds: 600));
+    // First fetch receipts, then returns
+    await _receipts.fetchAndSetReceipts(accessToken);
+    await _returns.fetchAndSetReturns(accessToken);
 
+    await Future.delayed(const Duration(milliseconds: 500));
     setState(() => _isLoading = false);
   }
 
@@ -79,7 +81,8 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
       }
 
       // If we pull the scroll to refresh
-      if (pixels <= SizeHelper.getScreenHeight(context) * 0.1) {
+      final refreshThreshold = SizeHelper.getScreenHeight(context) * 0.1125;
+      if (pixels <= -refreshThreshold) {
         _refreshData();
       } else {
         _isLoading = false;
