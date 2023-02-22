@@ -47,7 +47,6 @@ class DialogHelper {
               initialDate: initialDate,
               firstDate: DateTime(2020),
               lastDate: DateTime.now(),
-              cancelText: "RESET",
               confirmText: "SELECT",
               helpText: "SELECT ${isStartDate ? 'START' : 'END'} DATE",
               initialCalendarMode: DatePickerMode.day,

@@ -53,6 +53,7 @@ class ReceiptsProvider with ChangeNotifier {
       receipts: [..._receipts],
       value: _filterValue,
       favourites: _favorites,
+      favEnabled: _isShowingFavorites,
       start: _start,
       end: _end,
     );

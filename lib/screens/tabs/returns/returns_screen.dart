@@ -7,6 +7,7 @@ import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
 import 'package:smart_receipts/providers/returns/returns_provider.dart';
 import 'package:smart_receipts/screens/tabs/returns/control_header.dart';
 import 'package:smart_receipts/screens/tabs/returns/returns_entry.dart';
+import 'package:smart_receipts/widgets/control_header/control_header_builder.dart';
 import 'package:smart_receipts/widgets/no_data_found_widget.dart';
 import 'package:smart_receipts/widgets/shimmer_widget.dart';
 
@@ -96,7 +97,7 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
   @override
   Widget build(BuildContext context) {
     return widget.getScreen(
-      headerBody: ControlHeader(isLoading: _isLoading),
+      headerBody: header,
       screenBody: SingleChildScrollView(
         controller: _controller,
         physics: const BouncingScrollPhysics(
@@ -107,6 +108,14 @@ class _ReturnsScreenState extends State<ReturnsScreen> {
         ),
       ),
     );
+  }
+
+  Widget get header {
+    return ControlHeaderBuilder()
+        .withReturnsSearchBar()
+        .withReturnsSorting()
+        .withReturnRangeSelection(context)
+        .build(context, _isLoading);
   }
 
   Widget getBody(ReturnsProvider provider) {

@@ -19,9 +19,9 @@ class ReturnsFilterHelper {
 
     // 2. Perform receipts search (on returns original receipts)
     final receipts = await ReceiptsFilterHelper.filterReceipts(
-      receipts: returns.map((e) => e.originalReceipt!).toList(),
-      value: value,
-    );
+        receipts: returns.map((e) => e.originalReceipt!).toList(),
+        value: value,
+        favEnabled: false);
     final receiptIds = receipts.map((r) => r.receiptId).toSet();
 
     // 3. Return all returns that have a matching ID with found receipts

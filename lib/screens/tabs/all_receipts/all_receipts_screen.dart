@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/receipts/receipts_provider.dart';
-import 'package:smart_receipts/screens/tabs/all_receipts/control_header.dart';
 import 'package:smart_receipts/screens/tabs/all_receipts/responsive_table/receipt_table.dart';
+import 'package:smart_receipts/widgets/control_header/control_header_builder.dart';
 import '../../tab_control/abstract_tab_screen.dart';
 
 class AllReceiptsScreen extends AbstractTabScreen {
@@ -109,12 +109,24 @@ class _AllReceiptsState extends State<AllReceiptsScreen> {
   @override
   Widget build(BuildContext context) {
     return widget.getScreen(
-        headerBody: ControlHeader(isLoading: _isLoading),
+        headerBody: header,
         screenBody: SingleChildScrollView(
           controller: _controller,
           physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),
-          child: ReceiptTable(refreshData: _refreshData, isLoading: _isLoading),
+          child: ReceiptTable(
+            refreshData: _refreshData,
+            isLoading: _isLoading,
+          ),
         ));
+  }
+
+  Widget get header {
+    return ControlHeaderBuilder()
+        .withReceiptSearchBar()
+        .withFavouriteToggle(context)
+        .withReceiptSorting()
+        .withReceiptRangeSelection(context)
+        .build(context, _isLoading);
   }
 }
