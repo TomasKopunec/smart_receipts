@@ -50,9 +50,15 @@ class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
         const Duration(seconds: 1), (Timer t) => _getTimeString());
 
     users = Provider.of<UserProvider>(context, listen: false);
-    users.addListener(() => setState(() {
-          _isLoaded = users.user != null;
-        }));
+    users.addListener(() {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _isLoaded = users.user != null;
+      });
+    });
 
     _isLoaded = users.user != null;
 
@@ -67,13 +73,8 @@ class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
       return;
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<ReceiptsProvider>(context, listen: false).startListening(
-        context,
-        users,
-        Provider.of<AuthProvider>(context, listen: false),
-      );
-    });
+    Provider.of<ReceiptsProvider>(context, listen: false)
+        .startListening(context);
   }
 
   @override

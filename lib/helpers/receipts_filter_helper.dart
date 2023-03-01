@@ -76,7 +76,8 @@ class ReceiptsFilterHelper {
 
   static bool _dateRange(Receipt r, DateTime start, DateTime end) {
     final DateTime purchaseDateTime = r.purchaseDateTime;
-    return purchaseDateTime.isAfter(start) && purchaseDateTime.isBefore(end);
+    return purchaseDateTime.isAfter(start.subtract(const Duration(days: 1))) &&
+        purchaseDateTime.isBefore(end.add(const Duration(days: 1)));
   }
 
   static bool _favourite(Receipt r, Set<String> favourites, bool favEnabled) {

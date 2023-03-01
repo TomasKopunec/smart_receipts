@@ -43,7 +43,7 @@ class ListeningThread {
     // Do an initial call
     onPingTick();
 
-    logger.log("Listening Thread for receipt updates started. (2s)");
+    logger.log("Listening Thread for receipt updates started. (3s)");
   }
 
   void onPingTick() async {
@@ -54,6 +54,9 @@ class ListeningThread {
     final token = auth.token!.accessToken;
     users.fetchAndSetUser(token).then((value) {
       logger.log("Pinging receipts");
+      if (users.user == null) {
+        return;
+      }
       if (users.user!.count > oldCount) {
         logger.log("Received new receipt.");
         clear();

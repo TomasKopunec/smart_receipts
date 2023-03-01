@@ -40,7 +40,10 @@ class DialogHelper {
   }
 
   static Future<DateTime?> showDatePickerDialog(
-      BuildContext context, DateTime initialDate, bool isStartDate) async {
+    BuildContext context,
+    DateTime initialDate,
+    bool isStartDate,
+  ) async {
     return await showDialog(
         context: context,
         builder: (context) => DatePickerDialog(

@@ -1,15 +1,14 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
-import 'package:smart_receipts/helpers/requests/http_exception.dart';
 import 'package:smart_receipts/helpers/requests/response.dart';
 import 'package:smart_receipts/utils/logger.dart';
 
 enum RequestType { post, get, patch, put, delete }
 
 class RequestHelper {
-  final bool apiLoggingEnabled = false;
+  final bool apiLoggingEnabled = true;
 
   final Logger logger = Logger(RequestHelper);
 
@@ -71,13 +70,17 @@ class RequestHelper {
         break;
     }
 
-    final response = await future
-        .timeout(const Duration(seconds: 20)) // Default of 20s timeout
+    final response = await future.timeout(
+      const Duration(seconds: 30),
+      onTimeout: () {
+        throw Exception("Connection timeout of 30s has been reached.");
+      },
+    ) // Default of 30s timeout
         .onError((err, stackTrace) {
-      print('${err.runtimeType.toString()} occured sending a request!');
-      print('Message: $err');
-      throw Exception(
-          '${err.runtimeType.toString()} occured sending a request! \n Message: $err');
+      final str =
+          'Exception occured while sending a request to the API! \n$err';
+      print(str);
+      return Future.value(http.Response("", 500, reasonPhrase: str));
     });
 
     return _getResponse(response);
@@ -130,17 +133,13 @@ class RequestHelper {
 
   Response _getResponse(http.Response httpResponse) {
     final Response response = Response(
-        code: httpResponse.statusCode,
-        headers: httpResponse.headers,
-        body: httpResponse.body,
-        exception: httpResponse.reasonPhrase);
+      code: httpResponse.statusCode,
+      headers: httpResponse.headers,
+      body: httpResponse.body,
+      exception: httpResponse.reasonPhrase,
+    );
 
-    if (response.code >= 200 && response.code < 500) {
-      // Success
-      return response;
-    } else {
-      throw HttpException(ExceptionType.serverError, response.exception!);
-    }
+    return response;
   }
 
   void _log(
@@ -214,13 +213,15 @@ class RequestHelper {
   }
 
   static void showNetworkErrorDialog(BuildContext context,
-      {String title = "Network Exception", Object err = ''}) {
+      {String title = "Network Exception", Object? err}) {
     showDialog<void>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Unexpected Exception"),
-          content: SingleChildScrollView(child: Text(err.toString())),
+          title: Text(title),
+          content: err == null
+              ? Container()
+              : SingleChildScrollView(child: Text(err.toString())),
           actions: [
             ElevatedButton(
                 onPressed: () {

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/receipts_filter_helper.dart';
 import 'package:smart_receipts/helpers/requests/receipt_request_helper.dart';
 import 'package:smart_receipts/models/receipt/receipt.dart';
@@ -245,12 +246,11 @@ class ReceiptsProvider with ChangeNotifier {
   }
 
   /// LISTENING THREAD
-  void startListening(
-      BuildContext context, UserProvider users, AuthProvider auth) {
+  void startListening(BuildContext context) {
     _listeningThread = ListeningThread(
       context: context,
-      users: users,
-      auth: auth,
+      users: Provider.of<UserProvider>(context, listen: false),
+      auth: Provider.of<AuthProvider>(context, listen: false),
       onFinish: () => stopListening(),
     );
   }
