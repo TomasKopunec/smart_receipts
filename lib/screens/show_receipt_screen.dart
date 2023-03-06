@@ -211,7 +211,12 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
 
       keys.add(p.sku);
 
-      String returned = "${p.name} ($count x ${p.price})";
+      String returned = "${p.name} ($count x ${CurrencyHelper.getFormatted(
+        price: p.price * count,
+        originCurrency: receipt.currency,
+        targetCurrency: settings.currency,
+        includeCurrency: false,
+      )})";
 
       if (dto.returned_count > 0) {
         returned =
@@ -219,12 +224,13 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
       }
 
       productEntries.add(getSectionEntry(
-          returned,
-          CurrencyHelper.getFormatted(
-            price: p.price * count,
-            originCurrency: receipt.currency,
-            targetCurrency: settings.currency,
-          )));
+        returned,
+        CurrencyHelper.getFormatted(
+          price: p.price * count,
+          originCurrency: receipt.currency,
+          targetCurrency: settings.currency,
+        ),
+      ));
     }
 
     return getSection(context, "Products", productEntries);

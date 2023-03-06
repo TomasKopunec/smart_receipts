@@ -1,12 +1,18 @@
 import '../providers/settings/settings_provider.dart';
 
 class CurrencyHelper {
-  static String getFormatted(
-      {required double price,
-      required Currency originCurrency,
-      required Currency targetCurrency}) {
+  static String getFormatted({
+    required double price,
+    required Currency originCurrency,
+    required Currency targetCurrency,
+    bool includeCurrency = true,
+  }) {
     String priceFormatted =
         convert(price, originCurrency, targetCurrency).toStringAsFixed(2);
+
+    if (!includeCurrency) {
+      return priceFormatted;
+    }
 
     return targetCurrency == Currency.pound
         ? '${targetCurrency.currency.toUpperCase()}$priceFormatted'
