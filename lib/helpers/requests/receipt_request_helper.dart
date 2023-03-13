@@ -17,7 +17,6 @@ class ReceiptsRequestHelper extends RequestHelper {
     const method = ReceiptMethod.getReceipts;
 
     final response = await send(
-      name: method.name,
       path: method.path,
       type: method.type,
       authToken: token,

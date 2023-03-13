@@ -18,7 +18,6 @@ class RequestHelper {
 
   /// Sends a request and logs
   Future<Response> send({
-    required String name,
     required RequestType type,
     required String path,
     Object? body,

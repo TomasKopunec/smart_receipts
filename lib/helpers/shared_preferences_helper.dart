@@ -8,6 +8,10 @@ import '../providers/settings/settings_dto.dart';
 class SharedPreferencesHelper {
   static const String FAVORITES_LIST = '/FAVORITES_LIST';
 
+  static Future<SharedPreferences> get _instance async {
+    return SharedPreferences.getInstance();
+  }
+
   static Future<bool> clearAll() async {
     await saveSettings(const SettingsDto());
     await saveFavorites([]);
@@ -30,10 +34,6 @@ class SharedPreferencesHelper {
   static Future<bool> saveSettings(SettingsDto settingsDto) async {
     final prefs = await _instance;
     return prefs.setString("settings", json.encode(settingsDto.toJson()));
-  }
-
-  static Future<SharedPreferences> get _instance async {
-    return SharedPreferences.getInstance();
   }
 
   static Future<bool> setStringList(

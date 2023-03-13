@@ -16,7 +16,6 @@ class ReturnsRequestHelper extends RequestHelper {
     const method = ReturnsMethod.getReturns;
 
     final response = await send(
-      name: method.name,
       path: method.path,
       type: method.type,
       authToken: token,

@@ -47,20 +47,16 @@ class QrCodeHelper {
     });
   }
 
-  static String getReturnQrCodeData({
-    required String receiptId,
-    required String email,
-    required Map<Product, int> products,
-  }) {
-    List<dynamic> jsons = [];
-    for (final entry in products.entries) {
-      jsons.add({'sku': entry.key.sku, 'quantity': entry.value});
-    }
-
+  static String getReturnQrCodeData(
+      {required String receiptId,
+      required String email,
+      required Map<Product, int> products}) {
     return json.encode({
       "receipt_id": receiptId,
       "customer_email": email,
-      "returned_items": jsons,
+      "returned_items": products.entries
+          .map((e) => {'sku': e.key.sku, 'quantity': e.value})
+          .toList(),
     });
   }
 }

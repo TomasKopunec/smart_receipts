@@ -19,7 +19,6 @@ class UserRequestHelper extends RequestHelper {
     const method = UserMethod.getProfile;
 
     final response = await send(
-      name: method.name,
       path: method.path,
       type: method.type,
       authToken: token,
@@ -48,7 +47,6 @@ class UserRequestHelper extends RequestHelper {
     const method = UserMethod.changePassword;
 
     final response = await send(
-      name: method.name,
       path: method.path,
       type: method.type,
       body: json.encode({
@@ -80,7 +78,6 @@ class UserRequestHelper extends RequestHelper {
 
     final response = await send(
       authToken: token,
-      name: method.name,
       path: method.path,
       type: method.type,
       body: json.encode({
