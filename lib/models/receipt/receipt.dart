@@ -23,7 +23,6 @@ enum ReceiptStatus {
 /*
   20-21. March 52 pounds, GTW - Stockholm 13:00 - 16:30, 17:55 - 19:30
   18-20. April 58 pounds, VIE - ARN 18:00 - 20:15, 17:30 - 19:45
-
 */
 
 enum ReceiptField {
