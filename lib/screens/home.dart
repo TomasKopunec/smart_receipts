@@ -18,8 +18,12 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    print("Rebulding HOME | seenSplash: $_seenSplash");
+
     return _seenSplash
         ? Consumer<AuthProvider>(builder: (ctx, auth, _) {
+            print(
+                "Building Authenticated, isAuthenticated: ${auth.isAuthenticated}");
             return auth.isAuthenticated
                 ? const TabsScaffold()
                 : const AuthenticationScreen();
