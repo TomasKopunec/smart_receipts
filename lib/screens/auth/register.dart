@@ -32,9 +32,9 @@ class _RegisterState extends State<Register> {
 
   @override
   void initState() {
-    emailController.text = "tomas.kopunec5@email.com";
-    passwordController.text = "123456789";
-    repeatPasswordController.text = "123456789";
+    emailController.text = "";
+    passwordController.text = "";
+    repeatPasswordController.text = "";
 
     super.initState();
   }

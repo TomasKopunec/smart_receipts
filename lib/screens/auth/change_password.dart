@@ -22,14 +22,13 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController emailController =
-      TextEditingController(text: "tomas.kopunec5@email.com");
+  final TextEditingController emailController = TextEditingController(text: "");
   final TextEditingController oldPasswordController =
-      TextEditingController(text: "123456789");
+      TextEditingController(text: "");
   final TextEditingController newPasswordController =
-      TextEditingController(text: "strong_password");
+      TextEditingController(text: "");
   final TextEditingController newPasswordRepeatController =
-      TextEditingController(text: "strong_password");
+      TextEditingController(text: " ");
 
   @override
   void dispose() {
