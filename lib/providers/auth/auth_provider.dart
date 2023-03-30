@@ -17,10 +17,13 @@ class AuthProvider with ChangeNotifier {
     return _token;
   }
 
-  void setToken(Token? token) {
+  void setToken(Token? token) async {
     _token = token;
-    SharedPreferencesHelper.setToken(token); // Update the memory
+    print("Token updated");
+    await SharedPreferencesHelper.setToken(token); // Update the memory
+    print("Token stored in memory.");
     notifyListeners();
+    print("Listeners notified.");
   }
 
   Future<AuthResponseDTO> register(String email, String password) {

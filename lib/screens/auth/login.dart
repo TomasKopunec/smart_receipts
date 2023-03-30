@@ -91,6 +91,8 @@ class _LoginState extends State<Login> {
       return;
     }
 
+    print("Login pressed.");
+
     final email = emailController.text;
     final password = passwordController.text;
 
@@ -108,9 +110,8 @@ class _LoginState extends State<Login> {
       result = AuthResponseDTO(status: false, message: e.toString());
     }
 
-    setState(() {
-      _isLoading = false;
-    });
+    print("Result fetched:");
+    print(result);
 
     if (mounted) {
       if (isException) {
@@ -122,9 +123,17 @@ class _LoginState extends State<Login> {
       }
     }
 
+    print("Result status: ${result.status}");
+
     if (result.status) {
+      print("Auth.setToken(${result.token})");
       auth.setToken(result.token!);
     }
+
+    print("Loading finished.");
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Widget get rememberMeCheckbox {
