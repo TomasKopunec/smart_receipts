@@ -7,6 +7,11 @@ class Token {
     required this.expiresAt,
   });
 
+  @override
+  String toString() {
+    return "Token: $accessToken, expires at: $expiresAt";
+  }
+
   Map<String, dynamic> toJson() {
     return {
       "accessToken": accessToken,
