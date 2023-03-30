@@ -10,7 +10,11 @@ class AuthProvider with ChangeNotifier {
 
   /* Digital Only */
   bool get isAuthenticated {
-    return _token != null && (_token!.expiresAt.isAfter(DateTime.now()));
+    print("_token != null ? ${_token != null}");
+    print(
+        "_token!.expiresAt.isAfter(DateTime.now()) ? ${_token!.expiresAt.isAfter(DateTime.now())}");
+    print("isAuthenticated: $_token");
+    return _token != null;
   }
 
   Token? get token {
@@ -18,6 +22,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   void setToken(Token? token) async {
+    print("setToken($token)");
     _token = token;
     print("Token updated");
     await SharedPreferencesHelper.setToken(token); // Update the memory
