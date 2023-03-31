@@ -202,7 +202,10 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium!
-                                    .copyWith(fontWeight: FontWeight.w400),
+                                    .copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize:
+                                            SizeHelper.getFontSize(context)),
                               ),
                               const Spacer(),
                               getValueWidget(
@@ -268,8 +271,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
                   overflow: TextOverflow.clip,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w400,
-                      fontSize: SizeHelper.getFontSize(context,
-                          size: FontSize.regularLarge)),
+                      fontSize: SizeHelper.getFontSize(context)),
                 ),
                 const Spacer(),
                 getValueWidget(header, widget.data[header.name])
@@ -305,8 +307,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
         overflow: TextOverflow.fade,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             fontWeight: FontWeight.w300,
-            fontSize:
-                SizeHelper.getFontSize(context, size: FontSize.regularLarge)));
+            fontSize: SizeHelper.getFontSize(context)));
   }
 
   @override

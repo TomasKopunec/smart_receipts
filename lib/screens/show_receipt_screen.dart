@@ -299,7 +299,6 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
               style: TextStyle(
                   fontSize: SizeHelper.getFontSize(
                 context,
-                size: FontSize.large,
               ))),
           AutoSizeText(
             right,
@@ -308,7 +307,6 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
                 overflow: TextOverflow.fade,
                 fontSize: SizeHelper.getFontSize(
                   context,
-                  size: FontSize.large,
                 )),
           ),
         ],
@@ -326,8 +324,9 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
         children: [
           Text("Receipt ID:",
               style: TextStyle(
-                  fontSize:
-                      SizeHelper.getFontSize(context, size: FontSize.large))),
+                  fontSize: SizeHelper.getFontSize(
+                context,
+              ))),
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
@@ -335,8 +334,9 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
               style: TextStyle(
                   overflow: TextOverflow.fade,
                   fontWeight: FontWeight.w400,
-                  fontSize:
-                      SizeHelper.getFontSize(context, size: FontSize.large)),
+                  fontSize: SizeHelper.getFontSize(
+                    context,
+                  )),
             ),
           ),
         ],
@@ -352,9 +352,7 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
         children: [
           Text(
             left,
-            style: TextStyle(
-                fontSize:
-                    SizeHelper.getFontSize(context, size: FontSize.large)),
+            style: TextStyle(fontSize: SizeHelper.getFontSize(context)),
           ),
           right,
         ],

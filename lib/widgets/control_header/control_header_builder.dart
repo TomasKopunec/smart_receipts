@@ -148,7 +148,7 @@ class ControlHeaderBuilder {
         const Divider(height: 1, thickness: 1),
         ExpandablePanel(
             collapsed: Container(),
-            controller: ExpandableController(initialExpanded: false),
+            controller: ExpandableController(initialExpanded: true),
             theme: const ExpandableThemeData(
               iconPadding: EdgeInsets.only(right: 12, top: 12),
               bodyAlignment: ExpandablePanelBodyAlignment.center,

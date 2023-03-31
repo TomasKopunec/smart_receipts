@@ -273,8 +273,7 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
                   overflow: TextOverflow.fade,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w400,
-                      fontSize: SizeHelper.getFontSize(context,
-                          size: FontSize.regularLarge)),
+                      fontSize: SizeHelper.getFontSize(context)),
                 ),
                 const Spacer(),
                 getValueWidget(valueType, value)
@@ -311,8 +310,7 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
         overflow: TextOverflow.fade,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             fontWeight: FontWeight.w300,
-            fontSize:
-                SizeHelper.getFontSize(context, size: FontSize.regularLarge)));
+            fontSize: SizeHelper.getFontSize(context)));
   }
 
   @override

@@ -126,7 +126,7 @@ class Receipt {
 
   static List<ReceiptField> getSearchableKeys() {
     return [
-      ReceiptField.receiptId,
+      // ReceiptField.receiptId,
       ReceiptField.retailerName,
       ReceiptField.purchaseDateTime,
       ReceiptField.purchaseLocation,
