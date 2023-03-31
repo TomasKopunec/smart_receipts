@@ -16,7 +16,7 @@ import '../models/product/product.dart';
 import '../models/receipt/receipt.dart';
 
 class ShowReceiptScreen extends StatefulWidget {
-  ShowReceiptScreen({super.key});
+  const ShowReceiptScreen({super.key});
 
   @override
   State<ShowReceiptScreen> createState() => _ShowReceiptScreenState();
@@ -182,20 +182,20 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
     // For each product, group by ProductDTO
     Set<ProductDto> set = HashSet();
     for (var p in receipt.products) {
-      final dto = ProductDto(product: p, count: 0, returned_count: 0);
+      final dto = ProductDto(product: p, count: 0, returnedCount: 0);
       if (set.contains(dto)) {
         final ProductDto loaded =
             set.firstWhere((dto) => dto.product.sku == p.sku);
         loaded.count++;
         if (p.returns.returned) {
-          loaded.returned_count++;
+          loaded.returnedCount++;
         }
         set.removeWhere((dto) => dto.product.sku == p.sku);
         set.add(loaded);
       } else {
         dto.count++;
         if (p.returns.returned) {
-          dto.returned_count++;
+          dto.returnedCount++;
         }
         set.add(dto);
       }
@@ -218,9 +218,9 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
         includeCurrency: false,
       )})";
 
-      if (dto.returned_count > 0) {
+      if (dto.returnedCount > 0) {
         returned =
-            "$returned  #Returned ${dto.returned_count == dto.count ? 'All' : '${dto.returned_count}'}";
+            "$returned  #Returned ${dto.returnedCount == dto.count ? 'All' : '${dto.returnedCount}'}";
       }
 
       productEntries.add(getSectionEntry(
@@ -366,12 +366,12 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
 class ProductDto {
   final Product product;
   int count = 0;
-  int returned_count = 0;
+  int returnedCount = 0;
 
   ProductDto({
     required this.product,
     this.count = 0,
-    this.returned_count = 0,
+    this.returnedCount = 0,
   });
 
   @override

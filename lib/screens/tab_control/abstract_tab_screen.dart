@@ -4,6 +4,8 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:smart_receipts/screens/tab_control/screen_wrapper.dart';
 
 abstract class AbstractTabScreen extends StatefulWidget {
+  const AbstractTabScreen({super.key});
+
   @nonVirtual
   PersistentBottomNavBarItem getAppBarItem(BuildContext context) {
     return PersistentBottomNavBarItem(

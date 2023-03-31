@@ -173,13 +173,13 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
           ),
         ));
 
-        entries.forEach((e) {
+        for (var e in entries) {
           widgets.add(DataEntryWidgetMobile(
               isSelecting: widget.isSelecting,
               color: widget.prefferedColor,
               data: e,
               headers: widget.headers));
-        });
+        }
       }
       return widgets;
     }

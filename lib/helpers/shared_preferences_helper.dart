@@ -6,7 +6,7 @@ import '../providers/auth/token.dart';
 import '../providers/settings/settings_dto.dart';
 
 class SharedPreferencesHelper {
-  static const String FAVORITES_LIST = '/FAVORITES_LIST';
+  static const String favoritesList = '/FAVORITES_LIST';
 
   static Future<SharedPreferences> get _instance async {
     return SharedPreferences.getInstance();
@@ -44,13 +44,13 @@ class SharedPreferencesHelper {
   }
 
   static Future<bool> saveFavorites(List<String> favorites) async {
-    return await setStringList(key: FAVORITES_LIST, value: favorites);
+    return await setStringList(key: favoritesList, value: favorites);
   }
 
   static Future<List<String>> getFavorites() async {
     final prefs = await _instance;
 
-    final List<String>? favs = prefs.getStringList(FAVORITES_LIST);
+    final List<String>? favs = prefs.getStringList(favoritesList);
     return favs ?? [];
   }
 

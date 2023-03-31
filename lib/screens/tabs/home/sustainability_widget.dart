@@ -8,7 +8,7 @@ import 'package:smart_receipts/widgets/shimmer_widget.dart';
 class SustainabilityWidget extends StatefulWidget {
   final bool isLoading;
 
-  const SustainabilityWidget({required this.isLoading});
+  const SustainabilityWidget({super.key, required this.isLoading});
 
   @override
   State<SustainabilityWidget> createState() => _SustainabilityWidgetState();
@@ -39,8 +39,8 @@ class _SustainabilityWidgetState extends State<SustainabilityWidget> {
       padding: EdgeInsets.zero,
       childAspectRatio: 4 / 3,
       crossAxisCount: 2,
-      children: gridCards,
       physics: const NeverScrollableScrollPhysics(),
+      children: gridCards,
     );
   }
 

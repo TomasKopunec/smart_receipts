@@ -29,11 +29,11 @@ class CurrencyHelper {
           return price * 1.12;
         case Currency.dollar:
           return price * 1.2;
-        case Currency.australian_dollar:
+        case Currency.australianDollar:
           return price * 1.75;
-        case Currency.canadian_dollar:
+        case Currency.canadianDollar:
           return price * 1.62;
-        case Currency.swiss_frank:
+        case Currency.swissFrank:
           return price * 1.11;
         case Currency.hkd:
           return price * 9.45;

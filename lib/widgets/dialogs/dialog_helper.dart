@@ -75,7 +75,7 @@ class DialogHelper {
 
   static void confirmAccountDeletion(BuildContext context) {
     TextEditingController controller = TextEditingController();
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
 
     const redColor = Color.fromRGBO(216, 90, 78, 1);
     showConfirmDialog(
@@ -87,7 +87,7 @@ class DialogHelper {
         color: redColor,
         controller: controller,
         isForm: true,
-        key: _formKey,
+        key: formKey,
         buttons: [
           ElevatedButton(
             onPressed: () => Navigator.pop(context, false),
@@ -98,7 +98,7 @@ class DialogHelper {
           Consumer<UserProvider>(
               builder: (ctx, users, child) => LoadingButton(
                     onPressed: () async {
-                      if (!_formKey.currentState!.validate()) {
+                      if (!formKey.currentState!.validate()) {
                         return;
                       }
 

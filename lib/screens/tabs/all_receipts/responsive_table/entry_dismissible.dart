@@ -9,7 +9,7 @@ class EntryDismissible extends StatelessWidget {
   final Color color;
 
   const EntryDismissible(
-      {required this.child, required this.color, required this.id});
+      {super.key, required this.child, required this.color, required this.id});
 
   void _star(BuildContext context) {
     Provider.of<ReceiptsProvider>(context, listen: false).flipFavorite(id);

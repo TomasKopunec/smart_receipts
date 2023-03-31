@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, empty_catches
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -83,51 +85,6 @@ class RequestHelper {
     });
 
     return _getResponse(response);
-  }
-
-  Future<Response> _get(
-    String path, {
-    String? authToken,
-    Map<String, String>? headers,
-    Object? body,
-  }) {
-    return _send(RequestType.get, path, body: body, authToken: authToken);
-  }
-
-  Future<Response> _post(
-    String path, {
-    String? authToken,
-    Map<String, String>? headers,
-    Object? body,
-  }) {
-    return _send(RequestType.post, path, body: body, authToken: authToken);
-  }
-
-  Future<Response> _put(
-    String path, {
-    String? authToken,
-    Map<String, String>? headers,
-    Object? body,
-  }) {
-    return _send(RequestType.put, path, body: body, authToken: authToken);
-  }
-
-  Future<Response> _patch(
-    String path, {
-    String? authToken,
-    Map<String, String>? headers,
-    Object? body,
-  }) {
-    return _send(RequestType.patch, path, body: body, authToken: authToken);
-  }
-
-  Future<Response> _delete(
-    String path, {
-    String? authToken,
-    Map<String, String>? headers,
-    Object? body,
-  }) {
-    return _send(RequestType.delete, path, body: body, authToken: authToken);
   }
 
   Response _getResponse(http.Response httpResponse) {

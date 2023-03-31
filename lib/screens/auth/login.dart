@@ -4,14 +4,17 @@ import 'package:smart_receipts/helpers/requests/request_helper.dart';
 import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import '../../helpers/requests/auth_request_helper.dart';
 import '../../providers/settings/settings_provider.dart';
+import '../../utils/logger.dart';
 import '../../utils/snackbar_builder.dart';
 import 'auth_section_builder.dart';
 import 'authentication_screen.dart';
 
 class Login extends StatefulWidget {
+  final Logger logger = Logger(Login);
+
   final Function(AuthState state) func;
 
-  const Login({super.key, required this.func});
+  Login({super.key, required this.func});
 
   @override
   State<Login> createState() => _LoginState();
@@ -91,7 +94,7 @@ class _LoginState extends State<Login> {
       return;
     }
 
-    print("Login pressed.");
+    widget.logger.log("Login pressed.");
 
     final email = emailController.text;
     final password = passwordController.text;
@@ -110,7 +113,7 @@ class _LoginState extends State<Login> {
       result = AuthResponseDTO(status: false, message: e.toString());
     }
 
-    print(result);
+    widget.logger.log(result);
 
     if (mounted) {
       if (isException) {

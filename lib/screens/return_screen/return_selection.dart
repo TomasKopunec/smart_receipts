@@ -19,7 +19,8 @@ class Selection {
   }
 
   @override
-  bool operator ==(o) => o is Selection && product.sku == o.product.sku;
+  bool operator ==(other) =>
+      other is Selection && product.sku == other.product.sku;
 }
 
 class ReturnSelection extends StatefulWidget {

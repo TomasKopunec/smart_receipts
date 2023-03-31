@@ -9,7 +9,8 @@ class ConfirmDialog extends StatefulWidget {
   final Color color;
   final TextEditingController? input;
 
-  ConfirmDialog({
+  const ConfirmDialog({
+    super.key,
     required this.title,
     required this.subtitle,
     required this.icon,

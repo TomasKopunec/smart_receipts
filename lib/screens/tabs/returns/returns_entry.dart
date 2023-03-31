@@ -250,7 +250,7 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ShowReceiptScreen(),
+          builder: (context) => const ShowReceiptScreen(),
           settings: RouteSettings(arguments: widget.id),
         ));
   }

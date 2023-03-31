@@ -7,9 +7,9 @@ enum Currency {
   pound('British Pound', '£', 'gbp'),
   euro('British Dollar', '€', 'eur'),
   dollar('United States Dollar', '\$', 'usd'),
-  australian_dollar('Australian Dollar', '\$', 'aud'),
-  canadian_dollar('Canada Dollar', '\$', 'cad'),
-  swiss_frank('Switzerland Franc', 'chf', 'chf'),
+  australianDollar('Australian Dollar', '\$', 'aud'),
+  canadianDollar('Canada Dollar', '\$', 'cad'),
+  swissFrank('Switzerland Franc', 'chf', 'chf'),
   hkd('Hong Kong Dollar', '\$', 'hkd');
 
   const Currency(this.name, this.currency, this.code);

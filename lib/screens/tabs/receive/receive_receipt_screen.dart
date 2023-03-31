@@ -12,9 +12,14 @@ import 'package:smart_receipts/providers/settings/settings_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/widgets/shimmer_widget.dart';
 import 'package:smart_receipts/widgets/toggle_switch.dart';
+import '../../../utils/logger.dart';
 import '../../tab_control/abstract_tab_screen.dart';
 
 class ReceiveReceiptScreen extends AbstractTabScreen {
+  final Logger logger = Logger(ReceiveReceiptScreen);
+
+  ReceiveReceiptScreen({super.key});
+
   @override
   String getTitle() {
     return 'Receive Receipt';
@@ -223,7 +228,8 @@ class _ReceiveReceiptScreenState extends State<ReceiveReceiptScreen> {
           enabled: _isLoaded,
           onToggle: (value) {
             provider.setDigitalOnly(value);
-            print('Digital receipt only ${value ? "enabled" : "disabled"}');
+            widget.logger
+                .log('Digital receipt only ${value ? "enabled" : "disabled"}');
           },
         )
       ],

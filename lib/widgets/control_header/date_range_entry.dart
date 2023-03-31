@@ -83,6 +83,5 @@ class DateRangeEntry extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

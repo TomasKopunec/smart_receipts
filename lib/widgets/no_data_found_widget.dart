@@ -8,6 +8,7 @@ class NoDataFoundWidget extends StatefulWidget {
   final double height;
 
   const NoDataFoundWidget({
+    super.key,
     required this.height,
     required this.title,
     required this.subtitle,

@@ -5,7 +5,7 @@ import '../models/receipt/receipt.dart';
 class ReceiptStatusLabel extends StatelessWidget {
   final ReceiptStatus status;
 
-  const ReceiptStatusLabel({required this.status});
+  const ReceiptStatusLabel({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {

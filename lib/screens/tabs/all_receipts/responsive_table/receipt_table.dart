@@ -10,9 +10,9 @@ import '../../../../models/receipt/receipt.dart';
 
 class ReceiptTable extends StatefulWidget {
   final VoidCallback refreshData;
-  bool isLoading;
+  final bool isLoading;
 
-  ReceiptTable({
+  const ReceiptTable({
     super.key,
     required this.refreshData,
     this.isLoading = false,
@@ -31,8 +31,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ReceiptsProvider>(context, listen: false);
-
-    print('Rebuilding receipt table!');
 
     final title = (provider.filterValue.isNotEmpty && provider.receiptSize == 0)
         ? 'Sorry, we couldn\'t find any receipts that match your search criteria.'
@@ -71,17 +69,6 @@ class _ReceiptTableState extends State<ReceiptTable> {
     } else {
       return GroupType.none;
     }
-  }
-
-  /// Helper methods
-  Icon _getIcon(IconData icon, bool isActive, {double? size}) {
-    return Icon(
-      icon,
-      color: isActive
-          ? Theme.of(context).primaryColor
-          : Theme.of(context).primaryColor.withOpacity(0.5),
-      size: size,
-    );
   }
 
   LinearProgressIndicator get loadingIndicator {

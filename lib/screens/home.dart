@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth/auth_provider.dart';
+import '../utils/logger.dart';
 import 'auth/authentication_screen.dart';
 import 'splash_screen.dart';
 import 'tab_control/tabs_scaffold.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final Logger logger = Logger(Home);
+  Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -17,11 +19,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    print("Rebulding HOME | seenSplash: $_seenSplash");
+    widget.logger.log("Rebulding HOME | seenSplash: $_seenSplash");
 
     return _seenSplash
         ? Consumer<AuthProvider>(builder: (ctx, auth, _) {
-            print(
+            widget.logger.log(
                 "Building Authenticated, isAuthenticated: ${auth.isAuthenticated}");
             return auth.isAuthenticated
                 ? const TabsScaffold()

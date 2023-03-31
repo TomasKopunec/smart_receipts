@@ -12,6 +12,8 @@ import '../../tab_control/abstract_tab_screen.dart';
 import 'change_password_screen.dart';
 
 class SettingsScreen extends AbstractTabScreen {
+  const SettingsScreen({super.key});
+
   @override
   String getTitle() {
     return 'Settings';
@@ -86,7 +88,7 @@ class _SettingsState extends State<SettingsScreen> {
             isInitialValue: provider.theme == ThemeSetting.light,
             onValueChange: (value) {
               provider.selectTheme(ThemeSetting.from(value));
-              print('Theme changing to: ${value}');
+              // print('Theme changing to: $value');
             },
           ),
         ));
@@ -126,8 +128,6 @@ class _SettingsState extends State<SettingsScreen> {
                     Expanded(
                       child: ElevatedButton.icon(
                           onPressed: () {
-                            String? name =
-                                ModalRoute.of(context)!.settings.name;
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

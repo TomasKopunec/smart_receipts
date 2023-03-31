@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smart_receipts/helpers/size_helper.dart';
 
 enum SortStatus { asc, desc }
 
@@ -84,7 +83,6 @@ class _SortingSelectionDropdownState extends State<SortingSelectionDropdown> {
             ),
           ),
         ));
-    ;
   }
 
   Icon getSortStatusIcon(SortStatus sortStatus) {

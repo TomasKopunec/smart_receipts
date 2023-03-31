@@ -1,3 +1,5 @@
+// ignore_for_file: hash_and_equals
+
 import 'package:smart_receipts/models/product/returns.dart';
 part 'product.g.dart';
 

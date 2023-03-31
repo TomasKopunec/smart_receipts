@@ -8,11 +8,12 @@ import 'package:smart_receipts/providers/auth/auth_provider.dart';
 import 'package:smart_receipts/providers/user_provider.dart';
 import 'package:smart_receipts/screens/tabs/home/recent_receipts.dart';
 import 'package:smart_receipts/screens/tabs/home/sustainability_widget.dart';
-import 'package:smart_receipts/widgets/shimmer_widget.dart';
 
 import '../../tab_control/abstract_tab_screen.dart';
 
 class HomeScreen extends AbstractTabScreen {
+  const HomeScreen({super.key});
+
   @override
   String getTitle() {
     return 'Home';

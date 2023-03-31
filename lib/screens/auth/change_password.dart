@@ -10,9 +10,10 @@ import 'authentication_screen.dart';
 
 class ChangePassword extends StatefulWidget {
   final Function(AuthState state) func;
-  bool isLoggedIn;
+  final bool isLoggedIn;
 
-  ChangePassword({super.key, required this.func, this.isLoggedIn = false});
+  const ChangePassword(
+      {super.key, required this.func, this.isLoggedIn = false});
 
   @override
   State<ChangePassword> createState() => _ChangePasswordState();
@@ -55,8 +56,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                             fontWeight: FontWeight.w400,
                             fontSize: SizeHelper.getFontSize(context,
                                 size: FontSize.regularSmall)),
-                        "Enter the details associated with your account" +
-                            " along with your old and new password."),
+                        "Enter the details associated with your account along with your old and new password."),
                   ),
                 ))
                 .withInput(

@@ -13,6 +13,8 @@ import 'package:smart_receipts/widgets/shimmer_widget.dart';
 import '../../tab_control/abstract_tab_screen.dart';
 
 class ReturnsScreen extends AbstractTabScreen {
+  const ReturnsScreen({super.key});
+
   @override
   String getTitle() {
     return 'Returns';

@@ -17,7 +17,7 @@ class ScreenWrapper extends StatelessWidget {
     this.action,
     this.headerBody,
     Widget? screenBody,
-  }) : this.screenBody = screenBody ?? Center(child: Text(title));
+  }) : screenBody = screenBody ?? Center(child: Text(title));
 
   @override
   Widget build(BuildContext context) {

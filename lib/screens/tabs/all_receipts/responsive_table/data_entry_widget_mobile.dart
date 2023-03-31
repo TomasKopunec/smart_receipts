@@ -18,8 +18,6 @@ class DataEntryWidgetMobile extends StatefulWidget {
   final List<ReceiptField> headers;
   final bool isSelecting;
 
-  late double iconSize;
-
   DataEntryWidgetMobile({
     required this.isSelecting,
     required this.color,
@@ -247,7 +245,7 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ShowReceiptScreen(),
+          builder: (context) => const ShowReceiptScreen(),
           settings: RouteSettings(arguments: widget.id),
         ));
   }

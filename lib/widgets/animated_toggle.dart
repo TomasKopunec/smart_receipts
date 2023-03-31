@@ -14,6 +14,7 @@ class AnimatedToggle extends StatefulWidget {
   final Function(String value) onValueChange;
 
   const AnimatedToggle({
+    super.key,
     required this.width,
     required this.values,
     required this.onValueChange,
@@ -25,15 +26,14 @@ class AnimatedToggle extends StatefulWidget {
   }) : assert(values.length <= 2);
 
   @override
-  _AnimatedToggleState createState() => _AnimatedToggleState();
+  AnimatedToggleState createState() => AnimatedToggleState();
 }
 
-class _AnimatedToggleState extends State<AnimatedToggle> {
+class AnimatedToggleState extends State<AnimatedToggle> {
   late bool _initialPosition;
 
   @override
   void initState() {
-    // TODO: implement initState
     _initialPosition = widget.isInitialValue;
     super.initState();
   }

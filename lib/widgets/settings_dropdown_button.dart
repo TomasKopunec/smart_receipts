@@ -9,8 +9,9 @@ class SettingsDropdownButton extends StatefulWidget {
   final dynamic initialValue;
   final List<dynamic> items;
 
-  SettingsDropdownButton(
-      {required this.width,
+  const SettingsDropdownButton(
+      {super.key,
+      required this.width,
       required this.textColor,
       required this.backgroundColor,
       required this.items,

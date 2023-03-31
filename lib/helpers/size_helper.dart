@@ -76,7 +76,6 @@ class SizeHelper {
         return regularSize * 1.65;
       case FontSize.cardSize:
         return regularSize * 2;
-        break;
     }
   }
 

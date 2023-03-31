@@ -114,7 +114,7 @@ class _TabsScaffoldState extends State<TabsScaffold> {
       body: PageView(
         controller: _myPage,
         onPageChanged: (value) {
-          print('Page changes to index $value');
+          // ('Page changes to index $value');
         },
         physics: const NeverScrollableScrollPhysics(),
         children: screenProvider.screens,

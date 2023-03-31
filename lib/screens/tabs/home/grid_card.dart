@@ -8,6 +8,7 @@ class GridCard extends StatelessWidget {
   final String title;
 
   const GridCard({
+    super.key,
     required this.number,
     this.unit = '',
     required this.icon,
@@ -33,7 +34,7 @@ class GridCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${number}$unit',
+                      '$number$unit',
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: SizeHelper.getFontSize(context,

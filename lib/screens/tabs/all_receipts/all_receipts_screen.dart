@@ -9,6 +9,8 @@ import 'package:smart_receipts/widgets/control_header/control_header_builder.dar
 import '../../tab_control/abstract_tab_screen.dart';
 
 class AllReceiptsScreen extends AbstractTabScreen {
+  const AllReceiptsScreen({super.key});
+
   @override
   String getTitle() {
     return 'All Receipts';

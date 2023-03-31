@@ -15,7 +15,7 @@ import '../../models/receipt/receipt.dart';
 class ReturnFromReceiptScreen extends StatefulWidget {
   final Receipt receipt;
 
-  ReturnFromReceiptScreen({super.key, required this.receipt});
+  const ReturnFromReceiptScreen({super.key, required this.receipt});
 
   @override
   State<ReturnFromReceiptScreen> createState() =>
@@ -252,7 +252,7 @@ class _ReturnFromReceiptScreenState extends State<ReturnFromReceiptScreen> {
       return {};
     }
 
-    Map<Product, int> map = Map();
+    Map<Product, int> map = {};
     for (final selection in enabled) {
       map[selection.product] = selection.quantity;
     }

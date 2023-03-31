@@ -70,7 +70,7 @@ class _DateTimeDropdownButtonState extends State<DateTimeDropdownButton> {
               Provider.of<SettingsProvider>(context, listen: false)
                   .selectDateTimeFormat(_selected);
 
-              print('Changing datetime format to: ${value.format}');
+              // print('Changing datetime format to: ${value.format}');
             },
             child: SizedBox(
               width: widget.width,

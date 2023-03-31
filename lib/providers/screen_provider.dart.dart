@@ -8,10 +8,10 @@ import '../screens/tabs/settings_screen/settings_screen.dart';
 
 class ScreenProvider with ChangeNotifier {
   final List<AbstractTabScreen> _screens = [
-    HomeScreen(),
-    AllReceiptsScreen(),
-    ReturnsScreen(),
-    SettingsScreen(),
+    const HomeScreen(),
+    const AllReceiptsScreen(),
+    const ReturnsScreen(),
+    const SettingsScreen(),
     ReceiveReceiptScreen()
   ];
 
