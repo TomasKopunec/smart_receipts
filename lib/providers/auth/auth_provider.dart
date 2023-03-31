@@ -11,10 +11,12 @@ class AuthProvider with ChangeNotifier {
   /* Digital Only */
   bool get isAuthenticated {
     print("_token != null ? ${_token != null}");
+    print("DateTime.now() = ${DateTime.now()}");
+    print("token.expiresAt = ${_token != null ? _token!.expiresAt : null}");
     print(
-        "_token!.expiresAt.isAfter(DateTime.now()) ? ${_token!.expiresAt.isAfter(DateTime.now())}");
-    print("isAuthenticated: $_token");
-    return _token != null;
+        "Comparison = ${_token != null ? (DateTime.now().isBefore(_token!.expiresAt)) : null}");
+
+    return _token != null && (DateTime.now().isBefore(_token!.expiresAt));
   }
 
   Token? get token {
@@ -22,13 +24,9 @@ class AuthProvider with ChangeNotifier {
   }
 
   void setToken(Token? token) async {
-    print("setToken($token)");
     _token = token;
-    print("Token updated");
     await SharedPreferencesHelper.setToken(token); // Update the memory
-    print("Token stored in memory.");
     notifyListeners();
-    print("Listeners notified.");
   }
 
   Future<AuthResponseDTO> register(String email, String password) {

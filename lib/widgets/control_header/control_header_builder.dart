@@ -1,3 +1,4 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_receipts/helpers/size_helper.dart';
@@ -144,11 +145,45 @@ class ControlHeaderBuilder {
   Widget build(BuildContext context, bool isLoading) {
     return Column(
       children: [
+        const Divider(height: 1, thickness: 1),
         Container(
-          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
-          child: Column(
-            children: _widgets,
-          ),
+          child: ExpandablePanel(
+              collapsed: Container(),
+              controller: ExpandableController(initialExpanded: false),
+              theme: const ExpandableThemeData(
+                iconPadding: EdgeInsets.only(right: 12, top: 12),
+                bodyAlignment: ExpandablePanelBodyAlignment.center,
+                tapBodyToCollapse: false,
+                animationDuration: Duration(milliseconds: 450),
+                fadeCurve: Curves.fastLinearToSlowEaseIn,
+              ),
+              header: Padding(
+                padding: const EdgeInsets.only(
+                    top: 12, left: 24, right: 0, bottom: 12),
+                child: Center(
+                  child: Text(
+                    "Control Panel",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize:
+                          SizeHelper.getFontSize(context, size: FontSize.large),
+                      color: Theme.of(context).indicatorColor,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ),
+              expanded: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(
+                        left: 16, right: 16, bottom: 16, top: 4),
+                    child: Column(
+                      children: _widgets,
+                    ),
+                  ),
+                ],
+              )),
         ),
         if (isLoading)
           LinearProgressIndicator(

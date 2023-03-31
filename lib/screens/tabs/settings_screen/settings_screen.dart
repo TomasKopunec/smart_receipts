@@ -42,14 +42,18 @@ class _SettingsState extends State<SettingsScreen> {
   }
 
   Widget getScreenBody(SettingsProvider provider) {
-    return Column(
-      children: [
-        getDigitalOnlySettings(provider),
-        getThemeSettings(provider),
-        getCurrencySettings(),
-        getDateTimeSettings(),
-        getAccountSettings(),
-      ],
+    return SingleChildScrollView(
+      physics:
+          const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      child: Column(
+        children: [
+          getDigitalOnlySettings(provider),
+          getThemeSettings(provider),
+          getCurrencySettings(),
+          getDateTimeSettings(),
+          getAccountSettings(),
+        ],
+      ),
     );
   }
 

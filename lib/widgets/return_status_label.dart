@@ -33,7 +33,8 @@ class ReturnStatusLabel extends StatelessWidget {
         textAlign: TextAlign.center,
         style: TextStyle(
           color: Colors.white,
-          fontSize: SizeHelper.getFontSize(context, size: FontSize.small),
+          fontSize:
+              SizeHelper.getFontSize(context, size: FontSize.regularSmall),
         ),
       ),
     );

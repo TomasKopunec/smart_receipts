@@ -110,7 +110,6 @@ class _LoginState extends State<Login> {
       result = AuthResponseDTO(status: false, message: e.toString());
     }
 
-    print("Result fetched:");
     print(result);
 
     if (mounted) {
@@ -123,14 +122,10 @@ class _LoginState extends State<Login> {
       }
     }
 
-    print("Result status: ${result.status}");
-
     if (result.status) {
-      print("Auth.setToken(${result.token})");
       auth.setToken(result.token!);
     }
 
-    print("Loading finished.");
     setState(() {
       _isLoading = false;
     });

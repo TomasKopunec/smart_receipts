@@ -46,13 +46,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget getScreenBody(User? user) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SustainabilityWidget(isLoading: user == null),
-        RecentReceipts(isLoading: user == null),
-      ],
+    return SingleChildScrollView(
+      physics:
+          const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SustainabilityWidget(isLoading: user == null),
+          RecentReceipts(isLoading: user == null),
+        ],
+      ),
     );
   }
 

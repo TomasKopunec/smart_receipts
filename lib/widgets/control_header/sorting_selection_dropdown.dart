@@ -25,14 +25,14 @@ class SortingSelectionDropdown extends StatefulWidget {
 class _SortingSelectionDropdownState extends State<SortingSelectionDropdown> {
   @override
   Widget build(BuildContext context) {
-    final width = SizeHelper.getScreenWidth(context) * 0.525;
+    // final width = SizeHelper.getScreenWidth(context) * 0.45;
 
     return Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             color: Theme.of(context).focusColor),
         child: PopupMenuButton(
-          constraints: BoxConstraints(maxWidth: width, minWidth: width),
+          // constraints: BoxConstraints(maxWidth: width, minWidth: width),
           padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           initialValue: widget.getValue(),
@@ -63,7 +63,7 @@ class _SortingSelectionDropdownState extends State<SortingSelectionDropdown> {
             widget.onSelected(value);
           }),
           child: SizedBox(
-            width: width,
+            // width: width,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: InkWell(

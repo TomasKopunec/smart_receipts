@@ -264,13 +264,14 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                AutoSizeText(
                   header.toString(),
+                  maxLines: 1,
                   overflow: TextOverflow.clip,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(fontWeight: FontWeight.w400),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontWeight: FontWeight.w400,
+                      fontSize: SizeHelper.getFontSize(context,
+                          size: FontSize.regularLarge)),
                 ),
                 const Spacer(),
                 getValueWidget(header, widget.data[header.name])
@@ -304,10 +305,10 @@ class _DataEntryWidgetMobileState extends State<DataEntryWidgetMobile> {
     return AutoSizeText(stringOutput,
         maxLines: 1,
         overflow: TextOverflow.fade,
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium!
-            .copyWith(fontWeight: FontWeight.w300));
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+            fontWeight: FontWeight.w300,
+            fontSize:
+                SizeHelper.getFontSize(context, size: FontSize.regularLarge)));
   }
 
   @override

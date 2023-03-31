@@ -30,11 +30,11 @@ class SortingSelection extends StatelessWidget {
               style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
-                  fontSize:
-                      SizeHelper.getFontSize(context, size: FontSize.regular)),
+                  fontSize: SizeHelper.getFontSize(context,
+                      size: FontSize.regularLarge)),
             ),
             const SizedBox(
-              width: 16,
+              width: 12,
             ),
             SortingSelectionDropdown(
               items: searchableKeys,

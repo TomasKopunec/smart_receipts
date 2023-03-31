@@ -179,7 +179,7 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
   List<Widget> getChildren() {
     List<Widget> widgets = [];
 
-    widgets.add(getEntry("Receipt ID", FieldType.string, widget.id));
+    // widgets.add(getEntry("Receipt ID", FieldType.string, widget.id));
 
     widgets.add(getEntry(
         "Refund Amount", FieldType.price, widget.returnEntry.refundedAmount));
@@ -271,10 +271,10 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
                 Text(
                   name,
                   overflow: TextOverflow.fade,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium!
-                      .copyWith(fontWeight: FontWeight.w400),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontWeight: FontWeight.w400,
+                      fontSize: SizeHelper.getFontSize(context,
+                          size: FontSize.regularLarge)),
                 ),
                 const Spacer(),
                 getValueWidget(valueType, value)
@@ -309,10 +309,10 @@ class _ReturnsEntryState extends State<ReturnsEntry> {
     return AutoSizeText(stringOutput,
         maxLines: 1,
         overflow: TextOverflow.fade,
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium!
-            .copyWith(fontWeight: FontWeight.w300));
+        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+            fontWeight: FontWeight.w300,
+            fontSize:
+                SizeHelper.getFontSize(context, size: FontSize.regularLarge)));
   }
 
   @override

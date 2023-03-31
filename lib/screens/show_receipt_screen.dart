@@ -269,7 +269,7 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
               .format(receipt.getField(ReceiptField.purchaseDateTime))),
       getSectionEntryStatus(
           "Receipt Status: ", ReceiptStatusLabel(status: receipt.status)),
-      getSectionEntry("Receipt ID: ", receipt.receiptId.toString()),
+      getReceiptId(receipt.receiptId),
     ]);
   }
 
@@ -293,11 +293,51 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
         children: [
-          AutoSizeText(left),
+          Text(left,
+              style: TextStyle(
+                  fontSize: SizeHelper.getFontSize(
+                context,
+                size: FontSize.large,
+              ))),
           AutoSizeText(
             right,
             maxLines: 1,
+            style: TextStyle(
+                overflow: TextOverflow.fade,
+                fontSize: SizeHelper.getFontSize(
+                  context,
+                  size: FontSize.large,
+                )),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getReceiptId(String id) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Receipt ID:",
+              style: TextStyle(
+                  fontSize:
+                      SizeHelper.getFontSize(context, size: FontSize.large))),
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              id,
+              style: TextStyle(
+                  overflow: TextOverflow.fade,
+                  fontWeight: FontWeight.w400,
+                  fontSize:
+                      SizeHelper.getFontSize(context, size: FontSize.large)),
+            ),
           ),
         ],
       ),
@@ -310,7 +350,12 @@ class _ShowReceiptScreenState extends State<ShowReceiptScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(left),
+          Text(
+            left,
+            style: TextStyle(
+                fontSize:
+                    SizeHelper.getFontSize(context, size: FontSize.large)),
+          ),
           right,
         ],
       ),

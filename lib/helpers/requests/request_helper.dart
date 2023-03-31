@@ -12,9 +12,9 @@ class RequestHelper {
 
   final Logger logger = Logger(RequestHelper);
 
-  final String host = "digitalreceipts.azurewebsites.net";
+  final String host = "smartreceipts.azurewebsites.net";
   final String functionKey =
-      "nDDhMcGI64BL0foQDGp8t-9D9URyyi1mlvEHvpK2rn1tAzFuA86DDw==";
+      "8eyGwo2N-0KVQVL6RcggvIs4E63fQRyC-9MN5DBr_TNDAzFuNtFr8g==";
 
   /// Sends a request and logs
   Future<Response> send({

@@ -38,7 +38,7 @@ class DateRangeEntry extends StatelessWidget {
             splashColor: Theme.of(context).primaryColor.withOpacity(0.5),
             borderRadius: BorderRadius.circular(8),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 1),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,8 @@ class DateRangeEntry extends StatelessWidget {
                   ),
                   Center(
                     child: Text(
-                      DateFormat(dateFormat.format).format(dateTime),
+                      DateFormat(DateTimeFormat.standard.format)
+                          .format(dateTime),
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(
                           fontWeight: FontWeight.w400,
                           color: Theme.of(context).indicatorColor,
