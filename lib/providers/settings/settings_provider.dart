@@ -5,7 +5,7 @@ import 'package:smart_receipts/utils/logger.dart';
 
 enum Currency {
   pound('British Pound', '£', 'gbp'),
-  euro('British Dollar', '€', 'eur'),
+  euro('Euro', '€', 'eur'),
   dollar('United States Dollar', '\$', 'usd'),
   australianDollar('Australian Dollar', '\$', 'aud'),
   canadianDollar('Canada Dollar', '\$', 'cad'),

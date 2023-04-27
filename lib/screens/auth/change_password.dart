@@ -29,7 +29,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   final TextEditingController newPasswordController =
       TextEditingController(text: "");
   final TextEditingController newPasswordRepeatController =
-      TextEditingController(text: " ");
+      TextEditingController(text: "");
 
   @override
   void dispose() {
